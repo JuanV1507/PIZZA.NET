@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Empleados</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/src/main/resources/static/css/styleEmpleados.css">
+</head>
+<body>
+
+
+    <div class="header">
+        <h1>Lista de Empleados</h1>
+        <a th:href="@{/empleados/nuevo}" class="btn-crear">
+         <i class="bi bi-plus-circle-fill"></i>Nuevo Empleado
+        </a>
+    </div>
+
+    <div class="table-container">
+        <table class="empleados-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre completo</th>
+                    <th>Telefono</th>
+                    <th>Pago diario</th>
+                    <th>Dias de trabajo</th>
+                    <th>Sueldo</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="empleado : ${empleados}">
+                    <td th:text="${empleado.id}">1</td>
+                    <td th:text="${empleado.nombre}">Juan</td>
+                    <td th:text="${empleado.apellido}">Pérez</td>
+                    <td th:text="${empleado.email}">
+                    <td class ="acciones">
+                        <a th:href="@{'/empleados/editar/' + ${empleado.id}}" class="btn-editar">Editar</a>
+                        <a th:href="@{'/empleados/eliminar/' + ${empleado.id}}" class="btn-eliminar">Eliminar</a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+</body>
+<script>
+  const toggle = document.getElementById('navbar-toggle');
+  const menu = document.querySelector('.navbar-menu');
+  toggle.addEventListener('click', () => {
+    menu.classList.toggle('active');
+  });
+</script>
+
+
+</html>

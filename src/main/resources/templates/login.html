@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login</title>
+  <link rel="stylesheet" th:href="@{/css/styleLogin.css}">
+</head>
+<body>
+  <div class="container">
+    <div class="login-box">
+      <h1>Iniciar Sesión</h1>
+      <!-- Formulario que envía datos a Spring Boot -->
+      <form th:action="@{/login}" method="post">
+    <div class="input-group">
+        <label for="username">Número de celular</label>
+        <input type="text" id="username" name="username" placeholder="Ej. +52 123 456 7890" required>
+    </div>
+    <div class="input-group">
+        <label for="password">Contraseña</label>
+        <input type="password" id="password" name="password" placeholder="••••••••" required>
+    </div>
+    <button type="submit" class="btn">Entrar</button>
+    <p th:if="${error}" th:text="${error}" style="color:red; text-align:center;"></p>
+</form>
+
+
+      <p class="note">¿No tienes cuenta? <a th:href="@{/registro}">Regístrate</a></p>
+    </div>
+  </div>
+</body>
+</html>

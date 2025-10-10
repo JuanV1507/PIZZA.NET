@@ -1,0 +1,230 @@
+/* ==========================
+   VARIABLES DE COLOR
+========================== */
+:root {
+    --azul: #4A90E2;
+    --gris-claro: #f5f5f5;
+    --blanco: #ffffff;
+    --negro: #222;
+    --gris-texto: #555;
+    --sombra: rgba(0, 0, 0, 0.1);
+    --transicion: 0.3s ease;
+}
+
+/* ==========================
+   ESTILO GLOBAL
+========================== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+body {
+    background-color: var(--gris-claro);
+    color: var(--gris-texto);
+    min-height: 100vh;
+}
+
+/* ==========================
+   NAVBAR
+========================== */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: var(--negro);
+    color: var(--blanco);
+    padding: 15px 30px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 3px 8px var(--sombra);
+}
+
+.logo-img {
+    height: 45px;
+    width: auto;
+    border-radius: 8px;
+}
+
+.logo-text {
+    font-size: 1.4rem;
+    font-weight: 600;
+    margin-left: 10px;
+    color: var(--azul);
+}
+
+.navbar-menu {
+    list-style: none;
+    display: flex;
+    gap: 20px;
+}
+
+.navbar-menu li a {
+    text-decoration: none;
+    color: var(--blanco);
+    font-weight: 500;
+    transition: color var(--transicion);
+}
+
+.navbar-menu li a:hover {
+    color: var(--azul);
+}
+
+/* Ícono menú hamburguesa */
+.navbar-toggle {
+    display: none;
+    flex-direction: column;
+    cursor: pointer;
+}
+
+.navbar-toggle span {
+    background: var(--blanco);
+    height: 3px;
+    width: 25px;
+    margin: 4px 0;
+    border-radius: 5px;
+}
+
+/* ==========================
+   ENCABEZADO
+========================== */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 30px 5%;
+    flex-wrap: wrap;
+}
+
+.header h1 {
+    font-size: 1.8rem;
+    color: var(--negro);
+}
+
+.btn-crear {
+    background-color: var(--azul);
+    color: var(--blanco);
+    padding: 10px 18px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: var(--transicion);
+    box-shadow: 0 2px 6px var(--sombra);
+}
+
+.btn-crear:hover {
+    background-color: #357ABD;
+    transform: scale(1.05);
+}
+
+/* ==========================
+   TABLA DE EMPLEADOS
+========================== */
+.table-container {
+    width: 90%;
+    margin: 0 auto 50px auto;
+    overflow-x: auto;
+    background: var(--blanco);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 3px 8px var(--sombra);
+}
+
+.empleados-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.empleados-table th {
+    background-color: var(--azul);
+    color: var(--blanco);
+    padding: 12px;
+    text-align: left;
+    font-size: 0.95rem;
+    text-transform: uppercase;
+}
+
+.empleados-table td {
+    padding: 10px 12px;
+    border-bottom: 1px solid #ddd;
+    font-size: 0.9rem;
+    color: var(--gris-texto);
+}
+
+.empleados-table tr:hover {
+    background-color: var(--gris-claro);
+}
+
+/* ==========================
+   BOTONES DE ACCIÓN
+========================== */
+.acciones {
+    display: flex;
+    gap: 10px;
+}
+
+.btn-editar, .btn-eliminar {
+    text-decoration: none;
+    color: var(--blanco);
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    transition: var(--transicion);
+}
+
+.btn-editar {
+    background-color: #43A047; /* verde */
+}
+
+.btn-editar:hover {
+    background-color: #2E7D32;
+    transform: scale(1.05);
+}
+
+.btn-eliminar {
+    background-color: #E53935; /* rojo */
+}
+
+.btn-eliminar:hover {
+    background-color: #C62828;
+    transform: scale(1.05);
+}
+
+/* ==========================
+   RESPONSIVE DESIGN
+========================== */
+@media (max-width: 900px) {
+    .navbar-menu {
+        display: none;
+        flex-direction: column;
+        background-color: var(--negro);
+        position: absolute;
+        top: 70px;
+        right: 0;
+        width: 200px;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 3px 8px var(--sombra);
+    }
+
+    .navbar-menu.active {
+        display: flex;
+    }
+
+    .navbar-toggle {
+        display: flex;
+    }
+
+    .header {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .header h1 {
+        margin-bottom: 15px;
+    }
+}
