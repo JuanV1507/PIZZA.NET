@@ -24,13 +24,13 @@ public class EmpleadoController {
     @GetMapping
     public String listar(Model model) {
         model.addAttribute("empleados", empleadoService.listarTodos());
-        return "empleados/lista"; // Vista Thymeleaf
+        return "empleados"; // Vista Thymeleaf
     }
 
     @GetMapping("/nuevo")
     public String mostrarFormulario(Model model) {
         model.addAttribute("empleado", new Empleado());
-        return "empleados/form";
+        return "empleados_form";
     }
 
     @PostMapping
@@ -42,7 +42,7 @@ public class EmpleadoController {
     @GetMapping("/editar/{id}")
     public String editar(@PathVariable Long id, Model model) {
         model.addAttribute("empleado", empleadoService.buscarPorId(id).orElse(null));
-        return "empleados/form";
+        return "empleados_form";
     }
 
     @GetMapping("/eliminar/{id}")

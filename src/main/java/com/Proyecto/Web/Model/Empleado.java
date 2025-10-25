@@ -1,7 +1,13 @@
 package com.Proyecto.Web.Model;
 
-import jakarta.persistence.*;
 import java.time.LocalDateTime;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "empleados")
@@ -12,10 +18,14 @@ public class Empleado {
     private Long id;
 
     @Column(nullable=false, length=100)
-    private String nombre;
+    private String nombres;
 
     @Column(nullable=false, length=50)
     private String puesto;
+
+    private Double pagoDiario;
+
+    private int diasTrabajados;
 
     private Double salario;
 
@@ -28,8 +38,9 @@ public class Empleado {
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
-    public String getNombre() { return nombre; }
-    public void setNombre(String nombre) { this.nombre = nombre; }
+    public String getNombres() { return nombres; }
+    public void setNombres(String nombres) { this.nombres = nombres; }
+
 
     public String getPuesto() { return puesto; }
     public void setPuesto(String puesto) { this.puesto = puesto; }
@@ -42,4 +53,11 @@ public class Empleado {
 
     public LocalDateTime getFechaRegistro() { return fechaRegistro; }
     public void setFechaRegistro(LocalDateTime fechaRegistro) { this.fechaRegistro = fechaRegistro; }
+
+    public Double getPagoDiario() { return pagoDiario; }
+    public void setPagoDiario(Double pagoDiario) { this.pagoDiario = pagoDiario; }
+
+    public int getDiasTrabajados() { return diasTrabajados; }
+    public void setDiasTrabajados(int diasTrabajados) { this.diasTrabajados = diasTrabajados; }
+
 }

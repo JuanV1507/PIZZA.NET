@@ -21,20 +21,21 @@
             <thead>
                 <tr>
                     <th>ID</th>
+                    <th>Fecha de registro</th>
                     <th>Nombre completo</th>
                     <th>Telefono</th>
                     <th>Pago diario</th>
                     <th>Dias de trabajo</th>
                     <th>Sueldo</th>
+                    <th>Puesto</th>
                     <th>Acciones</th>
                 </tr>
             </thead>
             <tbody>
                 <tr th:each="empleado : ${empleados}">
-                    <td th:text="${empleado.id}">1</td>
-                    <td th:text="${empleado.nombre}">Juan</td>
-                    <td th:text="${empleado.apellido}">Pérez</td>
-                    <td th:text="${empleado.email}">
+                    <td th:text="${empleado.id}"></td>
+                    <td th:text="${empleado.nombres}"></td>
+                    <
                     <td class ="acciones">
                         <a th:href="@{'/empleados/editar/' + ${empleado.id}}" class="btn-editar">Editar</a>
                         <a th:href="@{'/empleados/eliminar/' + ${empleado.id}}" class="btn-eliminar">Eliminar</a>

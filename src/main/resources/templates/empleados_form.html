@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulario Persona</title>
+    <!-- Enlace a tu CSS -->
+    <link rel="stylesheet" th:href="@{/stylepersona-form.css}">
+</head>
+<body>
+    <div class="pizza-background"></div>
+    
+    <div class="form-container">
+        <h1 class="form-title">Registro de Empleados</h1>
+        
+        <!-- Quitar campos que no existen -->
+<!-- Cambiar los nombres para coincidir con tu modelo -->
+<form th:action="@{/empleados}" th:object="${empleado}" method="post">
+
+    <input type="hidden" th:field="*{id}" />
+
+    <div class="form-group">
+        <label for="nombres">Nombre Completo:</label>
+        <input type="text" id="nombres" th:field="*{nombres}" required>
+    </div>
+
+    <div class="form-group">
+        <label for="telefono">Teléfono:</label>
+        <input type="text" id="telefono" th:field="*{telefono}" required>
+    </div>
+
+    <div class="form-group">
+        <label for="puesto">Puesto:</label>
+        <input type="text" id="puesto" th:field="*{puesto}" required>
+    </div>
+
+    <div class="form-group">
+        <label for="pagoDiario">Pago Diario:</label>
+        <input type="number" id="pagoDiario" th:field="*{pagoDiario}" required>
+    </div>
+
+    <div class="form-group">
+        <label for="diasTrabajados">Días Trabajados:</label>
+        <input type="number" id="diasTrabajados" th:field="*{diasTrabajados}" required>
+    </div>
+
+    <div class="form-group">
+        <label for="fechaRegistro">Fecha de Registro:</label>
+        <input type="date" id="fechaRegistro" th:field="*{fechaRegistro}">
+    </div>
+
+    <button type="submit">Guardar</button>
+</form>
+
+    </div>
+</body>
+</html>
