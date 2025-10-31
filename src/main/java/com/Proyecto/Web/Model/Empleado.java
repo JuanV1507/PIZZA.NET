@@ -2,11 +2,15 @@ package com.Proyecto.Web.Model;
 
 import java.time.LocalDateTime;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 
 @Entity
@@ -32,7 +36,16 @@ public class Empleado {
     private String telefono;
 
     @Column(name="fecha_registro", updatable=false)
-    private LocalDateTime fechaRegistro = LocalDateTime.now();
+    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
+    private LocalDateTime fechaRegistro;
+
+
+    //Método para calcular el salario automáticamente
+    @PrePersist
+    @PreUpdate
+    public void calcularSalario() {
+        this.salario = this.pagoDiario * this.diasTrabajados;
+    }
 
     // Getters y setters
     public Long getId() { return id; }

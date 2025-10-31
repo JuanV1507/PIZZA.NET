@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Formulario Persona</title>
-    <!-- Enlace a tu CSS -->
-    <link rel="stylesheet" th:href="@{/stylepersona-form.css}">
+    
+    <link rel="stylesheet" th:href="@{/css/stylepersona-form.css}">
 </head>
 <body>
     <div class="pizza-background"></div>
@@ -46,8 +46,9 @@
 
     <div class="form-group">
         <label for="fechaRegistro">Fecha de Registro:</label>
-        <input type="date" id="fechaRegistro" th:field="*{fechaRegistro}">
+        <input type="datetime-local" id="fechaRegistro" th:field="*{fechaRegistro}">
     </div>
+
 
     <button type="submit">Guardar</button>
 </form>

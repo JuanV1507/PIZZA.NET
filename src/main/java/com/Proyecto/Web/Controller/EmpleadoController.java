@@ -50,4 +50,5 @@ public class EmpleadoController {
         empleadoService.eliminar(id);
         return "redirect:/empleados";
     }
+
 }
