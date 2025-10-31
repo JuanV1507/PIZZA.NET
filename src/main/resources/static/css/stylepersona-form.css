@@ -109,6 +109,8 @@ button[type="submit"]:hover {
     object-fit: cover;
 }
 
+
+
 /* ---------------------------
    Responsive para pantallas pequeñas
 --------------------------- */
@@ -133,3 +135,4 @@ button[type="submit"]:hover {
         padding: 9px;
     }
 }
+
