@@ -34,5 +34,9 @@ public class ProductoService {
             .findFirst()
             .orElse(null);
     }
+
+    public java.util.Optional<Productos> buscarPorId(Long id) {
+        return productoRepository.findById(id);
+    }
     
 }
