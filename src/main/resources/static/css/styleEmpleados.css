@@ -1,6 +1,21 @@
 /* ==========================
    VARIABLES DE COLOR
 ========================== */
+/* ==========================
+   AJUSTE PARA LAYOUT CON SIDEBAR
+========================== */
+body {
+    margin-left: 250px; /* mismo ancho que la barra lateral */
+    transition: margin-left 0.3s ease;
+}
+
+/* Cuando el menú lateral esté cerrado (móvil), reducimos el margen */
+@media (max-width: 768px) {
+    body {
+        margin-left: 0;
+    }
+}
+
 :root {
     --azul: #4A90E2;
     --gris-claro: #f5f5f5;

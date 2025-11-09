@@ -21,16 +21,21 @@ public class EmpleadoController {
         this.empleadoService = empleadoService;
     }
 
+    //  Carga la vista de empleados dentro del layout
     @GetMapping
     public String listar(Model model) {
+        model.addAttribute("titulo", "Gestión de Empleados");
         model.addAttribute("empleados", empleadoService.listarTodos());
-        return "empleados"; // Vista Thymeleaf
+        model.addAttribute("contenido", "empleados"); // Fragmento que se insertará
+        return "layout"; // Carga el layout principal
     }
 
     @GetMapping("/nuevo")
     public String mostrarFormulario(Model model) {
         model.addAttribute("empleado", new Empleado());
-        return "empleados_form";
+        model.addAttribute("titulo", "Nuevo Empleado");
+        model.addAttribute("contenido", "empleados_form");
+        return "layout";
     }
 
     @PostMapping
@@ -42,7 +47,9 @@ public class EmpleadoController {
     @GetMapping("/editar/{id}")
     public String editar(@PathVariable Long id, Model model) {
         model.addAttribute("empleado", empleadoService.buscarPorId(id).orElse(null));
-        return "empleados_form";
+        model.addAttribute("titulo", "Editar Empleado");
+        model.addAttribute("contenido", "empleados_form");
+        return "layout";
     }
 
     @GetMapping("/eliminar/{id}")
@@ -50,5 +57,4 @@ public class EmpleadoController {
         empleadoService.eliminar(id);
         return "redirect:/empleados";
     }
-
 }

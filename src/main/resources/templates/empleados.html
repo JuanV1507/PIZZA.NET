@@ -1,19 +1,11 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Empleados</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" th:href="@{/css/styleEmpleados.css}">
-    
-</head>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
 <body>
-
-
+<div th:fragment="content">
     <div class="header">
         <h1>Lista de Empleados</h1>
         <a th:href="@{/empleados/nuevo}" class="btn-crear">
-         <i class="bi bi-plus-circle-fill"></i>Nuevo Empleado
+            <i class="fas fa-plus-circle"></i> Nuevo Empleado
         </a>
     </div>
 
@@ -24,9 +16,9 @@
                     <th>ID</th>
                     <th>Fecha de registro</th>
                     <th>Nombre completo</th>
-                    <th>Telefono</th>
+                    <th>Teléfono</th>
                     <th>Pago diario</th>
-                    <th>Dias de trabajo</th>
+                    <th>Días de trabajo</th>
                     <th>Sueldo semanal</th>
                     <th>Puesto</th>
                     <th>Acciones</th>
@@ -43,7 +35,7 @@
                     <td th:text="${empleado.salario}"></td>
                     <td th:text="${empleado.puesto}"></td>
 
-                    <td class ="acciones">
+                    <td class="acciones">
                         <a th:href="@{'/empleados/editar/' + ${empleado.id}}" class="btn-editar">Editar</a>
                         <a th:href="@{'/empleados/eliminar/' + ${empleado.id}}" class="btn-eliminar">Eliminar</a>
                     </td>
@@ -51,15 +43,6 @@
             </tbody>
         </table>
     </div>
-
+</div>
 </body>
-<script>
-  const toggle = document.getElementById('navbar-toggle');
-  const menu = document.querySelector('.navbar-menu');
-  toggle.addEventListener('click', () => {
-    menu.classList.toggle('active');
-  });
-</script>
-
-
 </html>

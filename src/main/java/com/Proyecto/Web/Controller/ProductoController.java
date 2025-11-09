@@ -26,15 +26,19 @@ public class ProductoController {
         
     @GetMapping
         public String listar(Model model) {
+            model.addAttribute("titulo", "Gestión de Productos");
             model.addAttribute("productos", productoService.listarTodos());
-            return "productos"; // Vista Thymeleaf
+            model.addAttribute("contenido", "productos"); // Fragmento que se insertará
+            return "layout"; // Vista Thymeleaf
         }
 
     
     @GetMapping("/nuevo")
     public String mostrarFormulario(Model model) {
             model.addAttribute("producto", new Productos());
-            return "productos_form";
+            model.addAttribute("titulo", "Nuevo Producto");
+            model.addAttribute("contenido", "productos_form");
+            return "layout";
     }
     
     @PostMapping
@@ -46,7 +50,9 @@ public class ProductoController {
     @GetMapping("/editar/{id}")
     public String editar(@PathVariable Long id, Model model) {
         model.addAttribute("producto", productoService.buscarPorId(id).orElse(null));
-        return "productos_form";
+        model.addAttribute("titulo", "Editar Producto");
+        model.addAttribute("contenido", "productos_form");
+        return "layout";
     }
 
     @GetMapping("/eliminar/{id}")

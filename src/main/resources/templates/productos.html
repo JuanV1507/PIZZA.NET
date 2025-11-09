@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<body>
+    <div class="productos-page" th:fragment="content">
+        <div class="header">
+        <h1>Lista de Productos</h1>
+        <a th:href="@{/Productos/nuevo}" class="btn-crear">
+         <i class="fas fa-plus-circle"></i>Nuevo Producto
+        </a>
+    </div>
+
+    <div class="table-container">
+        <table class="productos-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Descripcion</th>
+                    <th>Categoria</th>
+                    <th>Tamaño</th>
+                    <th>Precio</th>
+                    <th>Stock</th>
+                    <th>Imagen</th>
+                    <th>Disponible</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="producto : ${productos}">
+                    <td th:text="${producto.id_producto}"></td>
+                    <td th:text="${producto.nombre}"></td>
+                    <td th:text="${producto.Descripcion}"></td>
+                    <td th:text="${producto.Categoria}"></td>
+                    <td th:text="${producto.Tamano}"></td>
+                    <td th:text="${producto.Precio}"></td>
+                    <td th:text="${producto.Stock}"></td>
+                    <td>
+                        <img th:src="@{'/uploads/' + ${producto.Imagen}}" alt="Imagen" />
+                    </td>
+                    <td th:text="${producto.activo}"></td>
+
+                    <td class ="acciones">
+                        <a th:href="@{'/producto/editar/' + ${producto.id_producto}}" class="btn-editar">Editar</a>
+                        <a th:href="@{'/producto/eliminar/' + ${producto.id_producto}}" class="btn-eliminar">Eliminar</a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    </div>
+</body>
+</html>
