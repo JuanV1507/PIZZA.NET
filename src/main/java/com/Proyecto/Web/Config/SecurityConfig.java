@@ -26,7 +26,7 @@ public class SecurityConfig {
         http
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/login", "/css/**", "/js/**", "/images/**").permitAll()
+                .requestMatchers("/login", "/css/**", "/js/**", "/images/**", "/imagenes/**").permitAll()
                 .anyRequest().authenticated()
             )
             .formLogin(form -> form
@@ -55,4 +55,6 @@ public class SecurityConfig {
     public BCryptPasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+
+   
 }

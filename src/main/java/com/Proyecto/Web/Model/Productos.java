@@ -24,28 +24,18 @@ public class Productos {
         Pizza,
         Hamburguesa,
         Torta,
-        Papas,
-        Araña,
-        Quesadilla,
-        Refresco,
+        Snacks,
+        Antojitos,
+        Bebidas,
         Paquete,
         Otro
-    }
-
-    public enum Tamano {
-        Chica,
-        Grande,
-        Individual,
-        NA
     }
 
     @Enumerated(EnumType.STRING)
     private Categoria categoria;
 
-    @Enumerated(EnumType.STRING)
-    private Tamano tamano;
-
     private Double precio;
+    
     private int stock;
 
     private String imagen; // ruta o nombre del archivo de imagen
@@ -84,14 +74,6 @@ public class Productos {
 
     public void setCategoria(Categoria categoria) {
         this.categoria = categoria;
-    }
-
-    public Tamano getTamano() {
-        return tamano;
-    }
-
-    public void setTamano(Tamano tamano) {
-        this.tamano = tamano;
     }
 
     public Double getPrecio() {

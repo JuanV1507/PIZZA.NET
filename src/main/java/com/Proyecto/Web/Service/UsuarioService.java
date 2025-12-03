@@ -1,8 +1,6 @@
 package com.Proyecto.Web.Service;
 
-import java.util.List;
-
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -22,14 +20,14 @@ public class UsuarioService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        // Aquí username será el "Número de celular" enviado desde el form
-        Usuario usuario = usuarioRepository.findByTelefono(username)
-            .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado"));
+        Usuario usuario = usuarioRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado"));
 
-        return new org.springframework.security.core.userdetails.User(
-            usuario.getTelefono(),
-            usuario.getContrasena(), // debe estar encriptada con BCrypt
-            List.of(new SimpleGrantedAuthority("USER"))
-        );
+        return User.builder()
+                .username(usuario.getUsername())
+                .password(usuario.getContrasena())
+                .roles(usuario.getRol())
+                .build();
     }
+
 }

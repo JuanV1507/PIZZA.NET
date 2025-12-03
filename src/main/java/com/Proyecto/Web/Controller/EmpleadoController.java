@@ -21,35 +21,47 @@ public class EmpleadoController {
         this.empleadoService = empleadoService;
     }
 
-    //  Carga la vista de empleados dentro del layout
+    // Mostrar tabla + formulario en la misma vista
     @GetMapping
     public String listar(Model model) {
-        model.addAttribute("titulo", "Gestión de Empleados");
-        model.addAttribute("empleados", empleadoService.listarTodos());
-        model.addAttribute("contenido", "empleados"); // Fragmento que se insertará
-        return "layout"; // Carga el layout principal
-    }
+        var empleados = empleadoService.listarTodos();
 
-    @GetMapping("/nuevo")
-    public String mostrarFormulario(Model model) {
+        double totalSalarios = empleados.stream()
+                .mapToDouble(e -> e.getSalario_calculado() != null ? e.getSalario_calculado() : 0)
+                .sum();
+
+        model.addAttribute("empleados", empleados);
         model.addAttribute("empleado", new Empleado());
-        model.addAttribute("titulo", "Nuevo Empleado");
-        model.addAttribute("contenido", "empleados_form");
-        return "layout";
+        model.addAttribute("totalSalarios", totalSalarios);
+         // Agregar roles disponibles para el SweetAlert
+        model.addAttribute("roles", new String[] { "Administrador", "Cajera" });
+
+        return "empleados";
     }
 
     @PostMapping
     public String guardar(@ModelAttribute Empleado empleado) {
+
         empleadoService.guardar(empleado);
-        return "redirect:/empleados";
+
+        return "redirect:/empleados?crearUsuario=" + empleado.getId_empleado();
     }
 
+    // Cuando se hace clic en EDITAR en la tabla
     @GetMapping("/editar/{id}")
     public String editar(@PathVariable Long id, Model model) {
-        model.addAttribute("empleado", empleadoService.buscarPorId(id).orElse(null));
-        model.addAttribute("titulo", "Editar Empleado");
-        model.addAttribute("contenido", "empleados_form");
-        return "layout";
+
+        var empleados = empleadoService.listarTodos();
+
+        double totalSalarios = empleados.stream()
+                .mapToDouble(e -> e.getSalario_calculado() != null ? e.getSalario_calculado() : 0)
+                .sum();
+
+        model.addAttribute("empleados", empleados);
+        model.addAttribute("empleado", empleadoService.buscarPorId(id).orElse(new Empleado()));
+        model.addAttribute("totalSalarios", totalSalarios);
+
+        return "empleados";
     }
 
     @GetMapping("/eliminar/{id}")

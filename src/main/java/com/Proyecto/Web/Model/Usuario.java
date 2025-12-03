@@ -1,5 +1,9 @@
 package com.Proyecto.Web.Model;
 
+import java.time.LocalDateTime;
+
+import org.springframework.format.annotation.DateTimeFormat;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -13,30 +17,37 @@ public class Usuario {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id; // solo esta columna puede ser auto_increment
-
-    @Column(unique = true)
-    private String telefono;
+    private Long id_usuario; // solo esta columna puede ser auto_increment
 
     private String contrasena;
 
-    private String nombre;
+    @Column(unique = true)
+    private String username;
+
+    private Long id_empleado;
+
+    @Column(name="fecha_registro", updatable=false)
+    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
+    private LocalDateTime fechaRegistro;
+
+
+    private String rol;
+
+    public String getRol() {
+        return rol;
+    }
+
+    public void setRol(String rol) {
+        this.rol = rol;
+    }
 
     // Getters y setters
-    public Long getId() {
-        return id;
+    public Long getId_usuario() {
+        return id_usuario;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getTelefono() {
-        return telefono;
-    }
-
-    public void setTelefono(String telefono) {
-        this.telefono = telefono;
+    public void setId_usuario(Long id_usuario) {
+        this.id_usuario = id_usuario;
     }
 
     public String getContrasena() {
@@ -47,11 +58,19 @@ public class Usuario {
         this.contrasena = contrasena;
     }
 
-    public String getNombre() {
-    return nombre;
-   }
+    public Long getId_empleado() {
+        return id_empleado;
+    }
 
-    public void setNombre(String nombre) {
-    this.nombre = nombre; 
-}
+    public void setId_empleado(Long id_empleado) {
+        this.id_empleado = id_empleado;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
 }

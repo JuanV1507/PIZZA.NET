@@ -16,14 +16,13 @@ public class HomeController {
     // Página de login
     @GetMapping("/login")
     public String loginForm() {
-        return "login"; // nombre del template Login.html
+        return "login"; // login.html
     }
 
     // Página principal (dashboard)
     @GetMapping("/home")
     public String home(Model model) {
         model.addAttribute("titulo", "Panel Principal");
-        model.addAttribute("contenido", "home");
-        return "layout"; // layout base con sidebar fija
+        return "home"; // ahora carga directamente home.html
     }
 }

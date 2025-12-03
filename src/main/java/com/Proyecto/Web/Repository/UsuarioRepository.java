@@ -9,5 +9,6 @@ import com.Proyecto.Web.Model.Usuario;
 
 @Repository
 public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
-    Optional<Usuario> findByTelefono(String telefono);
+    boolean existsByUsername(String username);
+    Optional<Usuario> findByUsername(String username);
 }

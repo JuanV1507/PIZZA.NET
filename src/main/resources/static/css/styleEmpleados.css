@@ -1,245 +1,260 @@
-/* ==========================
-   VARIABLES DE COLOR
-========================== */
-/* ==========================
-   AJUSTE PARA LAYOUT CON SIDEBAR
-========================== */
-body {
-    margin-left: 250px; /* mismo ancho que la barra lateral */
-    transition: margin-left 0.3s ease;
-}
-
-/* Cuando el menú lateral esté cerrado (móvil), reducimos el margen */
-@media (max-width: 768px) {
-    body {
-        margin-left: 0;
-    }
-}
-
-:root {
-    --azul: #4A90E2;
-    --gris-claro: #f5f5f5;
-    --blanco: #ffffff;
-    --negro: #222;
-    --gris-texto: #555;
-    --sombra: rgba(0, 0, 0, 0.1);
-    --transicion: 0.3s ease;
-}
-
-/* ==========================
-   ESTILO GLOBAL
-========================== */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Poppins', sans-serif;
-}
-
-body {
-    background-color: var(--gris-claro);
-    color: var(--gris-texto);
-    min-height: 100vh;
-}
-
-/* ==========================
-   NAVBAR
-========================== */
-.navbar {
+/* Estilo general */
+.empleados-page {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background-color: var(--negro);
-    color: var(--blanco);
-    padding: 15px 30px;
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    box-shadow: 0 3px 8px var(--sombra);
+    gap: 30px;
+    padding: 20px;
+    justify-content: center;
+    align-items: flex-start;
+    font-family: 'Segoe UI', sans-serif;
+    flex-wrap: wrap; /* ← permite que se acomode en móviles */
 }
 
-.logo-img {
-    height: 45px;
-    width: auto;
-    border-radius: 8px;
+/* Tarjetas */
+.card {
+    background: #fff;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
 }
 
-.logo-text {
-    font-size: 1.4rem;
+/* FORMULARIO */
+.form-card {
+    width: 350px;
+    max-width: 100%; /* ← en móviles ocupará todo */
+}
+
+.form-card h2 {
+    margin-bottom: 15px;
+    font-size: 22px;
     font-weight: 600;
-    margin-left: 10px;
-    color: var(--azul);
 }
 
-.navbar-menu {
-    list-style: none;
+.form-group {
     display: flex;
-    gap: 20px;
-}
-
-.navbar-menu li a {
-    text-decoration: none;
-    color: var(--blanco);
-    font-weight: 500;
-    transition: color var(--transicion);
-}
-
-.navbar-menu li a:hover {
-    color: var(--azul);
-}
-
-/* Ícono menú hamburguesa */
-.navbar-toggle {
-    display: none;
     flex-direction: column;
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    font-size: 14px;
+    color: #444;
+    margin-bottom: 4px;
+}
+
+.form-group input {
+    padding: 10px;
+    border: 1px solid #dcdcdc;
+    border-radius: 6px;
+}
+
+.btn-guardar {
+    background: #0066ff;
+    color: white;
+    border: none;
+    padding: 12px;
+    width: 100%;
+    border-radius: 8px;
+    font-weight: bold;
     cursor: pointer;
+    transition: 0.2s;
 }
 
-.navbar-toggle span {
-    background: var(--blanco);
-    height: 3px;
-    width: 25px;
-    margin: 4px 0;
-    border-radius: 5px;
+.btn-guardar:hover {
+    background: #0053d6;
 }
 
-/* ==========================
-   ENCABEZADO
-========================== */
+/* TABLA */
+.table-card {
+    width: 900px;
+    max-width: 100%; /* ← para adaptarse a móviles */
+}
+
 .header {
     display: flex;
     justify-content: space-between;
-    align-items: center;
-    padding: 30px 5%;
+    margin-bottom: 15px;
     flex-wrap: wrap;
+    gap: 10px;
 }
 
-.header h1 {
-    font-size: 1.8rem;
-    color: var(--negro);
+.header h2 {
+    font-size: 22px;
 }
 
-.btn-crear {
-    background-color: var(--azul);
-    color: var(--blanco);
-    padding: 10px 18px;
-    border-radius: 8px;
-    text-decoration: none;
-    font-weight: 500;
-    transition: var(--transicion);
-    box-shadow: 0 2px 6px var(--sombra);
-}
-
-.btn-crear:hover {
-    background-color: #357ABD;
-    transform: scale(1.05);
-}
-
-/* ==========================
-   TABLA DE EMPLEADOS
-========================== */
 .table-container {
-    width: 90%;
-    margin: 0 auto 50px auto;
-    overflow-x: auto;
-    background: var(--blanco);
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 3px 8px var(--sombra);
+    width: 100%;
+    overflow-x: auto; /* ← permite deslizar tabla en móviles */
 }
 
 .empleados-table {
     width: 100%;
     border-collapse: collapse;
+    min-width: 650px; /* ← evita que la tabla se rompa */
 }
 
 .empleados-table th {
-    background-color: var(--azul);
-    color: var(--blanco);
+    background: #f5f5f5;
     padding: 12px;
     text-align: left;
-    font-size: 0.95rem;
-    text-transform: uppercase;
+    border-bottom: 2px solid #ddd;
+    font-weight: 600;
 }
 
 .empleados-table td {
-    padding: 10px 12px;
-    border-bottom: 1px solid #ddd;
-    font-size: 0.9rem;
-    color: var(--gris-texto);
+    padding: 10px;
+    border-bottom: 1px solid #eee;
 }
 
-.empleados-table tr:hover {
-    background-color: var(--gris-claro);
-}
-
-/* ==========================
-   BOTONES DE ACCIÓN
-========================== */
+/* Botones acción */
 .acciones {
     display: flex;
-    gap: 10px;
-}
-
-.btn-editar, .btn-eliminar {
-    text-decoration: none;
-    color: var(--blanco);
-    padding: 6px 12px;
-    border-radius: 6px;
-    font-size: 0.85rem;
-    font-weight: 500;
-    transition: var(--transicion);
+    flex-direction: column;
+    gap: 6px;
 }
 
 .btn-editar {
-    background-color: #43A047; /* verde */
-}
-
-.btn-editar:hover {
-    background-color: #2E7D32;
-    transform: scale(1.05);
+    background-color: #007bff;
+    color: white;
+    padding: 6px 12px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-size: 14px;
+    text-align: center;
+    font-weight: 500;
 }
 
 .btn-eliminar {
-    background-color: #E53935; /* rojo */
+    background-color: #dc3545;
+    color: white;
+    padding: 6px 12px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-size: 14px;
+    text-align: center;
+    font-weight: 500;
 }
 
-.btn-eliminar:hover {
-    background-color: #C62828;
-    transform: scale(1.05);
+/* TOTAL SUELDO */
+.total-sueldo {
+    margin-top: 15px;
+    background: #eaffea;
+    padding: 15px;
+    font-size: 16px;
+    border-radius: 8px;
+    border-left: 5px solid #2ecc71;
 }
 
-/* ==========================
-   RESPONSIVE DESIGN
-========================== */
-@media (max-width: 900px) {
-    .navbar-menu {
-        display: none;
+/* ============================= */
+/*     RESPONSIVE DESIGN         */
+/* ============================= */
+
+/* Tablet horizontal (≤ 1024px) */
+@media (max-width: 1024px) {
+    .table-card {
+        width: 100%;
+    }
+
+    .empleados-page {
+        gap: 20px;
+    }
+}
+
+/* Tablet vertical y móviles grandes (≤ 768px) */
+@media (max-width: 768px) {
+
+    .empleados-page {
         flex-direction: column;
-        background-color: var(--negro);
-        position: absolute;
-        top: 70px;
-        right: 0;
-        width: 200px;
-        padding: 20px;
-        border-radius: 8px;
-        box-shadow: 0 3px 8px var(--sombra);
+        align-items: center;
+        padding: 10px;
     }
 
-    .navbar-menu.active {
-        display: flex;
+    .form-card {
+        width: 100%;
+        max-width: 450px;
     }
 
-    .navbar-toggle {
-        display: flex;
+    .table-card {
+        width: 100%;
     }
 
-    .header {
-        flex-direction: column;
+    .empleados-table {
+        font-size: 14px;
+    }
+
+    .btn-editar,
+    .btn-eliminar {
+        padding: 5px 10px;
+        font-size: 13px;
+    }
+}
+
+/* Celulares (≤ 480px) */
+@media (max-width: 480px) {
+
+    .form-card h2,
+    .header h2 {
+        font-size: 18px;
         text-align: center;
     }
 
-    .header h1 {
-        margin-bottom: 15px;
+    .empleados-table th,
+    .empleados-table td {
+        padding: 8px;
+        font-size: 13px;
+    }
+
+    .acciones {
+        flex-direction: row; /* ← botones lado a lado en móvil */
+        gap: 5px;
+    }
+
+    .btn-editar,
+    .btn-eliminar {
+        flex: 1;
+        padding: 6px;
     }
 }
+
+/* Estilo general */
+/* ---- SWEETALERT2 FORM ESTILOS ---- */
+
+.swal-label {
+    display: block;
+    text-align: left;
+    font-size: 14px;
+    font-weight: 600;
+    margin: 10px 0 5px;         
+
+
+    
+    color: #333;
+}
+
+/* Inputs personalizados dentro del Swal */
+.swal-input-custom {
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 10px !important;
+    border-radius: 6px !important;
+    border: 1px solid #dcdcdc !important;
+    font-size: 14px !important;
+    box-sizing: border-box;
+}
+
+/* Estilo del select del Swal */
+#rol.swal-input-custom {
+    padding: 10px !important;
+    height: auto !important;
+}
+
+/* Ajuste general para que todo quede alineado */
+.swal2-popup {
+    width: 450px !important;
+    padding-top: 20px;
+}
+
+.swal2-html-container {
+    width: 100%;
+    text-align: left !important;
+}
+/* ---- FIN SWEETALERT2 FORM ESTILOS ---- */

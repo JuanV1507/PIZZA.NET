@@ -1,11 +1,79 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PIZZA.NET</title>
+
+    <link rel="stylesheet" th:href="@{/css/styleHome.css}">
+    <link rel="stylesheet" th:href="@{/css/styleEmpleados.css}">
+    <link rel="stylesheet" th:href="@{/css/styleProductos.css}">
+    <link rel="stylesheet" th:href="@{/css/stylepersona-form.css}">
+    
+    <!-- Íconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+
 <body>
-    <div th:fragment="content">
-        <header class="content-header">
-            <h1>Bienvenido al panel principal</h1>
-        </header>
-        <p>Selecciona una opción del menú para comenzar.</p>
+
+    <div class="container">
+
+        <!-- BOTÓN HAMBURGUESA -->
+        <button class="hamburger" aria-label="Abrir Menú">
+            <i class="fas fa-bars"></i>
+        </button>
+
+        <!-- SIDEBAR / MENÚ LATERAL -->
+        <aside class="sidebar">
+            <div class="header-sidebar">
+                <div class="logo">PIZZA.NET</div>
+            </div>
+
+            <nav class="nav-menu">
+                <ul>
+                    <li><a th:href="@{/home}"><i class="fas fa-home"></i> <span>Inicio</span></a></li>
+                    <li><a th:href="@{/empleados}"><i class="fas fa-users"></i> <span>Empleados</span></a></li>
+                    <li><a th:href="@{/ventas}"><i class="fas fa-shopping-cart"></i> <span>Ventas</span></a></li>
+                    <li><a th:href="@{/reportes}"><i class="fas fa-chart-line"></i> <span>Reportes</span></a></li>
+                    <li><a th:href="@{/productos}"><i class="fas fa-pizza-slice"></i> <span>Productos</span></a></li>
+                </ul>
+            </nav>
+
+            <div class="extra-links">
+                <a href="#">Cerrar Ventas <i class="fas fa-times"></i></a>
+                <a href="#">Cerrar Sesión <i class="fas fa-sign-out-alt"></i></a>
+            </div>
+        </aside>
+
+        <!-- ========================================= -->
+        <!--             CONTENIDO PRINCIPAL           -->
+        <!-- ========================================= -->
+        <main class="main-content">
+            
+            <section class="dashboard-bienvenida">
+                <h1>Bienvenido a PIZZA.NET</h1>
+                <p>Selecciona una opción del menú para comenzar.</p>
+
+                <!-- Aquí puedes poner tarjetas, estadísticas, imágenes, etc. -->
+                
+            </section>
+
+        </main>
+
     </div>
+
+    <!-- Script del menú -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const hamburger = document.querySelector('.hamburger');
+            const sidebar = document.querySelector('.sidebar');
+
+            hamburger.addEventListener('click', () => {
+                sidebar.classList.toggle('menu-open');
+            });
+        });
+    </script>
+
 </body>
 </html>
+
