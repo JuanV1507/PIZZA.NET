@@ -1,7 +1,7 @@
 /* --- CONTENEDOR GENERAL --- */
 .productos-page {
     width: 90%;
-    max-width: 1200px;
+    max-width: 1600px; /* AUMENTADO: Se aprovecha más el espacio horizontal */
     margin: 30px auto;
     padding: 20px;
     background: #ffffff;
@@ -9,6 +9,117 @@
     box-shadow: 0 4px 10px rgba(0,0,0,0.08);
     font-family: "Segoe UI", sans-serif;
 }
+
+/* ================================================= */
+/* --- NUEVOS ESTILOS PARA LAYOUT DE FORM + TABLA --- */
+/* ================================================= */
+
+.productos-layout {
+    display: flex; /* Habilita Flexbox */
+    gap: 30px; /* Espacio entre el formulario y la tabla */
+    align-items: flex-start; /* Alinea los ítems al inicio para que el formulario no se estire a la altura de la tabla */
+}
+
+.form-section {
+    /* AJUSTADO: Se aumenta el ancho del formulario del 35% al 30% para dejar más espacio a la tabla, 
+       o se puede aumentar a 40% si se desea que ocupe más. Usaremos 30% como un buen balance. */
+    flex: 0 0 30%; 
+    max-width: 30%;
+    /* Si quieres que el formulario sea un poco más ancho:
+    flex: 0 0 40%;
+    max-width: 40%; 
+    */
+}
+
+.tabla-section {
+    /* El resto del espacio lo ocupa la tabla */
+    flex: 1; 
+    min-width: 0; /* Permite que el elemento Flexbox se encoja correctamente, respetando el contenedor. */
+}
+
+/* --- ESTILOS DEL FORMULARIO --- */
+.card {
+    background: #f8f9fa; /* Fondo claro para la tarjeta */
+    padding: 25px;
+    border-radius: 10px;
+    border: 1px solid #e9ecef;
+}
+
+.form-card h2 {
+    font-size: 20px;
+    color: #28a745; /* Un color primario para el título del formulario */
+    margin-top: 0;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #121314;
+    padding-bottom: 10px;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 5px;
+    color: #555;
+    font-size: 14px;
+}
+
+.form-group input[type="text"],
+.form-group input[type="number"],
+.form-group input[type="file"],
+.form-group select,
+.form-control {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ced4da;
+    border-radius: 6px;
+    box-sizing: border-box; /* Asegura que el padding no aumente el ancho total */
+    font-size: 14px;
+    transition: border-color 0.3s;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+    border-color: #007bff;
+    outline: none;
+    box-shadow: 0 0 0 0.1rem rgba(0, 123, 255, 0.25);
+}
+
+/* Checkbox (para el campo 'Disponible') */
+.form-group input[type="checkbox"] {
+    width: auto;
+    margin-left: 10px;
+    transform: scale(1.2);
+}
+
+/* Botón Guardar */
+.btn-guardar {
+    background:#28a745 ; /* Color primario para el botón de acción */
+    padding: 10px 16px;
+    border-radius: 6px;
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    transition: 0.3s ease;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+    margin-top: 20px;
+}
+
+.btn-guardar:hover {
+    background: #0056b3;
+}
+/* ================================================= */
+/* --- FIN ESTILOS DEL FORMULARIO --- */
+/* ================================================= */
+
 
 /* --- HEADER --- */
 .header {
@@ -27,7 +138,7 @@
     font-weight: 600;
 }
 
-/* BOTÓN CREAR */
+/* BOTÓN CREAR (Mantenido) */
 .btn-crear {
     background: #28a745;
     padding: 10px 16px;
@@ -45,7 +156,7 @@
     background: #1e7d34;
 }
 
-/* --- TABLA --- */
+/* --- TABLA (Mantenida) --- */
 .table-container {
     overflow-x: auto; /* ← permite desplazamiento en móvil */
 }
@@ -78,7 +189,7 @@
     background: #f9f9f9;
 }
 
-/* --- IMAGENES DE PRODUCTO --- */
+/* --- IMAGENES DE PRODUCTO (Mantenida) --- */
 .productos-table img {
     width: 55px;
     height: 55px;
@@ -87,7 +198,7 @@
     border: 1px solid #ddd;
 }
 
-/* --- BOTONES ACCIONES --- */
+/* --- BOTONES ACCIONES (Mantenidos) --- */
 .acciones {
     display: flex;
     gap: 10px;
@@ -124,11 +235,28 @@
 }
 
 /* ----------------------------- */
-/*    📱 RESPONSIVE DESIGN       */
+/* 📱 RESPONSIVE DESIGN      */
 /* ----------------------------- */
 
 /* Tablets medianas y móviles horizontales */
 @media (max-width: 1024px) {
+    /* ============== ESTILO CLAVE PARA RESPONSIVE ============== */
+    /* En pantallas medianas, apilamos el formulario y la tabla */
+    .productos-layout {
+        flex-direction: column;
+    }
+    
+    .form-section,
+    .tabla-section {
+        flex: 1 1 100%; /* Ocupan todo el ancho disponible */
+        max-width: 100%;
+    }
+    
+    .form-section {
+        margin-bottom: 20px; /* Espacio entre el formulario y la tabla al apilar */
+    }
+    /* ========================================================== */
+
     .header h1 {
         font-size: 22px;
     }
@@ -158,6 +286,7 @@
         text-align: center;
     }
 }
+
 
 /* Celulares */
 @media (max-width: 480px) {

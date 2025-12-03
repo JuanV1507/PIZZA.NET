@@ -42,37 +42,44 @@ public class ProductoController {
     }
 
     // GUARDAR PRODUCTO (NUEVO O EDITADO)
-    @PostMapping("/guardar")
-    public String guardarProducto(@ModelAttribute Productos producto,
-                                  @RequestParam("imagenFile") MultipartFile imagenFile) {
+        @PostMapping("/guardar")
+        public String guardarProducto(@ModelAttribute Productos producto,
+                                    @RequestParam("imagenFile") MultipartFile imagenFile) {
 
-        try {
-            // SI SUBE UNA IMAGEN NUEVA
-            if (!imagenFile.isEmpty()) {
+            try {
+                Productos productoExistente = null;
 
-                String nombreArchivo = imagenFile.getOriginalFilename();
+                // Si el producto tiene ID → es edición
+                if (producto.getId_producto() != null) {
+                    productoExistente = productoService.buscarPorId(producto.getId_producto()).orElse(null);
+                }
 
-                // Carpeta donde se guardan las imágenes
-                Path ruta = Paths.get("src/main/resources/static/uploads/" + nombreArchivo);
+                // SI ES EDICIÓN Y no se subió una imagen nueva → conservar la existente
+                if (productoExistente != null && imagenFile.isEmpty()) {
+                    producto.setImagen(productoExistente.getImagen());
+                }
 
-                // Crear carpeta si no existe
-                Files.createDirectories(ruta.getParent());
+                // SI SUBE UNA IMAGEN NUEVA → guardarla
+                if (!imagenFile.isEmpty()) {
+                    String nombreArchivo = imagenFile.getOriginalFilename();
 
-                // Guardar archivo físico
-                Files.write(ruta, imagenFile.getBytes());
+                    Path ruta = Paths.get("src/main/resources/static/uploads/" + nombreArchivo);
+                    Files.createDirectories(ruta.getParent());
+                    Files.write(ruta, imagenFile.getBytes());
 
-                // Solo guardamos el nombre en la BD
-                producto.setImagen(nombreArchivo);
+                    producto.setImagen(nombreArchivo);
+                }
+
+                // Guardar (JPA detecta si es nuevo o update según el ID)
+                productoService.guardar(producto);
+
+            } catch (IOException e) {
+                e.printStackTrace();
             }
 
-            productoService.guardar(producto);
-
-        } catch (IOException e) {
-            e.printStackTrace();
+            return "redirect:/productos";
         }
 
-        return "redirect:/productos";
-    }
 
     // EDITAR PRODUCTO
     @GetMapping("/editar/{id}")
