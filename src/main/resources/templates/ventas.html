@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Ventas</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: #f4f6f8;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            display: flex;
+            gap: 2rem;
+            padding: 2rem;
+            max-width: 1400px;
+            margin: auto;
+        }
+        .productos {
+            flex: 2;
+        }
+        .productos h2 {
+            margin-bottom: 1rem;
+        }
+        .vcard-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        .vcard {
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+            width: 200px;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: box-shadow 0.2s;
+        }
+        .vcard:hover {
+            box-shadow: 0 4px 16px rgba(0,0,0,0.13);
+        }
+        .vcard img {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 6px;
+            margin-bottom: 0.5rem;
+        }
+        .vcard .nombre {
+            font-weight: bold;
+            margin-bottom: 0.3rem;
+        }
+        .vcard .precio {
+            color: #388e3c;
+            margin-bottom: 0.5rem;
+        }
+        .vcard button {
+            background: #1976d2;
+            color: #fff;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .carrito-y-cliente {
+            flex: 1.2;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+        .carrito, .cliente-info {
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+            padding: 1.5rem;
+        }
+        .carrito h2, .cliente-info h2 {
+            margin-top: 0;
+        }
+        .carrito-lista {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 1rem 0;
+        }
+        .carrito-lista li {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+        .carrito-lista .nombre {
+            flex: 1;
+        }
+        .carrito-lista .cantidad {
+            margin: 0 0.5rem;
+        }
+        .carrito-lista button {
+            background: #e53935;
+            color: #fff;
+            border: none;
+            border-radius: 3px;
+            padding: 0.2rem 0.6rem;
+            cursor: pointer;
+        }
+        .carrito-total {
+            font-weight: bold;
+            text-align: right;
+            margin-bottom: 1rem;
+        }
+        .folio {
+            font-size: 0.95rem;
+            color: #888;
+            margin-bottom: 1rem;
+        }
+        .cliente-info label {
+            display: block;
+            margin-bottom: 0.3rem;
+            font-weight: 500;
+        }
+        .cliente-info input, .cliente-info select {
+            width: 100%;
+            padding: 0.5rem;
+            margin-bottom: 1rem;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+        }
+        .cliente-info .opciones {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        .cliente-info .opciones label {
+            font-weight: normal;
+        }
+        .btn-confirmar {
+            background: #388e3c;
+            color: #fff;
+            border: none;
+            padding: 0.7rem 1.5rem;
+            border-radius: 4px;
+            font-size: 1rem;
+            cursor: pointer;
+            width: 100%;
+        }
+        @media (max-width: 900px) {
+            .container {
+                flex-direction: column;
+                padding: 1rem;
+            }
+            .productos, .carrito-y-cliente {
+                width: 100%;
+            }
+            .vcard-list {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Productos -->
+        <section class="productos">
+            <h2>Productos</h2>
+            <div class="vcard-list">
+                <!-- Ejemplo de producto -->
+                <div class="vcard">
+                    <img src="https://via.placeholder.com/100" alt="Producto">
+                    <div class="nombre">Hamburguesa</div>
+                    <div class="precio">$80.00</div>
+                    <button>Agregar</button>
+                </div>
+                <div class="vcard">
+                    <img src="https://via.placeholder.com/100" alt="Producto">
+                    <div class="nombre">Pizza</div>
+                    <div class="precio">$120.00</div>
+                    <button>Agregar</button>
+                </div>
+                <div class="vcard">
+                    <img src="https://via.placeholder.com/100" alt="Producto">
+                    <div class="nombre">Refresco</div>
+                    <div class="precio">$25.00</div>
+                    <button>Agregar</button>
+                </div>
+                <!-- Agrega más productos aquí -->
+            </div>
+        </section>
+
+        <!-- Carrito y Cliente -->
+        <section class="carrito-y-cliente">
+            <!-- Carrito -->
+            <div class="carrito">
+                <h2>Carrito</h2>
+                <div class="folio">Folio: <span id="folio-numero">000123</span></div>
+                <ul class="carrito-lista">
+                    <!-- Ejemplo de item en carrito -->
+                    <li>
+                        <span class="nombre">Hamburguesa</span>
+                        <span class="cantidad">x2</span>
+                        <span class="precio">$160.00</span>
+                        <button title="Eliminar">&#10005;</button>
+                    </li>
+                    <li>
+                        <span class="nombre">Refresco</span>
+                        <span class="cantidad">x1</span>
+                        <span class="precio">$25.00</span>
+                        <button title="Eliminar">&#10005;</button>
+                    </li>
+                </ul>
+                <div class="carrito-total">Total: $185.00</div>
+            </div>
+
+            <!-- Información del Cliente -->
+            <div class="cliente-info">
+                <h2>Información del Cliente</h2>
+                <label for="nombre">Nombre</label>
+                <input type="text" id="nombre" placeholder="Nombre del cliente">
+
+                <label for="telefono">Teléfono</label>
+                <input type="tel" id="telefono" placeholder="Ej. 5551234567">
+
+                <label>Tipo de orden</label>
+                <div class="opciones">
+                    <label><input type="radio" name="tipo-orden" value="comedor" checked> Comedor</label>
+                    <label><input type="radio" name="tipo-orden" value="esperando"> Esperando</label>
+                    <label><input type="radio" name="tipo-orden" value="domicilio"> Domicilio</label>
+                </div>
+
+                <button class="btn-confirmar">Confirmar Orden</button>
+            </div>
+        </section>
+    </div>
+</body>
+</html>

@@ -29,17 +29,27 @@ public class ProductoController {
     }
 
     // LISTAR Y FORMULARIO EN LA MISMA VISTA
-    @GetMapping
-    public String listar(Model model) {
+   @GetMapping
+public String listar(@RequestParam(required = false) String categoria,
+                     @RequestParam(required = false) Boolean activo,
+                     Model model) {
 
-        var productos = productoService.listarTodos();
+    // Lista filtrada
+    var productos = productoService.filtrar(categoria, activo);
 
-        model.addAttribute("productos", productos);
-        model.addAttribute("producto", new Productos());
-        model.addAttribute("categorias", Productos.Categoria.values());
+    model.addAttribute("productos", productos);
 
-        return "productos"; // <-- tu vista original
-    }
+    // Para el formulario
+    model.addAttribute("producto", new Productos());
+    model.addAttribute("categorias", Productos.Categoria.values());
+
+    // Mantener valores seleccionados
+    model.addAttribute("categoriaSeleccionada", categoria);
+    model.addAttribute("activoSeleccionado", activo);
+
+    return "productos";
+}
+
 
     // GUARDAR PRODUCTO (NUEVO O EDITADO)
         @PostMapping("/guardar")

@@ -22,7 +22,7 @@
 
 .form-section {
     /* AJUSTADO: Se aumenta el ancho del formulario del 35% al 30% para dejar más espacio a la tabla, 
-       o se puede aumentar a 40% si se desea que ocupe más. Usaremos 30% como un buen balance. */
+       o se puede aumentar a 40% si se desea que ocupe más. Usaremos 30% como un buen balance. */
     flex: 0 0 30%; 
     max-width: 30%;
     /* Si quieres que el formulario sea un poco más ancho:
@@ -177,6 +177,9 @@
     padding: 12px 10px;
     border-bottom: 1px solid #ddd;
     text-align: left;
+    /* Centrado vertical estándar para todas las celdas de texto e imagen.
+       Esto es lo que debe funcionar si la celda de acciones no tiene display: flex */
+    vertical-align: middle; 
 }
 
 .productos-table th {
@@ -198,14 +201,18 @@
     border: 1px solid #ddd;
 }
 
-/* --- BOTONES ACCIONES (Mantenidos) --- */
+/* --- BOTONES ACCIONES (AJUSTE FINAL: Se elimina Flexbox para asegurar vertical-align) --- */
 .acciones {
-    display: flex;
-    gap: 10px;
+    /* Mantenemos el centrado horizontal para el grupo de botones,
+       y permitimos que el centrado vertical global de la tabla funcione. */
+    text-align: center;
+    /* Eliminamos: display: flex; align-items: center; justify-content: center; height: 100%; */
 }
 
 /* BOTÓN EDITAR */
 .btn-editar {
+    /* Hacemos que los botones sean en línea para que el text-align: center de la TD los centre */
+    display: inline-block;
     padding: 6px 12px;
     background: #0d6efd;
     color: white;
@@ -213,6 +220,7 @@
     text-decoration: none;
     font-size: 14px;
     transition: 0.3s ease;
+    margin-right: 10px; /* Añadimos el espacio que antes daba el gap */
 }
 
 .btn-editar:hover {
@@ -221,6 +229,8 @@
 
 /* BOTÓN ELIMINAR */
 .btn-eliminar {
+    /* Hacemos que los botones sean en línea para que el text-align: center de la TD los centre */
+    display: inline-block;
     padding: 6px 12px;
     background: #dc3545;
     color: white;
@@ -235,7 +245,7 @@
 }
 
 /* ----------------------------- */
-/* 📱 RESPONSIVE DESIGN      */
+/* 📱 RESPONSIVE DESIGN      */
 /* ----------------------------- */
 
 /* Tablets medianas y móviles horizontales */
@@ -275,15 +285,17 @@
         align-items: flex-start;
     }
 
+    /* Forzamos a los botones a apilarse verticalmente */
     .acciones {
-        flex-direction: column;  /* botones uno debajo del otro */
-        gap: 6px;
+        text-align: center;
     }
 
     .btn-editar,
     .btn-eliminar {
+        display: block;  /* Fuerza el apilamiento vertical */
         width: 100%;
         text-align: center;
+        margin: 6px auto; /* Espacio y centrado */
     }
 }
 
@@ -313,16 +325,33 @@
         height: 40px;
     }
 
+    /* En móvil, volvemos a poner los botones lado a lado, si caben */
     .acciones {
-        flex-direction: row; /* botones lado a lado */
-        justify-content: center;
-        gap: 6px;
+        text-align: center;
     }
 
     .btn-editar,
     .btn-eliminar {
+        display: inline-block; /* Lado a lado */
         flex: 1;
         padding: 6px 8px;
         font-size: 12px;
+        margin: 0 3px; /* Espacio pequeño horizontal */
     }
+    
+    .btn-editar {
+        margin-right: 6px;
+    }
+}
+.filtros {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.filtros select,
+.filtros button {
+    padding: 8px 12px;
+    border-radius: 5px;
 }

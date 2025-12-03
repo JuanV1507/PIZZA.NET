@@ -38,5 +38,24 @@ public class ProductoService {
     public java.util.Optional<Productos> buscarPorId(Long id) {
         return productoRepository.findById(id);
     }
+
+    public List<Productos> filtrar(String categoria, Boolean activo) {
+    List<Productos> productos = listarTodos();
+
+    if (categoria != null && !categoria.isEmpty()) {
+        productos = productos.stream()
+                .filter(p -> p.getCategoria() != null && p.getCategoria().name().equalsIgnoreCase(categoria))
+                .toList();
+    }
+
+    if (activo != null) {
+        productos = productos.stream()
+                .filter(p -> p.isActivo() == activo)
+                .toList();
+    }
+
+    return productos;
+}
+
     
 }

@@ -80,61 +80,85 @@
 
 
         <!-- ================= TABLA A LA DERECHA ================= -->
-        <div class="tabla-section">
+<div class="tabla-section">
 
-            <div class="header">
-                <h1>Lista de Productos</h1>
+    <form method="get" action="/productos" class="filtros">
 
-            </div>
+        <label>Categoría:</label>
+        <select name="categoria">
+            <option value="">-- Todas --</option>
+            <option th:each="cat : ${categorias}" th:value="${cat}" th:text="${cat}"
+                th:selected="${cat == categoriaSeleccionada}">
+            </option>
+        </select>
 
-            <div class="table-container">
-                <table class="productos-table">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Nombre</th>
-                            <th>Descripción</th>
-                            <th>Categoría</th>
-                            <th>Precio</th>
-                            <th>Stock</th>
-                            <th>Imagen</th>
-                            <th>Disponible</th>
-                            <th>Acciones</th>
-                        </tr>
-                    </thead>
+        <label>Disponible:</label>
+        <select name="activo">
+            <option value="">-- Todos --</option>
+            <option value="true" th:selected="${activoSeleccionado == true}">Disponible</option>
+            <option value="false" th:selected="${activoSeleccionado == false}">No disponible</option>
+        </select>
 
-                    <tbody>
-                        <tr th:each="producto : ${productos}">
-                            <td th:text="${producto.id_producto}"></td>
-                            <td th:text="${producto.nombre}"></td>
-                            <td th:text="${producto.Descripcion}"></td>
-                            <td th:text="${producto.Categoria}"></td>
-                            <td th:text="${producto.Precio}"></td>
-                            <td th:text="${producto.Stock}"></td>
+        <button type="submit" class="btn-filtrar">
+            <i class="fa-solid fa-filter"></i> Filtrar
+        </button>
 
-                            <td>
-                                <img th:src="@{'/uploads/' + ${producto.imagen}}" 
-                                     width="60" height="60" 
-                                     style="object-fit: cover; border-radius: 8px;">
-                            </td>
+    </form>
 
-                            <td th:text="${producto.activo}"></td>
+    <div class="header">
+        <h1>Lista de Productos</h1>
 
-                            <td class="acciones">
-                                <a th:href="@{'/productos/editar/' + ${producto.id_producto}}" class="btn-editar">Editar</a>
-                                <a th:href="@{'/productos/eliminar/' + ${producto.id_producto}}" class="btn-eliminar">Eliminar</a>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+    </div>
 
-        </div>
-        <!-- ================= FIN TABLA ================= -->
+    <div class="table-container">
+        <table class="productos-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Descripción</th>
+                    <th>Categoría</th>
+                    <th>Precio</th>
+                    <th>Stock</th>
+                    <th>Imagen</th>
+                    <th>Disponible</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
 
-    </div> <!-- FIN productos-layout -->
+            <tbody>
+                <tr th:each="producto : ${productos}">
+                    <td th:text="${producto.id_producto}"></td>
+                    <td th:text="${producto.nombre}"></td>
+                    <td th:text="${producto.Descripcion}"></td>
+                    <td th:text="${producto.Categoria}"></td>
+                    <td th:text="${producto.Precio}"></td>
+                    <td th:text="${producto.Stock}"></td>
+
+                    <td>
+                        <img th:src="@{'/uploads/' + ${producto.imagen}}" width="60" height="60"
+                            style="object-fit: cover; border-radius: 8px;">
+                    </td>
+
+                    <td th:text="${producto.activo}"></td>
+
+                    <td class="acciones">
+                        <a th:href="@{'/productos/editar/' + ${producto.id_producto}}" class="btn-editar">Editar</a>
+                        <a th:href="@{'/productos/eliminar/' + ${producto.id_producto}}"
+                            class="btn-eliminar">Eliminar</a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+</div>
+<!-- ================= FIN TABLA ================= -->
+
+</div> <!-- FIN productos-layout -->
 
 </div>
 
 </body>
+
 </html>
