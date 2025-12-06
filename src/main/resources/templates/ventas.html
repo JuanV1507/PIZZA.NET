@@ -4,190 +4,80 @@
     <meta charset="UTF-8">
     <title>Ventas</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <style>
-        body {
-            font-family: 'Segoe UI', Arial, sans-serif;
-            background: #f4f6f8;
-            margin: 0;
-            padding: 0;
-        }
-        .container {
-            display: flex;
-            gap: 2rem;
-            padding: 2rem;
-            max-width: 1400px;
-            margin: auto;
-        }
-        .productos {
-            flex: 2;
-        }
-        .productos h2 {
-            margin-bottom: 1rem;
-        }
-        .vcard-list {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 1rem;
-        }
-        .vcard {
-            background: #fff;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.07);
-            width: 200px;
-            padding: 1rem;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            transition: box-shadow 0.2s;
-        }
-        .vcard:hover {
-            box-shadow: 0 4px 16px rgba(0,0,0,0.13);
-        }
-        .vcard img {
-            width: 100px;
-            height: 100px;
-            object-fit: cover;
-            border-radius: 6px;
-            margin-bottom: 0.5rem;
-        }
-        .vcard .nombre {
-            font-weight: bold;
-            margin-bottom: 0.3rem;
-        }
-        .vcard .precio {
-            color: #388e3c;
-            margin-bottom: 0.5rem;
-        }
-        .vcard button {
-            background: #1976d2;
-            color: #fff;
-            border: none;
-            padding: 0.5rem 1rem;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-        .carrito-y-cliente {
-            flex: 1.2;
-            display: flex;
-            flex-direction: column;
-            gap: 2rem;
-        }
-        .carrito, .cliente-info {
-            background: #fff;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.07);
-            padding: 1.5rem;
-        }
-        .carrito h2, .cliente-info h2 {
-            margin-top: 0;
-        }
-        .carrito-lista {
-            list-style: none;
-            padding: 0;
-            margin: 0 0 1rem 0;
-        }
-        .carrito-lista li {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 0.5rem;
-        }
-        .carrito-lista .nombre {
-            flex: 1;
-        }
-        .carrito-lista .cantidad {
-            margin: 0 0.5rem;
-        }
-        .carrito-lista button {
-            background: #e53935;
-            color: #fff;
-            border: none;
-            border-radius: 3px;
-            padding: 0.2rem 0.6rem;
-            cursor: pointer;
-        }
-        .carrito-total {
-            font-weight: bold;
-            text-align: right;
-            margin-bottom: 1rem;
-        }
-        .folio {
-            font-size: 0.95rem;
-            color: #888;
-            margin-bottom: 1rem;
-        }
-        .cliente-info label {
-            display: block;
-            margin-bottom: 0.3rem;
-            font-weight: 500;
-        }
-        .cliente-info input, .cliente-info select {
-            width: 100%;
-            padding: 0.5rem;
-            margin-bottom: 1rem;
-            border-radius: 4px;
-            border: 1px solid #ccc;
-        }
-        .cliente-info .opciones {
-            display: flex;
-            gap: 1rem;
-            margin-bottom: 1rem;
-        }
-        .cliente-info .opciones label {
-            font-weight: normal;
-        }
-        .btn-confirmar {
-            background: #388e3c;
-            color: #fff;
-            border: none;
-            padding: 0.7rem 1.5rem;
-            border-radius: 4px;
-            font-size: 1rem;
-            cursor: pointer;
-            width: 100%;
-        }
-        @media (max-width: 900px) {
-            .container {
-                flex-direction: column;
-                padding: 1rem;
-            }
-            .productos, .carrito-y-cliente {
-                width: 100%;
-            }
-            .vcard-list {
-                justify-content: center;
-            }
-        }
-    </style>
+    <link rel="stylesheet" th:href="@{/css/styleVenta.css}">
+    <link rel="stylesheet" th:href="@{/css/layout-global.css}">
+    <link rel="stylesheet" th:href="@{/css/styleHome.css}">
+
+    <script th:src="@{/Js/JSVentas.js}"></script>
+    <!-- Iconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
 </head>
 <body>
+    <!-- BOTÓN HAMBURGUESA SIEMPRE PRESENTE -->
+<button class="hamburger" aria-label="Abrir Menú">
+    <i class="fas fa-bars"></i>
+</button>
+
+<!-- SIDEBAR GLOBAL FIJO -->
+<aside class="sidebar">
+    <div class="header-sidebar">
+        <div class="logo">PIZZA.NET</div>
+    </div>
+
+    <nav class="nav-menu">
+        <ul>
+            <li><a th:href="@{/home}"><i class="fas fa-home"></i> Inicio</a></li>
+            <li><a th:href="@{/empleados}"><i class="fas fa-users"></i> Empleados</a></li>
+            <li><a th:href="@{/ventas}"><i class="fas fa-shopping-cart"></i> Ventas</a></li>
+            <li><a th:href="@{/reportes}"><i class="fas fa-chart-line"></i> Reportes</a></li>
+            <li><a th:href="@{/productos}"><i class="fas fa-pizza-slice"></i> Productos</a></li>
+        </ul>
+    </nav>
+
+    <div class="extra-links">
+        <a href="#">Cerrar Ventas</a>
+        <a href="#">Cerrar Sesión</a>
+    </div>
+</aside>
+
+<!-- Botón REGRESAR (solo móvil) -->
+<button class="btn-volver" onclick="history.back()">
+    <i class="fas fa-arrow-left"></i>
+</button>
+
     <div class="container">
         <!-- Productos -->
         <section class="productos">
             <h2>Productos</h2>
-            <div class="vcard-list">
-                <!-- Ejemplo de producto -->
-                <div class="vcard">
-                    <img src="https://via.placeholder.com/100" alt="Producto">
-                    <div class="nombre">Hamburguesa</div>
-                    <div class="precio">$80.00</div>
-                    <button>Agregar</button>
+
+                <div class="vcard-list">
+                <div class="vcard" th:each="producto : ${productos}">
+                    
+                    <!-- CORRECTO PARA TU PROYECTO -->
+                    <img th:src="@{'/uploads/' + ${producto.imagen}}" alt="Producto">
+
+                    <div class="nombre" th:text="${producto.nombre}"></div>
+
+                    <div class="precio" th:text="'$' + ${producto.precio}"></div>
+
+                <button type="button"
+                    class="btn-agregar"
+                    th:attr="data-id=${producto.id_producto},
+                    data-nombre=${producto.nombre},
+                    data-precio=${producto.precio}"
+                    onclick="activarControles(this)">
+                    Agregar
+                    </button>
+
+
                 </div>
-                <div class="vcard">
-                    <img src="https://via.placeholder.com/100" alt="Producto">
-                    <div class="nombre">Pizza</div>
-                    <div class="precio">$120.00</div>
-                    <button>Agregar</button>
-                </div>
-                <div class="vcard">
-                    <img src="https://via.placeholder.com/100" alt="Producto">
-                    <div class="nombre">Refresco</div>
-                    <div class="precio">$25.00</div>
-                    <button>Agregar</button>
-                </div>
-                <!-- Agrega más productos aquí -->
-            </div>
+             </div>
+
         </section>
+
+
+
 
         <!-- Carrito y Cliente -->
         <section class="carrito-y-cliente">
@@ -233,5 +123,18 @@
             </div>
         </section>
     </div>
+    
 </body>
+
+
+  <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const hamburger = document.querySelector('.hamburger');
+            const sidebar = document.querySelector('.sidebar');
+
+            hamburger.addEventListener('click', () => {
+                sidebar.classList.toggle('menu-open');
+            });
+        });
+    </script>
 </html>

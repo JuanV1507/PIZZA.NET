@@ -1,164 +1,223 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
     <title>Lista de Productos</title>
-
+    <!-- ASEGURA EL RESPONSIVE EN PANTALLAS MENEROS A 480 PX-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- Font Awesome (para iconos) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
     <!-- Estilos CSS personalizados -->
     <link rel="stylesheet" th:href="@{/css/styleProductos.css}">
+    <link rel="stylesheet" th:href="@{/css/layout-global.css}">
+    <link rel="stylesheet" th:href="@{/css/styleHome.css}">
 </head>
 
 <body>
+    <!-- BOTÓN HAMBURGUESA SIEMPRE PRESENTE -->
+    <button class="hamburger" aria-label="Abrir Menú">
+        <i class="fas fa-bars"></i>
+    </button>
 
-<div class="productos-page">
-
-    <!-- CONTENEDOR GENERAL PARA FORM + TABLA -->
-    <div class="productos-layout">
-       
-        <!-- ================= FORMULARIO A LA IZQUIERDA ================= -->
-        <div class="form-section">
-            <div class="card form-card">
-                <h2>Nuevo producto</h2>
-
-                <form th:action="@{/productos/guardar}" th:object="${producto}" method="post" enctype="multipart/form-data">
-                     <input type="hidden" th:field="*{id_producto}"/>
-
-                    <div class="form-group">
-                        <label>Nombre:</label>
-                        <input type="text" th:field="*{nombre}" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Descripcion:</label>
-                        <input type="text" th:field="*{descripcion}" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Categoría:</label>
-                        <select th:field="*{categoria}" class="form-control">
-                            <option value="">-- Seleccionar --</option>
-                            <option th:each="cat : ${categorias}" th:value="${cat}" th:text="${cat}"></option>
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Precio:</label>
-                        <input type="number" step="0.01" th:field="*{precio}" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Stock:</label>
-                        <input type="number" th:field="*{stock}" min="0" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Imagen del producto:</label>
-                         <div th:if="${producto.imagen}">
-                         <img th:src="@{'/uploads/' + ${producto.imagen}}" alt="imagen" width="80" style="display:block;margin-bottom:8px;">
-                    </div>
-
-                        <!-- quitar required para que no obligue a subir nueva imagen en editar -->
-                        <input type="file" name="imagenFile" accept="image/*">
-                    </div>
-
-                    <div class="form-group">
-                        <label>Disponible:</label>
-                        <input type="checkbox" th:field="*{activo}">
-                    </div>
-
-                    <button type="submit" class="btn-guardar">
-                        <i class="fa-solid fa-floppy-disk"></i> Guardar
-                    </button>
-
-                </form>
-            </div>
+    <!-- SIDEBAR GLOBAL FIJO -->
+    <aside class="sidebar">
+        <div class="header-sidebar">
+            <div class="logo">PIZZA.NET</div>
         </div>
-        <!-- ================= FIN FORMULARIO ================= -->
+
+        <nav class="nav-menu">
+            <ul>
+                <li><a th:href="@{/home}"><i class="fas fa-home"></i> Inicio</a></li>
+                <li><a th:href="@{/empleados}"><i class="fas fa-users"></i> Empleados</a></li>
+                <li><a th:href="@{/ventas}"><i class="fas fa-shopping-cart"></i> Ventas</a></li>
+                <li><a th:href="@{/reportes}"><i class="fas fa-chart-line"></i> Reportes</a></li>
+                <li><a th:href="@{/productos}"><i class="fas fa-pizza-slice"></i> Productos</a></li>
+            </ul>
+        </nav>
+
+        <div class="extra-links">
+            <a href="#">Cerrar Ventas</a>
+            <a href="#">Cerrar Sesión</a>
+        </div>
+    </aside>
+
+    <!-- Botón REGRESAR (solo móvil) -->
+    <button class="btn-volver" onclick="history.back()">
+        <i class="fas fa-arrow-left"></i>
+    </button>
+    <main class="main-content-wrapper">
+        <div class="productos-page">
+
+            <!-- CONTENEDOR GENERAL PARA FORM + TABLA -->
+            <div class="productos-layout">
+
+                <!-- ================= FORMULARIO A LA IZQUIERDA ================= -->
+                <div class="form-section">
+                    <div class="card form-card">
+                        <h2>Nuevo producto</h2>
+
+                        <form th:action="@{/productos/guardar}" th:object="${producto}" method="post"
+                            enctype="multipart/form-data">
+                            <input type="hidden" th:field="*{id_producto}" />
+
+                            <div class="form-group">
+                                <label>Nombre:</label>
+                                <input type="text" th:field="*{nombre}" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Descripcion:</label>
+                                <input type="text" th:field="*{descripcion}" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Categoría:</label>
+                                <select th:field="*{categoria}" class="form-control">
+                                    <option value="">-- Seleccionar --</option>
+                                    <option th:each="cat : ${categorias}" th:value="${cat}" th:text="${cat}"></option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Precio:</label>
+                                <input type="number" step="0.01" th:field="*{precio}" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Stock:</label>
+                                <input type="number" th:field="*{stock}" min="0" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Imagen del producto:</label>
+                                <div th:if="${producto.imagen}">
+                                    <img th:src="@{'/uploads/' + ${producto.imagen}}" alt="imagen" width="80"
+                                        style="display:block;margin-bottom:8px;">
+                                </div>
+
+                                <!-- quitar required para que no obligue a subir nueva imagen en editar -->
+                                <input type="file" name="imagenFile" accept="image/*">
+                            </div>
+
+                            <div class="form-group">
+                                <label>Disponible:</label>
+                                <input type="checkbox" th:field="*{activo}">
+                            </div>
+
+                            <button type="submit" class="btn-guardar">
+                                <i class="fa-solid fa-floppy-disk"></i> Guardar
+                            </button>
+
+                        </form>
+                    </div>
+                </div>
+                <!-- ================= FIN FORMULARIO ================= -->
 
 
-        <!-- ================= TABLA A LA DERECHA ================= -->
-<div class="tabla-section">
+                <!-- ================= TABLA A LA DERECHA ================= -->
+                <div class="tabla-section">
 
-    <form method="get" action="/productos" class="filtros">
+                    <form method="get" action="/productos" class="filtros">
 
-        <label>Categoría:</label>
-        <select name="categoria">
-            <option value="">-- Todas --</option>
-            <option th:each="cat : ${categorias}" th:value="${cat}" th:text="${cat}"
-                th:selected="${cat == categoriaSeleccionada}">
-            </option>
-        </select>
+                        <label>Categoría:</label>
+                        <select name="categoria">
+                            <option value="">-- Todas --</option>
+                            <option th:each="cat : ${categorias}" th:value="${cat}" th:text="${cat}"
+                                th:selected="${cat == categoriaSeleccionada}">
+                            </option>
+                        </select>
 
-        <label>Disponible:</label>
-        <select name="activo">
-            <option value="">-- Todos --</option>
-            <option value="true" th:selected="${activoSeleccionado == true}">Disponible</option>
-            <option value="false" th:selected="${activoSeleccionado == false}">No disponible</option>
-        </select>
+                        <label>Disponible:</label>
+                        <select name="activo">
+                            <option value="">-- Todos --</option>
+                            <option value="true" th:selected="${activoSeleccionado == true}">Disponible</option>
+                            <option value="false" th:selected="${activoSeleccionado == false}">No disponible</option>
+                        </select>
 
-        <button type="submit" class="btn-filtrar">
-            <i class="fa-solid fa-filter"></i> Filtrar
-        </button>
+                        <button type="submit" class="btn-filtrar">
+                            <i class="fa-solid fa-filter"></i> Filtrar
+                        </button>
 
-    </form>
+                    </form>
 
-    <div class="header">
-        <h1>Lista de Productos</h1>
+                    <div class="header">
+                        <h1>Lista de Productos</h1>
 
-    </div>
+                    </div>
 
-    <div class="table-container">
-        <table class="productos-table">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Nombre</th>
-                    <th>Descripción</th>
-                    <th>Categoría</th>
-                    <th>Precio</th>
-                    <th>Stock</th>
-                    <th>Imagen</th>
-                    <th>Disponible</th>
-                    <th>Acciones</th>
-                </tr>
-            </thead>
+                    <div class="table-container">
+                        <table class="productos-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Nombre</th>
+                                    <th>Descripción</th>
+                                    <th>Categoría</th>
+                                    <th>Precio</th>
+                                    <th>Stock</th>
+                                    <th>Imagen</th>
+                                    <th>Disponible</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
 
-            <tbody>
-                <tr th:each="producto : ${productos}">
-                    <td th:text="${producto.id_producto}"></td>
-                    <td th:text="${producto.nombre}"></td>
-                    <td th:text="${producto.Descripcion}"></td>
-                    <td th:text="${producto.Categoria}"></td>
-                    <td th:text="${producto.Precio}"></td>
-                    <td th:text="${producto.Stock}"></td>
+                            <tbody>
+                                <tr th:each="producto : ${productos}">
+                                    <td th:text="${producto.id_producto}"></td>
+                                    <td th:text="${producto.nombre}"></td>
+                                    <td th:text="${producto.Descripcion}"></td>
+                                    <td th:text="${producto.Categoria}"></td>
+                                    <td th:text="${producto.Precio}"></td>
+                                    <td th:text="${producto.Stock}"></td>
 
-                    <td>
-                        <img th:src="@{'/uploads/' + ${producto.imagen}}" width="60" height="60"
-                            style="object-fit: cover; border-radius: 8px;">
-                    </td>
+                                    <td>
+                                        <img th:src="@{'/uploads/' + ${producto.imagen}}" width="60" height="60"
+                                            style="object-fit: cover; border-radius: 8px;">
+                                    </td>
 
-                    <td th:text="${producto.activo}"></td>
+                                    <td th:text="${producto.activo}"></td>
 
-                    <td class="acciones">
-                        <a th:href="@{'/productos/editar/' + ${producto.id_producto}}" class="btn-editar">Editar</a>
-                        <a th:href="@{'/productos/eliminar/' + ${producto.id_producto}}"
-                            class="btn-eliminar">Eliminar</a>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
+                                    <td class="acciones">
+                                        <a th:href="@{'/productos/editar/' + ${producto.id_producto}}"
+                                            class="btn-editar">Editar</a>
+                                        <a th:href="@{'/productos/eliminar/' + ${producto.id_producto}}"
+                                            class="btn-eliminar">
+                                            Eliminar
+                                        </a>
 
-</div>
-<!-- ================= FIN TABLA ================= -->
 
-</div> <!-- FIN productos-layout -->
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
 
-</div>
+                </div>
+                <!-- ================= FIN TABLA ================= -->
+                <div id="alerta-flotante" th:if="${error}" th:text="${error}" class="alerta-flotante error">
+                </div>
+
+                <div id="alerta-flotante" th:if="${success}" th:text="${success}" class="alerta-flotante success">
+                </div>
+
+
+            </div> <!-- FIN productos-layout -->
+
+        </div>
+    </main>
 
 </body>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const hamburger = document.querySelector('.hamburger');
+        const sidebar = document.querySelector('.sidebar');
+
+        hamburger.addEventListener('click', () => {
+            sidebar.classList.toggle('menu-open');
+        });
+    });
+</script>
 
 </html>

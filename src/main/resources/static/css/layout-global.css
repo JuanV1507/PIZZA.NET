@@ -1,0 +1,106 @@
+:root {
+    --azul:#4A90E2;
+    --gris-claro:#f5f5f5;
+    --blanco:#fff;
+    --negro:#222;
+    --gris-texto:#555;
+    --sombra:rgba(0,0,0,0.1);
+    --transicion:.3s ease;
+}
+
+body {
+    margin:0;
+    background: var(--gris-claro);
+}
+
+/* SIDEBAR FIJO SIEMPRE */
+.sidebar {
+    width:250px;
+    background:var(--blanco);
+    border-right:1px solid #ddd;
+    padding:20px 15px;
+    position:fixed;
+    left:0;
+    top:0;
+    bottom:0;
+    z-index:1000;
+    transition:transform var(--transicion);
+    box-shadow:2px 0 10px var(--sombra);
+}
+
+/* BOTÓN HAMBURGUESA MÓVIL */
+.hamburger {
+    display:none;
+    background:var(--azul);
+    color:#fff;
+    border:none;
+    padding:10px 14px;
+    font-size:1.5rem;
+    border-radius:8px;
+    position:fixed;
+    top:15px;
+    left:15px;
+    z-index:1100;
+}
+
+/* BOTÓN REGRESAR SOLO MÓVIL */
+.btn-volver {
+    display:none;
+    background:var(--azul);
+    color:white;
+    border:none;
+    font-size:1.4rem;
+    width:45px;
+    height:45px;
+    border-radius:50%;
+    position:fixed;
+    bottom:15px;
+    right:15px;
+    z-index:1100;
+}
+
+/* MENU */
+.nav-menu ul {
+    list-style:none;
+    padding:0;
+}
+.nav-menu a {
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:10px;
+    border-radius:8px;
+    color:var(--gris-texto);
+    text-decoration:none;
+    transition:all var(--transicion);
+}
+.nav-menu a:hover {
+    background:var(--azul);
+    color:white;
+}
+
+/* CONTENIDO */
+.main-content {
+    margin-left:250px;
+    padding:25px;
+    min-height:100vh;
+    transition:margin-left var(--transicion);
+}
+
+/* RESPONSIVE ========================================= */
+@media(max-width:992px){
+    .hamburger { display:block; }
+    .btn-volver { display:block; }
+
+    .sidebar {
+        transform:translateX(-100%);
+    }
+    .sidebar.menu-open {
+        transform:translateX(0);
+    }
+
+    .main-content {
+        margin-left:0;
+        padding:20px;
+    }
+}

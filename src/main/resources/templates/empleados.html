@@ -3,226 +3,181 @@
 <head>
     <meta charset="UTF-8">
     <title>Empleados</title>
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- Iconos -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
-    <!-- CSS -->
+    <!-- CSS (reemplaza /css/styleEmpleados.css por el CSS de abajo) -->
     <link rel="stylesheet" th:href="@{/css/styleEmpleados.css}">
+    <link rel="stylesheet" th:href="@{/css/layout-global.css}">
+    <link rel="stylesheet" th:href="@{/css/styleHome.css}">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
 </head>
 
 <body>
-   
+    <!-- BOTÓN HAMBURGUESA SIEMPRE PRESENTE -->
+    <button class="hamburger" aria-label="Abrir Menú">
+        <i class="fas fa-bars"></i>
+    </button>
 
-<div class="empleados-page">
-
-    <!-- FORMULARIO -->
-    <div class="card form-card">
-        <h2>Registrar Empleado</h2>
-
-        <form th:action="@{/empleados}" th:object="${empleado}" method="post">
-
-            <div class="form-group">
-                <label>Nombre Completo:</label>
-                <input type="text" th:field="*{nombres}" required>
-            </div>
-
-            <div class="form-group">
-                <label>Teléfono:</label>
-                <input type="text" th:field="*{telefono}" required>
-            </div>
-
-            <div class="form-group">
-                <label>Puesto:</label>
-                <input type="text" th:field="*{puesto}" required>
-            </div>
-
-            <div class="form-group">
-                <label>Pago Diario:</label>
-                <input type="number" step="0.01" th:field="*{pagoDiario}" required>
-            </div>
-
-            <div class="form-group">
-                <label>Días Trabajados:</label>
-                <input type="number" th:field="*{diasTrabajados}" min="0" required>
-            </div>
-
-            <div class="form-group">
-                <label>Fecha Registro:</label>
-                <input type="datetime-local" th:field="*{fechaRegistro}" required>
-            </div>
-
-            <button type="submit" class="btn-guardar">
-                <i class="fa-solid fa-floppy-disk"></i> Guardar
-            </button>
-        </form>
-    </div>
-
-    <!-- TABLA -->
-    <div class="card table-card">
-
-        <div class="header">
-            <h2>Lista de Empleados</h2>
+    <!-- SIDEBAR GLOBAL FIJO (deja tu sidebar como está) -->
+    <aside class="sidebar">
+        <div class="header-sidebar">
+            <div class="logo">PIZZA.NET</div>
         </div>
 
-        <div class="table-container">
-            <table class="empleados-table">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Registro</th>
-                        <th>Nombres</th>
-                        <th>Teléfono</th>
-                        <th>Pago diario</th>
-                        <th>Días</th>
-                        <th>Total</th>
-                        <th>Puesto</th>
-                        <th>Acciones</th>
-                    </tr>
-                </thead>
+        <nav class="nav-menu">
+            <ul>
+                <li><a th:href="@{/home}"><i class="fas fa-home"></i> Inicio</a></li>
+                <li><a th:href="@{/empleados}"><i class="fas fa-users"></i> Empleados</a></li>
+                <li><a th:href="@{/ventas}"><i class="fas fa-shopping-cart"></i> Ventas</a></li>
+                <li><a th:href="@{/reportes}"><i class="fas fa-chart-line"></i> Reportes</a></li>
+                <li><a th:href="@{/productos}"><i class="fas fa-pizza-slice"></i> Productos</a></li>
+            </ul>
+        </nav>
 
-                <tbody>
-                    <tr th:each="empleado : ${empleados}">
-                        <td th:text="${empleado.id_empleado}"></td>
-                        <td th:text="${empleado.fechaRegistro}"></td>
-                        <td th:text="${empleado.nombres}"></td>
-                        <td th:text="${empleado.telefono}"></td>
-                        <td th:text="${empleado.pagoDiario}"></td>
-                        <td th:text="${empleado.diasTrabajados}"></td>
-                        <td th:text="${empleado.salario_calculado}"></td>
-                        <td th:text="${empleado.puesto}"></td>
-
-                        <td class="acciones">
-                            <a th:href="@{'/empleados/editar/' + ${empleado.id_empleado}}" class="btn-editar">
-                                Editar
-                            </a>
-
-                            <a th:href="@{'/empleados/eliminar/' + ${empleado.id_empleado}}" class="btn-eliminar">
-                                Eliminar
-                            </a>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+        <div class="extra-links">
+            <a href="#">Cerrar Ventas</a>
+            <a href="#">Cerrar Sesión</a>
         </div>
+    </aside>
 
-        <!-- Total sueldos -->
-        <div class="total-sueldo">
-            <h3>Total en sueldos:</h3>
-            <p th:text="|MXN $ ${#numbers.formatDecimal(totalSalarios, 1, 'COMMA', 2, 'POINT')}|"></p>
+    <!-- Botón REGRESAR (solo móvil) -->
+    <button class="btn-volver" onclick="history.back()">
+        <i class="fas fa-arrow-left"></i>
+    </button>
 
-        </div>
+    <main class="main-content-wrapper">
+        <!-- Contenedor principal (igual que productos) -->
+        <div class="empleados-page">
 
-    </div>
+            <!-- Layout (form left, table right) -->
+            <div class="empleados-layout">
 
-</div>
+                <!-- FORM: izquierda -->
+                <div class="form-section">
+                    <div class="card form-card">
+                        <h2>Registrar Empleado</h2>
+
+                        <form th:action="@{/empleados}" th:object="${empleado}" method="post">
+                            <div class="form-group">
+                                <label>Nombre Completo:</label>
+                                <input class="form-control" type="text" th:field="*{nombres}" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Teléfono:</label>
+                                <input class="form-control" type="text" th:field="*{telefono}" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Puesto:</label>
+                                <input class="form-control" type="text" th:field="*{puesto}" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Pago Diario:</label>
+                                <input class="form-control" type="number" step="0.01" th:field="*{pagoDiario}" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Días Trabajados:</label>
+                                <input class="form-control" type="number" min="0" th:field="*{diasTrabajados}" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Fecha Registro:</label>
+                                <input class="form-control" type="datetime-local" th:field="*{fechaRegistro}" required>
+                            </div>
+
+                            <button type="submit" class="btn-guardar">
+                                <i class="fa-solid fa-floppy-disk"></i> Guardar
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- TABLA: derecha -->
+                <div class="tabla-section">
+                    <div class="card table-card">
+                        <div class="header">
+                            <h2>Lista de Empleados</h2>
+                        </div>
+
+                        <div class="table-container empleados-tabla">
+                            <table class="empleados-table">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Registro</th>
+                                        <th>Nombres</th>
+                                        <th>Teléfono</th>
+                                        <th>Pago diario</th>
+                                        <th>Días</th>
+                                        <th>Total</th>
+                                        <th>Puesto</th>
+                                        <th>Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="empleado : ${empleados}">
+                                        <td th:text="${empleado.id_empleado}"></td>
+                                        <td th:text="${empleado.fechaRegistro}"></td>
+                                        <td th:text="${empleado.nombres}"></td>
+                                        <td th:text="${empleado.telefono}"></td>
+                                        <td th:text="${empleado.pagoDiario}"></td>
+                                        <td th:text="${empleado.diasTrabajados}"></td>
+                                        <td th:text="${empleado.salario_calculado}"></td>
+                                        <td th:text="${empleado.puesto}"></td>
+                                        <td class="acciones">
+                                            <a th:href="@{'/empleados/editar/' + ${empleado.id_empleado}}" class="btn-editar">Editar</a>
+                                            <a th:href="@{'/empleados/eliminar/' + ${empleado.id_empleado}}" class="btn-eliminar">Eliminar</a>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Total en sueldos (texto simple, valor en rojo) -->
+                        <p class="total-sueldo-texto">
+                            Total en sueldos:
+                            <span class="total-rojo"
+                                  th:text="|MXN $ ${#numbers.formatDecimal(totalSalarios, 1, 'COMMA', 2, 'POINT')}|">
+                            </span>
+                        </p>
+                    </div>
+                </div>
+
+            </div> <!-- /empleados-layout -->
+
+            <!-- Alertas -->
+            <div id="alerta-flotante" th:if="${error}" th:text="${error}" class="alerta-flotante error"></div>
+            <div id="alerta-flotante" th:if="${success}" th:text="${success}" class="alerta-flotante success"></div>
+        </div> <!-- /empleados-page -->
+    </main>
+
+    <!-- hidden values -->
+    <input type="hidden" id="success" th:value="${success}">
+    <input type="hidden" id="error" th:value="${error}">
+
+    <script th:src="@{/Js/JSEmpleados.js}"></script>
+    <script th:inline="javascript">let rolesDisponibles = /*[[${roles}]]*/[];</script>
 
 
-</body>
-
-<script th:inline="javascript">
-    let rolesDisponibles = /*[[${roles}]]*/ [];
-</script>
-
-<script>
-    // Mostrar mensaje cuando el usuario fue creado correctamente
-    const url2 = new URL(window.location.href);
-    const usuarioCreado = url2.searchParams.get("usuarioCreado");
-
-    if (usuarioCreado === "ok") {
-        Swal.fire({
-            title: "Usuario creado",
-            text: "El usuario se registró correctamente.",
-            icon: "success",
-            confirmButtonText: "Aceptar"
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const hamburger = document.querySelector('.hamburger');
+            const sidebar = document.querySelector('.sidebar');
+            hamburger.addEventListener('click', () => {
+                sidebar.classList.toggle('menu-open');
+            });
         });
-    }
-</script>
-<input type="hidden" id="success" th:value="${success}">
-<input type="hidden" id="error" th:value="${error}">
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-<script>
-document.addEventListener("DOMContentLoaded", () => {
-    const success = document.getElementById("success")?.value;
-    const error = document.getElementById("error")?.value;
-
-    if (success) {
-        Swal.fire({
-            icon: "success",
-            title: "Éxito",
-            text: success
-        });
-    }
-
-    if (error) {
-        Swal.fire({
-            icon: "error",
-            title: "Error",
-            text: error
-        });
-    }
+    </script>
+    <script>
+document.querySelector(".hamburger").addEventListener("click", () => {
+    document.querySelector(".sidebar").classList.toggle("active");
 });
 </script>
 
-
-<script>
-    // Capturar el parámetro crearUsuario
-    const url = new URL(window.location.href);
-    const idEmpleado = url.searchParams.get("crearUsuario");
-
-    if (idEmpleado) {
-
-        Swal.fire({
-            title: "Empleado guardado",
-            text: "¿Deseas crear un usuario para este empleado?",
-            icon: "question",
-            showCancelButton: true,
-            confirmButtonText: "Sí, crear usuario",
-            cancelButtonText: "No"
-        }).then((result) => {
-
-            if (result.isConfirmed) {
-
-                Swal.fire({
-                    title: "Crear Usuario",
-                    html: `
-        <form id="formUsuario" method="POST" action="/usuarios/guardar">
-            <input type="hidden" name="id_empleado" value="${idEmpleado}">
-
-            <label class="swal-label">Usuario:</label>
-            <input type="text" name="username" class="swal2-input swal-input-custom" required>
-
-            <label class="swal-label">Rol:</label>
-            <select id="rol" name="rol" class="swal2-input swal-input-custom" required></select>
-
-            <label class="swal-label">Contraseña:</label>
-            <input type="password" name="contrasena" class="swal2-input swal-input-custom" required>
-        </form>
-    `,
-                    didOpen: () => {
-                        let select = document.getElementById("rol");
-                        rolesDisponibles.forEach(r => {
-                            let option = document.createElement("option");
-                            option.value = r;
-                            option.textContent = r;
-                            select.appendChild(option);
-                        });
-                    },
-                    showCancelButton: true,
-                    confirmButtonText: "Guardar",
-                    cancelButtonText: "Cancelar",
-                    preConfirm: () => {
-                        document.getElementById("formUsuario").submit();
-                    }
-                });
-
-
-            }
-        });
-    }
-</script>
-
+</body>
 </html>

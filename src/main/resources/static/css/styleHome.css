@@ -228,8 +228,4 @@ body {
         font-size: 1.5rem;
     }
 }
-/* FORZAR separación correcta del contenido */
-.main-content {
-    margin-left: 250px !important;
-    padding: 30px !important;
-}
+

@@ -1,6 +1,7 @@
 package com.Proyecto.Web.Service;
 import java.util.List;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import com.Proyecto.Web.Model.Productos;
@@ -22,9 +23,15 @@ public class ProductoService {
     public Productos guardar(Productos producto) {
         return productoRepository.save(producto);
     }   
-
-    public void eliminar(Long id) {
+    //Manejamos el mensaje para borrar un producto que este asociado a una orden
+    public boolean  eliminar(Long id) {
+        try{
         productoRepository.deleteById(id);
+        return true;
+
+        }catch (DataIntegrityViolationException e){
+            return false;
+        }
     }
 
     public Productos buscarPorNombre(String nombre) {

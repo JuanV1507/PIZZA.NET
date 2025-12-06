@@ -1,0 +1,298 @@
+/*
+======================================================
+1. Estilos Generales y Tipografía
+======================================================
+*/
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+
+:root {
+    /* Variables de Color (Verde Azulado) */
+    --color-principal: #f37a18; /* Teal/Verde Azulado */
+    --color-suave: #e98a32; 
+    --color-secundario: #4CAF50; /* Verde de éxito para Confirmar */
+    --color-fondo: #fcfcfc; 
+    --color-texto: #343a40; 
+    --color-borde: #e9ecef; 
+    --color-sombra: rgba(0, 0, 0, 0.05); 
+    --color-card-fondo: #ffffff;
+    --color-fondo-secundario: #f1f7f9; 
+    --color-atencion: #dc3545; /* Nuevo color: Rojo para el Total */
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: var(--color-fondo);
+    color: var(--color-texto);
+    font-weight: 400; 
+}
+
+.container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 25px; 
+    padding: 25px;
+    max-width: 1250px; 
+    margin: 0 auto;
+}
+
+h2 {
+    color: var(--color-principal); 
+    margin-top: 0;
+    font-weight: 600; 
+    border-bottom: 2px solid var(--color-borde);
+    padding-bottom: 10px;
+    letter-spacing: 0.8px;
+}
+
+/*
+
+2. Sección de Productos y V-Cards 
+*/
+.productos {
+    flex: 3;
+    min-width: 350px;
+}
+
+.vcard-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 25px;
+    margin-top: 20px;
+}
+
+.vcard {
+    background-color: var(--color-card-fondo);
+    padding: 0;
+    border-radius: 10px; 
+    box-shadow: 0 4px 10px var(--color-sombra); 
+    text-align: center;
+    transition: transform 0.3s, box-shadow 0.3s;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.vcard:hover {
+    transform: translateY(-5px); 
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.1); 
+}
+
+.vcard img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    margin-bottom: 0;
+}
+
+.vcard .nombre {
+    font-size: 1.15em;
+    font-weight: 600;
+    margin: 12px 10px 5px 10px;
+    color: var(--color-texto);
+}
+
+
+.vcard .precio {
+    font-family: monospace; 
+    font-size: 1.4em;
+    font-weight: 700; /* Ya estaba en negritas, asegurado */
+    color: var(--color-principal); 
+    margin-bottom: 10px;
+}
+
+.vcard button {
+    background-color: var(--color-suave); 
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 0 0 10px 10px; 
+    cursor: pointer;
+    font-size: 0.95em;
+    font-weight: 600;
+    transition: background-color 0.3s, opacity 0.3s;
+    margin-top: auto;
+}
+
+.vcard button:hover {
+    background-color: var(--color-principal); 
+    opacity: 0.95;
+}
+
+/*
+3. Sección Carrito y Cliente 
+*/
+
+.carrito-y-cliente {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+    min-width: 300px;
+}
+
+.carrito, .cliente-info {
+    border: 1px solid var(--color-borde);
+    background-color: var(--color-card-fondo);
+    padding: 25px; 
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08); 
+}
+
+/* * Estilos del Carrito */
+.folio {
+    background-color: var(--color-fondo-secundario); 
+    padding: 6px 12px;
+    border-radius: 6px;
+    margin-bottom: 20px;
+    font-weight: 600;
+    color: var(--color-principal);
+}
+
+.carrito-lista {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 20px 0;
+}
+
+.carrito-lista li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px dashed var(--color-borde); 
+    font-size: 1em;
+}
+
+.carrito-lista .nombre {
+    font-weight: 500;
+}
+
+
+.carrito-lista .precio {
+    color: var(--color-texto); /* Color de texto estándar */
+    font-weight: 600; /* Precio en negritas */
+}
+
+
+.carrito-total {
+    font-size: 1.5em;
+    font-weight: 700;
+    text-align: right;
+    padding: 18px 0 5px 0;
+    border-top: 3px solid var(--color-atencion); /* Línea de total destacada con el nuevo color */
+    color: var(--color-atencion); /* El total va en rojo */
+}
+
+/* * Estilos de Información del Cliente y Formulario */
+.cliente-info label {
+    font-weight: 500;
+    color: var(--color-texto);
+}
+
+.cliente-info input[type="text"],
+.cliente-info input[type="tel"] {
+    width: 100%;
+    padding: 12px;
+    margin-top: 5px;
+    margin-bottom: 18px;
+    border: 1px solid var(--color-borde);
+    border-radius: 6px;
+    box-sizing: border-box;
+    transition: border-color 0.3s;
+}
+
+.cliente-info input:focus {
+    border-color: var(--color-principal);
+    outline: none;
+    box-shadow: 0 0 0 0.2rem rgba(0, 128, 128, 0.2); 
+}
+
+.opciones {
+    padding: 12px;
+    background-color: var(--color-fondo-secundario);
+    border-radius: 6px;
+    margin-bottom: 25px;
+}
+
+.btn-confirmar {
+    width: 100%;
+    background-color: var(--color-secundario); 
+    color: white;
+    border: none;
+    padding: 15px; 
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1.1em;
+    font-weight: 700;
+    letter-spacing: 1px;
+    transition: background-color 0.3s;
+}
+
+.btn-confirmar:hover {
+    background-color: #388e3c;
+}
+/*AGREGAR O QUITAR */
+
+.cantidad-control {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    justify-content: center;
+    margin-top: 10px;
+}
+
+.cantidad-control button {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%; /* 🔥 Esto los hace completamente circulares */
+    border: none;
+    background-color: #e67e22; /* Naranja */
+    color: #fff;
+    font-size: 20px;
+    font-weight: bold;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s ease, transform 0.1s ease;
+}
+
+.cantidad-control button:hover {
+    background-color: #d46f1f;
+}
+
+.cantidad-control button:active {
+    transform: scale(0.9);
+}
+
+.cantidad-control input {
+    width: 45px;
+    height: 38px;
+    text-align: center;
+    border: 2px solid #ddd;
+    border-radius: 10px;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+
+@media (max-width: 768px) {
+    .container {
+        flex-direction: column;
+        padding: 15px;
+    }
+
+    .vcard-list {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
+    }
+    
+    .productos, .carrito-y-cliente {
+        width: 100%;
+        min-width: initial;
+    }
+}

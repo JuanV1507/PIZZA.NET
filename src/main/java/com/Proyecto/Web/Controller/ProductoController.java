@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.Proyecto.Web.Model.Productos;
 import com.Proyecto.Web.Service.ProductoService;
@@ -106,8 +107,15 @@ public String listar(@RequestParam(required = false) String categoria,
 
     // ELIMINAR PRODUCTO
     @GetMapping("/eliminar/{id}")
-    public String eliminar(@PathVariable Long id) {
-        productoService.eliminar(id);
+    public String eliminar(@PathVariable Long id, RedirectAttributes redirect) {
+        boolean eliminado = productoService.eliminar(id);
+
+        if (!eliminado) {
+            // Agrega un mensaje para la vista
+            redirect.addFlashAttribute("error",
+                    "No se puede eliminar este producto porque ya tiene ventas registradas.");
+        }
+
         return "redirect:/productos";
     }
 }

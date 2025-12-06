@@ -1,8 +1,12 @@
 /* --- CONTENEDOR GENERAL --- */
 .productos-page {
-    width: 90%;
-    max-width: 1600px; /* AUMENTADO: Se aprovecha más el espacio horizontal */
-    margin: 30px auto;
+    /* ANTES: width: 90%; margin: 30px auto; */
+    
+    /* AHORA: Usa todo el espacio restante a la derecha del sidebar */
+    width: auto; /* Permite que el margen y el padding definan el espacio */
+    margin: 30px 30px 30px 280px; /* Margen superior/derecho/inferior 30px, IZQUIERDO 280px (250px del sidebar + 30px de espacio) */
+    
+    /* El resto de estilos se mantienen */
     padding: 20px;
     background: #ffffff;
     border-radius: 12px;
@@ -10,9 +14,6 @@
     font-family: "Segoe UI", sans-serif;
 }
 
-/* ================================================= */
-/* --- NUEVOS ESTILOS PARA LAYOUT DE FORM + TABLA --- */
-/* ================================================= */
 
 .productos-layout {
     display: flex; /* Habilita Flexbox */
@@ -247,6 +248,20 @@
 /* ----------------------------- */
 /* 📱 RESPONSIVE DESIGN      */
 /* ----------------------------- */
+/* En pantallas pequeñas, volvemos a centrar y quitamos el margen fijo */
+@media (max-width: 992px) {
+
+    /* ... otras reglas responsive ... */
+    
+    .productos-page {
+        width: 95%; /* Vuelve a usar un ancho porcentual o fijo */
+        margin: 20px auto; /* Vuelve a centrarlo para que no tenga margen izquierdo fijo */
+        padding: 15px;
+    }
+
+    /* ============== ESTILO CLAVE PARA RESPONSIVE ============== */
+    /* ... (resto de tus reglas responsive) ... */
+}
 
 /* Tablets medianas y móviles horizontales */
 @media (max-width: 1024px) {
@@ -278,25 +293,25 @@
 }
 
 /* Tablets verticales y móviles grandes */
+
 @media (max-width: 768px) {
 
-    .header {
-        flex-direction: column;
-        align-items: flex-start;
+    /* ... (Estilos existentes) ... */
+    
+    /* === CORRECCIÓN CLAVE PARA EL FILTRO === */
+    .filtros {
+        flex-direction: column; /* Apila los elementos (selects y botón) */
+        align-items: flex-start; /* Alinea los elementos a la izquierda */
+        width: 100%; /* Asegura que el contenedor de filtros ocupe todo el ancho */
     }
 
-    /* Forzamos a los botones a apilarse verticalmente */
-    .acciones {
-        text-align: center;
+    .filtros select,
+    .filtros button {
+        width: 100%; /* Hace que los selects y el botón ocupen todo el ancho disponible */
+        margin-bottom: 10px; /* Añade un espacio entre los elementos apilados */
     }
-
-    .btn-editar,
-    .btn-eliminar {
-        display: block;  /* Fuerza el apilamiento vertical */
-        width: 100%;
-        text-align: center;
-        margin: 6px auto; /* Espacio y centrado */
-    }
+    
+    /* ... (Resto de estilos) ... */
 }
 
 
@@ -355,3 +370,35 @@
     padding: 8px 12px;
     border-radius: 5px;
 }
+
+/*ALERTA DE ELIMINACION*/
+.alerta-flotante {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 15px 20px;
+    border-radius: 10px;
+    color: white;
+    font-weight: bold;
+    z-index: 9999;
+    animation: aparecer 0.4s ease-out, desaparecer 0.4s ease-in 3s forwards;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+}
+
+.alerta-flotante.error {
+    background-color: #e63946;  /* rojo bonito */
+}
+
+.alerta-flotante.success {
+    background-color: #2a9d8f;  /* verde elegante */
+}
+
+@keyframes aparecer {
+    from { opacity: 0; transform: translateX(30px); }
+    to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes desaparecer {
+    to { opacity: 0; transform: translateX(30px); }
+}
+

@@ -1,260 +1,221 @@
-/* Estilo general */
+/* ================================ */
+/* EMPLEADOS - CSS FINAL UNIFICADO  */
+/* ================================ */
+
+/* Reset caja */
+* { box-sizing: border-box; }
+
+/* ---------- CONTENEDOR PRINCIPAL (igual que productos) ---------- */
 .empleados-page {
+    width: auto;
+    margin: 30px 30px 30px 280px; /* deja espacio para sidebar (250px) + 30px */
+    padding: 20px;
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+    font-family: "Segoe UI", sans-serif;
+}
+
+/* si tu layout-global tiene main-content-wrapper con margin-left, este override mantiene comportamiento */
+@media (max-width: 992px) {
+    .empleados-page { margin: 20px auto; width: 95%; }
+}
+
+/* ---------- LAYOUT: FORM IZQUIERDA + TABLA DERECHA ---------- */
+.empleados-layout {
     display: flex;
     gap: 30px;
-    padding: 20px;
-    justify-content: center;
     align-items: flex-start;
-    font-family: 'Segoe UI', sans-serif;
-    flex-wrap: wrap; /* ← permite que se acomode en móviles */
+    flex-wrap: nowrap;
 }
 
-/* Tarjetas */
+/* reutilizamos las clases que usas en HTML */
+.form-section { flex: 0 0 30%; max-width: 30%; }
+.tabla-section { flex: 1; min-width: 0; }
+
+/* ---------- TARJETAS ---------- */
 .card {
-    background: #fff;
-    padding: 25px;
-    border-radius: 12px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 10px;
+    border: 1px solid #e9ecef;
 }
 
-/* FORMULARIO */
-.form-card {
-    width: 350px;
-    max-width: 100%; /* ← en móviles ocupará todo */
+/* ---------- FORMULARIO ---------- */
+.form-card h2 { font-size: 20px; color: #28a745; margin: 0 0 16px 0; padding-bottom: 8px; border-bottom: 2px solid #121314; }
+
+.form-group { margin-bottom: 12px; }
+.form-group label { display:block; font-weight:600; margin-bottom:6px; color:#444; font-size:14px; }
+.form-control,
+.form-group input,
+.form-group select { width:100%; padding:10px; border:1px solid #ced4da; border-radius:6px; font-size:14px; }
+.form-control:focus, .form-group input:focus, .form-group select:focus {
+    outline:none; border-color:#007bff; box-shadow:0 0 0 0.08rem rgba(0,123,255,0.15);
 }
 
-.form-card h2 {
-    margin-bottom: 15px;
-    font-size: 22px;
-    font-weight: 600;
-}
-
-.form-group {
-    display: flex;
-    flex-direction: column;
-    margin-bottom: 15px;
-}
-
-.form-group label {
-    font-size: 14px;
-    color: #444;
-    margin-bottom: 4px;
-}
-
-.form-group input {
+/* Estilo para datetime-local */
+input[type="datetime-local"] {
     padding: 10px;
     border: 1px solid #dcdcdc;
     border-radius: 6px;
-}
-
-.btn-guardar {
-    background: #0066ff;
-    color: white;
-    border: none;
-    padding: 12px;
+    font-size: 14px;
+    font-family: inherit;
+    background-color: #fff;
+    color: #333;
     width: 100%;
-    border-radius: 8px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: 0.2s;
+    box-sizing: border-box;
+}
+input[type="datetime-local"]::-webkit-datetime-edit,
+input[type="datetime-local"]::-webkit-inner-spin-button,
+input[type="datetime-local"]::-webkit-calendar-picker-indicator {
+    color: #555; opacity: 0.9;
 }
 
-.btn-guardar:hover {
-    background: #0053d6;
+/* Botón guardar */
+.btn-guardar {
+    background: #28a745; color: white; border: none;
+    padding: 10px 16px; border-radius: 6px; font-weight:700;
+    cursor:pointer; width: 100%; margin-top: 10px;
 }
+.btn-guardar:hover { background:#1e7d34; }
 
-/* TABLA */
+/* ---------- TABLA ---------- */
+.table-container { overflow-x: auto; }
+
 .table-card {
-    width: 900px;
-    max-width: 100%; /* ← para adaptarse a móviles */
-}
-
-.header {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 15px;
-    flex-wrap: wrap;
-    gap: 10px;
-}
-
-.header h2 {
-    font-size: 22px;
+    min-width: 100% !important;
 }
 
 .table-container {
-    width: 100%;
-    overflow-x: auto; /* ← permite deslizar tabla en móviles */
+    overflow-x: auto;
 }
 
 .empleados-table {
+    min-width: 750px; /* aumenta el mínimo para que la tabla no se aplaste */
+}
+
+
+/* CLAVE: evita que la tabla empuje el layout */
+.empleados-tabla table,
+.empleados-table {
     width: 100%;
     border-collapse: collapse;
-    min-width: 650px; /* ← evita que la tabla se rompa */
+    table-layout: fixed; /* importante */
 }
 
-.empleados-table th {
-    background: #f5f5f5;
-    padding: 12px;
-    text-align: left;
-    border-bottom: 2px solid #ddd;
-    font-weight: 600;
-}
-
+/* celdas deben permitir quiebre */
+.empleados-table th,
 .empleados-table td {
-    padding: 10px;
-    border-bottom: 1px solid #eee;
-}
-
-/* Botones acción */
-.acciones {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-}
-
-.btn-editar {
-    background-color: #007bff;
-    color: white;
-    padding: 6px 12px;
-    border-radius: 6px;
-    text-decoration: none;
-    font-size: 14px;
-    text-align: center;
-    font-weight: 500;
-}
-
-.btn-eliminar {
-    background-color: #dc3545;
-    color: white;
-    padding: 6px 12px;
-    border-radius: 6px;
-    text-decoration: none;
-    font-size: 14px;
-    text-align: center;
-    font-weight: 500;
-}
-
-/* TOTAL SUELDO */
-.total-sueldo {
-    margin-top: 15px;
-    background: #eaffea;
-    padding: 15px;
-    font-size: 16px;
-    border-radius: 8px;
-    border-left: 5px solid #2ecc71;
-}
-
-/* ============================= */
-/*     RESPONSIVE DESIGN         */
-/* ============================= */
-
-/* Tablet horizontal (≤ 1024px) */
-@media (max-width: 1024px) {
-    .table-card {
-        width: 100%;
-    }
-
-    .empleados-page {
-        gap: 20px;
-    }
-}
-
-/* Tablet vertical y móviles grandes (≤ 768px) */
-@media (max-width: 768px) {
-
-    .empleados-page {
-        flex-direction: column;
-        align-items: center;
-        padding: 10px;
-    }
-
-    .form-card {
-        width: 100%;
-        max-width: 450px;
-    }
-
-    .table-card {
-        width: 100%;
-    }
-
-    .empleados-table {
-        font-size: 14px;
-    }
-
-    .btn-editar,
-    .btn-eliminar {
-        padding: 5px 10px;
-        font-size: 13px;
-    }
-}
-
-/* Celulares (≤ 480px) */
-@media (max-width: 480px) {
-
-    .form-card h2,
-    .header h2 {
-        font-size: 18px;
-        text-align: center;
-    }
-
-    .empleados-table th,
-    .empleados-table td {
-        padding: 8px;
-        font-size: 13px;
-    }
-
-    .acciones {
-        flex-direction: row; /* ← botones lado a lado en móvil */
-        gap: 5px;
-    }
-
-    .btn-editar,
-    .btn-eliminar {
-        flex: 1;
-        padding: 6px;
-    }
-}
-
-/* Estilo general */
-/* ---- SWEETALERT2 FORM ESTILOS ---- */
-
-.swal-label {
-    display: block;
+    padding: 12px 10px;
+    border-bottom: 1px solid #ddd;
     text-align: left;
-    font-size: 14px;
+    vertical-align: middle;
+    word-wrap: break-word;
+    white-space: normal;
+}
+
+/* cabeceras */
+.empleados-table thead { background: #f3f3f3; }
+.empleados-table th { font-weight: 700; color: #444; font-size: 14px; }
+
+/* hover fila */
+.empleados-table tbody tr:hover { background: #f9f9f9; }
+
+/* negritas en columnas: Pago diario (5), Días (6), Total (7) */
+.empleados-table td:nth-child(5),
+.empleados-table td:nth-child(6),
+.empleados-table td:nth-child(7) {
+    font-weight: 700;
+}
+.empleados-table th:nth-child(5),
+.empleados-table th:nth-child(6),
+.empleados-table th:nth-child(7) {
+    font-weight: 800;
+}
+
+/* Acciones (botones inline) */
+.acciones { text-align:center; white-space: nowrap; }
+.btn-editar, .btn-eliminar {
+    display:inline-block; padding:6px 12px; border-radius:6px; color:#fff; text-decoration:none; margin:0 4px;
+}
+.btn-editar { background:#0d6efd; }
+.btn-eliminar { background:#dc3545; }
+.btn-editar:hover { background:#0a58ca; }
+.btn-eliminar:hover { background:#b02a37; }
+
+/* ---------- TOTAL SUELDOS (texto al final) ---------- */
+.total-sueldo-texto {
+    margin-top: 12px;
+    text-align: right;
+    font-size: 18px;
     font-weight: 600;
-    margin: 10px 0 5px;         
-
-
-    
-    color: #333;
+}
+.total-sueldo-texto .total-rojo {
+    color: #e00000;
+    font-weight: 800;
 }
 
-/* Inputs personalizados dentro del Swal */
-.swal-input-custom {
-    width: 100% !important;
-    margin: 0 !important;
-    padding: 10px !important;
-    border-radius: 6px !important;
-    border: 1px solid #dcdcdc !important;
-    font-size: 14px !important;
-    box-sizing: border-box;
+/* ---------- ALERTAS ---------- */
+.alerta-flotante {
+    position: fixed; top: 20px; right: 20px; padding: 12px 18px; border-radius:10px; color:#fff; z-index:9999;
+    box-shadow:0 4px 10px rgba(0,0,0,0.2);
+}
+.alerta-flotante.error { background:#e63946; }
+.alerta-flotante.success { background:#2a9d8f; }
+
+/* ---------- RESPONSIVE ---------- */
+
+/* Tablets / móviles horizontales */
+@media (max-width: 1024px) {
+    .empleados-layout { flex-direction: column; gap:20px; }
+    .form-section, .tabla-section { max-width: 100%; flex: 1 1 100%; }
+    .empleados-page { margin: 20px auto; width: 95%; }
 }
 
-/* Estilo del select del Swal */
-#rol.swal-input-custom {
-    padding: 10px !important;
-    height: auto !important;
+/* móviles */
+@media (max-width: 768px) {
+    /* Quita margen-left del contenedor principal para que no se empuje por el sidebar */
+    .empleados-page { margin-left: 20px; margin-right: 20px; width: auto; flex-direction: column; }
+
+    /* Asegura que main content no tenga margen extra si layout-global lo impone */
+    .main-content-wrapper { margin-left: 0 !important; width: 100% !important; }
+
+    /* Evita scroll horizontal global */
+    body { overflow-x: hidden; }
+
+    /* tabla: permite scroll solo dentro del contenedor */
+    .empleados-tabla { overflow-x: auto; max-width: 100%; }
+    .empleados-tabla table { width: 100%; max-width: 100%; }
+
+    /* reduce padding */
+    .card { padding: 16px; }
+
+    .table-card {
+        width: 100% !important;
+        min-width: 100% !important;
+        flex-grow: 1;
+    }
 }
 
-/* Ajuste general para que todo quede alineado */
-.swal2-popup {
-    width: 450px !important;
-    padding-top: 20px;
+/* teléfonos muy pequeños */
+@media (max-width: 480px) {
+    .empleados-table th, .empleados-table td { padding: 8px; font-size: 12px; }
+    .form-group label { font-size: 13px; }
+    .btn-guardar { padding: 8px 12px; }
 }
+@media (max-width: 768px) {
+    .sidebar {
+        transform: translateX(-100%);
+        transition: 0.3s ease;
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 100vh;
+        width: 260px;
+        z-index: 2000;
+    }
 
-.swal2-html-container {
-    width: 100%;
-    text-align: left !important;
+    .sidebar.active {
+        transform: translateX(0);
+    }
 }
-/* ---- FIN SWEETALERT2 FORM ESTILOS ---- */
