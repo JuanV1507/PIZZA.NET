@@ -119,33 +119,40 @@
                 <!-- ================= TABLA A LA DERECHA ================= -->
                 <div class="tabla-section">
 
-                    <form method="get" action="/productos" class="filtros">
-
-                        <label>Categoría:</label>
-                        <select name="categoria">
-                            <option value="">-- Todas --</option>
-                            <option th:each="cat : ${categorias}" th:value="${cat}" th:text="${cat}"
-                                th:selected="${cat == categoriaSeleccionada}">
-                            </option>
-                        </select>
-
-                        <label>Disponible:</label>
-                        <select name="activo">
-                            <option value="">-- Todos --</option>
-                            <option value="true" th:selected="${activoSeleccionado == true}">Disponible</option>
-                            <option value="false" th:selected="${activoSeleccionado == false}">No disponible</option>
-                        </select>
-
-                        <button type="submit" class="btn-filtrar">
-                            <i class="fa-solid fa-filter"></i> Filtrar
-                        </button>
-
-                    </form>
-
                     <div class="header">
                         <h1>Lista de Productos</h1>
 
                     </div>
+                       
+                            <form method="get" action="/productos" class="filtros">
+                                <div class="filtro-grupo">
+                                    <label>Categoría</label>
+                                    <select name="categoria">
+                                        <option value="">-- Todas --</option>
+                                        <option th:each="cat : ${categorias}" th:value="${cat}" th:text="${cat}"
+                                            th:selected="${cat == categoriaSeleccionada}">
+                                        </option>
+                                    </select>
+                                </div>
+
+                                <div class="filtro-grupo">
+                                    <label>Disponible</label>
+                                    <select name="activo">
+                                        <option value="">-- Todos --</option>
+                                        <option value="true" th:selected="${activoSeleccionado == true}">
+                                            Disponible
+                                        </option>
+                                        <option value="false" th:selected="${activoSeleccionado == false}">
+                                            No disponible
+                                        </option>
+                                    </select>
+                                </div>
+
+                                <button type="submit" class="btn-filtrar">
+                                    <i class="fa-solid fa-filter"></i> Filtrar
+                                </button>
+                            </form>
+                        
 
                     <div class="table-container">
                         <table class="productos-table">
@@ -177,7 +184,7 @@
                                             style="object-fit: cover; border-radius: 8px;">
                                     </td>
 
-                                    <td th:text="${producto.activo}"></td>
+                                    <td th:text="${producto.activo ? 'Sí' : 'No'}"></td>
 
                                     <td class="acciones">
                                         <a th:href="@{'/productos/editar/' + ${producto.id_producto}}"

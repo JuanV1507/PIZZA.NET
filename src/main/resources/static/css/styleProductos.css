@@ -1,12 +1,9 @@
+/* ================================================= */
 /* --- CONTENEDOR GENERAL --- */
+/* ================================================= */
 .productos-page {
-    /* ANTES: width: 90%; margin: 30px auto; */
-    
-    /* AHORA: Usa todo el espacio restante a la derecha del sidebar */
-    width: auto; /* Permite que el margen y el padding definan el espacio */
-    margin: 30px 30px 30px 280px; /* Margen superior/derecho/inferior 30px, IZQUIERDO 280px (250px del sidebar + 30px de espacio) */
-    
-    /* El resto de estilos se mantienen */
+    width: auto;
+    margin: 30px 30px 30px 280px;
     padding: 20px;
     background: #ffffff;
     border-radius: 12px;
@@ -14,33 +11,30 @@
     font-family: "Segoe UI", sans-serif;
 }
 
-
+/* ================================================= */
+/* --- LAYOUT PRINCIPAL --- */
+/* ================================================= */
 .productos-layout {
-    display: flex; /* Habilita Flexbox */
-    gap: 30px; /* Espacio entre el formulario y la tabla */
-    align-items: flex-start; /* Alinea los ítems al inicio para que el formulario no se estire a la altura de la tabla */
+    display: flex;
+    gap: 30px;
+    align-items: flex-start;
 }
 
 .form-section {
-    /* AJUSTADO: Se aumenta el ancho del formulario del 35% al 30% para dejar más espacio a la tabla, 
-       o se puede aumentar a 40% si se desea que ocupe más. Usaremos 30% como un buen balance. */
-    flex: 0 0 30%; 
+    flex: 0 0 30%;
     max-width: 30%;
-    /* Si quieres que el formulario sea un poco más ancho:
-    flex: 0 0 40%;
-    max-width: 40%; 
-    */
 }
 
 .tabla-section {
-    /* El resto del espacio lo ocupa la tabla */
-    flex: 1; 
-    min-width: 0; /* Permite que el elemento Flexbox se encoja correctamente, respetando el contenedor. */
+    flex: 1;
+    min-width: 0;
 }
 
-/* --- ESTILOS DEL FORMULARIO --- */
+/* ================================================= */
+/* --- TARJETAS / FORMULARIO --- */
+/* ================================================= */
 .card {
-    background: #f8f9fa; /* Fondo claro para la tarjeta */
+    background: #f8f9fa;
     padding: 25px;
     border-radius: 10px;
     border: 1px solid #e9ecef;
@@ -48,9 +42,8 @@
 
 .form-card h2 {
     font-size: 20px;
-    color: #28a745; /* Un color primario para el título del formulario */
-    margin-top: 0;
-    margin-bottom: 20px;
+    color: #28a745;
+    margin: 0 0 20px 0;
     border-bottom: 2px solid #121314;
     padding-bottom: 10px;
 }
@@ -67,18 +60,15 @@
     font-size: 14px;
 }
 
-.form-group input[type="text"],
-.form-group input[type="number"],
-.form-group input[type="file"],
+.form-group input,
 .form-group select,
 .form-control {
     width: 100%;
     padding: 10px;
     border: 1px solid #ced4da;
     border-radius: 6px;
-    box-sizing: border-box; /* Asegura que el padding no aumente el ancho total */
+    box-sizing: border-box;
     font-size: 14px;
-    transition: border-color 0.3s;
 }
 
 .form-group input:focus,
@@ -88,26 +78,21 @@
     box-shadow: 0 0 0 0.1rem rgba(0, 123, 255, 0.25);
 }
 
-/* Checkbox (para el campo 'Disponible') */
 .form-group input[type="checkbox"] {
     width: auto;
     margin-left: 10px;
     transform: scale(1.2);
 }
 
-/* Botón Guardar */
+/* ================================================= */
+/* --- BOTONES --- */
+/* ================================================= */
 .btn-guardar {
-    background:#28a745 ; /* Color primario para el botón de acción */
+    background:#28a745;
     padding: 10px 16px;
     border-radius: 6px;
     color: white;
-    text-decoration: none;
     font-weight: bold;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
-    transition: 0.3s ease;
     border: none;
     cursor: pointer;
     width: 100%;
@@ -115,20 +100,18 @@
 }
 
 .btn-guardar:hover {
-    background: #0056b3;
+    background: #1e7d34;
 }
-/* ================================================= */
-/* --- FIN ESTILOS DEL FORMULARIO --- */
-/* ================================================= */
 
-
+/* ================================================= */
 /* --- HEADER --- */
+/* ================================================= */
 .header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 25px;
-    flex-wrap: wrap; /* ← evita ruptura en pantallas pequeñas */
+    flex-wrap: wrap;
     gap: 10px;
 }
 
@@ -136,64 +119,33 @@
     font-size: 26px;
     color: #333;
     margin: 0;
-    font-weight: 600;
 }
 
-/* BOTÓN CREAR (Mantenido) */
-.btn-crear {
-    background: #28a745;
-    padding: 10px 16px;
-    border-radius: 6px;
-    color: white;
-    text-decoration: none;
-    font-weight: bold;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    transition: 0.3s ease;
-}
-
-.btn-crear:hover {
-    background: #1e7d34;
-}
-
-/* --- TABLA (Mantenida) --- */
+/* ================================================= */
+/* --- TABLA --- */
+/* ================================================= */
 .table-container {
-    overflow-x: auto; /* ← permite desplazamiento en móvil */
+    overflow-x: auto;
 }
 
 .productos-table {
     width: 100%;
     border-collapse: collapse;
     margin-top: 15px;
-    min-width: 700px; /* ← evita que se amontone en móvil */
+    min-width: 700px;
+}
+
+.productos-table th,
+.productos-table td {
+    padding: 12px 10px;
+    border-bottom: 1px solid #ddd;
+    vertical-align: middle;
 }
 
 .productos-table thead {
     background: #f3f3f3;
 }
 
-.productos-table th, 
-.productos-table td {
-    padding: 12px 10px;
-    border-bottom: 1px solid #ddd;
-    text-align: left;
-    /* Centrado vertical estándar para todas las celdas de texto e imagen.
-       Esto es lo que debe funcionar si la celda de acciones no tiene display: flex */
-    vertical-align: middle; 
-}
-
-.productos-table th {
-    font-weight: bold;
-    color: #444;
-    font-size: 14px;
-}
-
-.productos-table tbody tr:hover {
-    background: #f9f9f9;
-}
-
-/* --- IMAGENES DE PRODUCTO (Mantenida) --- */
 .productos-table img {
     width: 55px;
     height: 55px;
@@ -202,120 +154,110 @@
     border: 1px solid #ddd;
 }
 
-/* --- BOTONES ACCIONES (AJUSTE FINAL: Se elimina Flexbox para asegurar vertical-align) --- */
 .acciones {
-    /* Mantenemos el centrado horizontal para el grupo de botones,
-       y permitimos que el centrado vertical global de la tabla funcione. */
     text-align: center;
-    /* Eliminamos: display: flex; align-items: center; justify-content: center; height: 100%; */
 }
 
-/* BOTÓN EDITAR */
-.btn-editar {
-    /* Hacemos que los botones sean en línea para que el text-align: center de la TD los centre */
-    display: inline-block;
-    padding: 6px 12px;
-    background: #0d6efd;
-    color: white;
-    border-radius: 6px;
-    text-decoration: none;
-    font-size: 14px;
-    transition: 0.3s ease;
-    margin-right: 10px; /* Añadimos el espacio que antes daba el gap */
-}
-
-.btn-editar:hover {
-    background: #0a58ca;
-}
-
-/* BOTÓN ELIMINAR */
+.btn-editar,
 .btn-eliminar {
-    /* Hacemos que los botones sean en línea para que el text-align: center de la TD los centre */
     display: inline-block;
     padding: 6px 12px;
-    background: #dc3545;
-    color: white;
     border-radius: 6px;
-    text-decoration: none;
+    color: white;
     font-size: 14px;
-    transition: 0.3s ease;
+    text-decoration: none;
 }
 
-.btn-eliminar:hover {
-    background: #b02a37;
+.btn-editar {
+    background: #0d6efd;
+    margin-right: 8px;
 }
 
-/* ----------------------------- */
-/* 📱 RESPONSIVE DESIGN      */
-/* ----------------------------- */
-/* En pantallas pequeñas, volvemos a centrar y quitamos el margen fijo */
-@media (max-width: 992px) {
+.btn-eliminar {
+    background: #dc3545;
+}
 
-    /* ... otras reglas responsive ... */
-    
-    .productos-page {
-        width: 95%; /* Vuelve a usar un ancho porcentual o fijo */
-        margin: 20px auto; /* Vuelve a centrarlo para que no tenga margen izquierdo fijo */
-        padding: 15px;
+/* ================================================= */
+/* --- FILTROS (UNIFICADOS, SIN DUPLICADOS) --- */
+/* ================================================= */
+.filtros {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    padding: 8px 10px;
+    background: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    margin-bottom: 12px;
+    max-width: 520px;     /* controla el ancho */
+    margin: 8px 0 12px 0; /* lo pega al título */
+}
+
+
+.filtros label {
+    font-size: 12px;
+    font-weight: 600;
+
+}
+
+.filtros select {
+    padding: 6px 8px;     /*  altura del select */
+    min-width: 140px;     /* ancho del select */
+}
+
+
+.btn-filtrar {
+    padding:  8px 12px;/* quí se controla su tamaño */
+    font-size: 13px;
+    border-radius: 6px;
+    background-color: #ff7a00;
+    color: white;
+    font-weight: bold;
+    border: none;
+    cursor: pointer;
+}
+
+@media (max-width: 768px) {
+    .filtros {
+        max-width: 100%;
     }
-
-    /* ============== ESTILO CLAVE PARA RESPONSIVE ============== */
-    /* ... (resto de tus reglas responsive) ... */
 }
 
-/* Tablets medianas y móviles horizontales */
+/* ================================================= */
+/*  RESPONSIVE
+/* ================================================= */
+
+/* Tablets y móviles */
 @media (max-width: 1024px) {
-    /* ============== ESTILO CLAVE PARA RESPONSIVE ============== */
-    /* En pantallas medianas, apilamos el formulario y la tabla */
+
     .productos-layout {
         flex-direction: column;
     }
-    
+
     .form-section,
     .tabla-section {
-        flex: 1 1 100%; /* Ocupan todo el ancho disponible */
         max-width: 100%;
-    }
-    
-    .form-section {
-        margin-bottom: 20px; /* Espacio entre el formulario y la tabla al apilar */
-    }
-    /* ========================================================== */
-
-    .header h1 {
-        font-size: 22px;
-    }
-
-    .productos-table img {
-        width: 45px;
-        height: 45px;
+        flex: 1 1 100%;
     }
 }
 
-/* Tablets verticales y móviles grandes */
-
+/* MÓVILES – FIX PRINCIPAL */
 @media (max-width: 768px) {
 
-    /* ... (Estilos existentes) ... */
-    
-    /* === CORRECCIÓN CLAVE PARA EL FILTRO === */
     .filtros {
-        flex-direction: column; /* Apila los elementos (selects y botón) */
-        align-items: flex-start; /* Alinea los elementos a la izquierda */
-        width: 100%; /* Asegura que el contenedor de filtros ocupe todo el ancho */
+        flex-direction: column;
+        max-width: 320px;   /*  ancho controlado */
+        margin: 8px 0;   /* centrado */
     }
 
     .filtros select,
-    .filtros button {
-        width: 100%; /* Hace que los selects y el botón ocupen todo el ancho disponible */
-        margin-bottom: 10px; /* Añade un espacio entre los elementos apilados */
+    .btn-filtrar {
+        width: 100%;
     }
-    
-    /* ... (Resto de estilos) ... */
 }
 
 
-/* Celulares */
+/* Celulares pequeños */
 @media (max-width: 480px) {
 
     .header h1 {
@@ -324,81 +266,119 @@
         width: 100%;
     }
 
-    .btn-crear {
-        width: 100%;
-        justify-content: center;
-    }
-
     .productos-table th,
     .productos-table td {
         font-size: 12px;
-        padding: 8px;
-    }
-
-    .productos-table img {
-        width: 40px;
-        height: 40px;
-    }
-
-    /* En móvil, volvemos a poner los botones lado a lado, si caben */
-    .acciones {
-        text-align: center;
     }
 
     .btn-editar,
     .btn-eliminar {
-        display: inline-block; /* Lado a lado */
-        flex: 1;
-        padding: 6px 8px;
         font-size: 12px;
-        margin: 0 3px; /* Espacio pequeño horizontal */
-    }
-    
-    .btn-editar {
-        margin-right: 6px;
+        padding: 6px 8px;
     }
 }
+/* ================================================= */
+/* FILTROS – CARD SEPARADA (FIX RESPONSIVE) */
+/* ================================================= */
+
+.filtros-card {
+    margin-bottom: 15px;
+}
+
 .filtros {
     display: flex;
-    align-items: center;
-    gap: 15px;
-    margin-bottom: 20px;
+    gap: 12px;
+    align-items: flex-end;
+    flex-wrap: wrap;
 }
 
-.filtros select,
-.filtros button {
-    padding: 8px 12px;
-    border-radius: 5px;
+.filtro-grupo {
+    display: flex;
+    flex-direction: column;
 }
 
-/*ALERTA DE ELIMINACION*/
-.alerta-flotante {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    padding: 15px 20px;
-    border-radius: 10px;
-    color: white;
-    font-weight: bold;
-    z-index: 9999;
-    animation: aparecer 0.4s ease-out, desaparecer 0.4s ease-in 3s forwards;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+.filtro-grupo label {
+    font-size: 12px;
+    font-weight: 600;
+    margin-bottom: 4px;
 }
 
-.alerta-flotante.error {
-    background-color: #e63946;  /* rojo bonito */
+.filtro-grupo select {
+    min-width: 160px;
+    padding: 8px;
 }
 
-.alerta-flotante.success {
-    background-color: #2a9d8f;  /* verde elegante */
+/* ================================================= */
+/* RESPONSIVE – MISMO COMPORTAMIENTO QUE EMPLEADOS */
+/* ================================================= */
+
+@media (max-width: 768px) {
+
+    .filtros {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .filtro-grupo select,
+    .btn-filtrar {
+        width: 100%;
+    }
+}
+/* ================================ */
+/* FIX DESPLAZAMIENTO LATERAL MÓVIL */
+/* ================================ */
+@media (max-width: 768px) {
+
+    .productos-page {
+        margin: 20px auto;
+        width: 95%;
+    }
+
+    .main-content-wrapper {
+        margin-left: 0 !important;
+        width: 100% !important;
+    }
+
+    body {
+        overflow-x: hidden;
+    }
+}
+/* ================================ */
+/* FILTROS LIMPIOS (SIN CARD) */
+/* ================================ */
+.filtros {
+    display: flex;
+    gap: 14px;
+    align-items: flex-end;
+    margin-bottom: 16px;
 }
 
-@keyframes aparecer {
-    from { opacity: 0; transform: translateX(30px); }
-    to { opacity: 1; transform: translateX(0); }
+.filtro-grupo {
+    display: flex;
+    flex-direction: column;
 }
 
-@keyframes desaparecer {
-    to { opacity: 0; transform: translateX(30px); }
+.filtro-grupo label {
+    font-size: 13px;
+    font-weight: 600;
+    color: #555;
+    margin-bottom: 4px;
 }
 
+.filtro-grupo select {
+    padding: 8px;
+    min-width: 160px;
+}
+
+/* MÓVIL */
+@media (max-width: 768px) {
+    .filtros {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .filtro-grupo select,
+    .btn-filtrar {
+        width: 100%;
+    }
+}
