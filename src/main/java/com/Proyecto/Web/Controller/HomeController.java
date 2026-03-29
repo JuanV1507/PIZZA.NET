@@ -25,4 +25,9 @@ public class HomeController {
         model.addAttribute("titulo", "Panel Principal");
         return "home"; // ahora carga directamente home.html
     }
+
+    @GetMapping("/acceso")
+    public String acceso() {
+    return "acceso"; // acceso.html
+}
 }

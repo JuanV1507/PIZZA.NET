@@ -1,183 +1,339 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
-    <title>Empleados</title>
+    <title>Gestión de Empleados - Pizza.NET</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Iconos -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
-    <!-- CSS (reemplaza /css/styleEmpleados.css por el CSS de abajo) -->
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Iconos Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- CSS Personalizado -->
     <link rel="stylesheet" th:href="@{/css/styleEmpleados.css}">
     <link rel="stylesheet" th:href="@{/css/layout-global.css}">
-    <link rel="stylesheet" th:href="@{/css/styleHome.css}">
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 
-<body>
-    <!-- BOTÓN HAMBURGUESA SIEMPRE PRESENTE -->
-    <button class="hamburger" aria-label="Abrir Menú">
+<body class="bg-light">
+    <!-- BOTÓN HAMBURGUESA -->
+    <button class="hamburger btn btn-dark position-fixed m-3" style="z-index: 1001;" aria-label="Abrir Menú">
         <i class="fas fa-bars"></i>
     </button>
 
-    <!-- SIDEBAR GLOBAL FIJO (deja tu sidebar como está) -->
-    <aside class="sidebar">
-        <div class="header-sidebar">
-            <div class="logo">PIZZA.NET</div>
+    <!-- SIDEBAR -->
+    <aside class="sidebar bg-dark text-white">
+        <div class="header-sidebar p-4 text-center border-bottom border-secondary">
+            <div class="logo fs-4 fw-bold text-warning">🍕 PIZZA.NET</div>
         </div>
 
-        <nav class="nav-menu">
-            <ul>
-                <li><a th:href="@{/home}"><i class="fas fa-home"></i> Inicio</a></li>
-                <li><a th:href="@{/empleados}"><i class="fas fa-users"></i> Empleados</a></li>
-                <li><a th:href="@{/ventas}"><i class="fas fa-shopping-cart"></i> Ventas</a></li>
-                <li><a th:href="@{/reportes}"><i class="fas fa-chart-line"></i> Reportes</a></li>
-                <li><a th:href="@{/productos}"><i class="fas fa-pizza-slice"></i> Productos</a></li>
+        <nav class="nav-menu mt-4">
+            <ul class="nav flex-column">
+                <li class="nav-item">
+                    <a th:href="@{/home}" class="nav-link text-white-50 hover-bg-secondary">
+                        <i class="fas fa-home me-3"></i> Inicio
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a th:href="@{/empleados}" class="nav-link text-white bg-primary bg-opacity-25">
+                        <i class="fas fa-users me-3"></i> Empleados
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a th:href="@{/ventas}" class="nav-link text-white-50 hover-bg-secondary">
+                        <i class="fas fa-shopping-cart me-3"></i> Ventas
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a th:href="@{/reportes}" class="nav-link text-white-50 hover-bg-secondary">
+                        <i class="fas fa-chart-line me-3"></i> Reportes
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a th:href="@{/productos}" class="nav-link text-white-50 hover-bg-secondary">
+                        <i class="fas fa-pizza-slice me-3"></i> Productos
+                    </a>
+                </li>
             </ul>
         </nav>
 
-        <div class="extra-links">
-            <a href="#">Cerrar Ventas</a>
-            <a href="#">Cerrar Sesión</a>
+        <div class="extra-links position-absolute bottom-0 w-100 p-4 border-top border-secondary">
+            <a href="#" class="d-block text-white-50 text-decoration-none mb-3">
+                <i class="fas fa-lock me-2"></i>Cerrar Ventas
+            </a>
+            <a href="#" class="d-block text-white-50 text-decoration-none">
+                <i class="fas fa-sign-out-alt me-2"></i>Cerrar Sesión
+            </a>
         </div>
     </aside>
 
-    <!-- Botón REGRESAR (solo móvil) -->
-    <button class="btn-volver" onclick="history.back()">
+    <!-- Botón REGRESAR (móvil) -->
+    <button type="button" class="btn-volver btn btn-light rounded-circle shadow-sm position-fixed"
+        onclick="history.back()" style="bottom: 20px; right: 20px; z-index: 1000;">
         <i class="fas fa-arrow-left"></i>
     </button>
 
-    <main class="main-content-wrapper">
-        <!-- Contenedor principal (igual que productos) -->
-        <div class="empleados-page">
+    <main class="main-content-wrapper p-4">
+        <div class="container-fluid px-0">
+            <!-- Título de la página -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1 class="h3 mb-0 text-gray-800">
+                    <i class="fas fa-users me-2 text-primary"></i>Gestión de Empleados
+                </h1>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb mb-0">
+                        <li class="breadcrumb-item"><a th:href="@{/home}">Inicio</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Empleados</li>
+                    </ol>
+                </nav>
+            </div>
 
-            <!-- Layout (form left, table right) -->
-            <div class="empleados-layout">
+            <!-- Layout principal -->
+            <div class="row g-4">
+                <!-- FORM: Columna izquierda -->
+                <div class="col-lg-4">
+                    <div class="card shadow-sm border-0">
+                        <div class="card-header bg-white py-3">
+                            <h5 class="card-title mb-0 text-success">
+                                <i class="fas fa-user-plus me-2"></i>Registrar Empleado
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <form th:action="@{/empleados}" th:object="${empleado}" method="post"
+                                class="needs-validation" novalidate>
+                                <input type="hidden" th:field="*{id_empleado}">
 
-                <!-- FORM: izquierda -->
-                <div class="form-section">
-                    <div class="card form-card">
-                        <h2>Registrar Empleado</h2>
+                                <div class="mb-3">
+                                    <label class="form-label fw-semibold">
+                                        <i class="fas fa-user me-2 text-secondary" ></i>Nombre Completo
+                                    </label>
+                                    <input class="form-control" type="text" th:field="*{nombres}"
+                                        placeholder="Ej. Juan Pérez López" required unique="true" pattern="[A-Za-záéíóúÁÉÍÓÚñÑ ]+">
+                                    <div class="invalid-feedback">El nombre es requerido</div>
+                                </div>
 
-                        <form th:action="@{/empleados}" th:object="${empleado}" method="post">
-                            <div class="form-group">
-                                <label>Nombre Completo:</label>
-                                <input class="form-control" type="text" th:field="*{nombres}" required>
-                            </div>
+                                <div class="mb-3">
+                                    <label class="form-label fw-semibold">
+                                        <i class="fas fa-phone me-2 text-secondary"></i>Teléfono
+                                    </label>
+                                    <input class="form-control" type="text" th:field="*{telefono}" unique="true" maxlength="10"
+                                        placeholder="Ej. 55-1234-5678" required>
+                                    <div class="invalid-feedback " >El teléfono es requerido</div>
+                                </div>
 
-                            <div class="form-group">
-                                <label>Teléfono:</label>
-                                <input class="form-control" type="text" th:field="*{telefono}" required>
-                            </div>
+                                <div class="mb-3">
+                                    <label class="form-label fw-semibold">
+                                        <i class="fas fa-briefcase me-2 text-secondary"></i>Puesto
+                                    </label>
+                                    <input class="form-control" type="text" th:field="*{puesto}"
+                                        placeholder="Ej. Cajero, Repartidor, Cocinero" required>
+                                    <div class="invalid-feedback">El puesto es requerido</div>
+                                </div>
 
-                            <div class="form-group">
-                                <label>Puesto:</label>
-                                <input class="form-control" type="text" th:field="*{puesto}" required>
-                            </div>
+                                <div class="row g-2">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="form-label fw-semibold">
+                                                <i class="fas fa-money-bill me-2 text-secondary"></i>Pago Diario
+                                            </label>
+                                            <div class="input-group">
+                                                <span class="input-group-text">$</span>
+                                                <input class="form-control" type="number" step="0.01"
+                                                    th:field="*{pagoDiario}" placeholder="0.00" required>
+                                            </div>
+                                            <div class="invalid-feedback">Campo requerido</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="form-label fw-semibold">
+                                                <i class="fas fa-calendar-alt me-2 text-secondary"></i>Días
+                                            </label>
+                                            <input class="form-control" type="number" min="0"
+                                                th:field="*{diasTrabajados}" placeholder="0" required>
+                                            <div class="invalid-feedback">Campo requerido</div>
+                                        </div>
+                                    </div>
+                                </div>
 
-                            <div class="form-group">
-                                <label>Pago Diario:</label>
-                                <input class="form-control" type="number" step="0.01" th:field="*{pagoDiario}" required>
-                            </div>
+                                <div class="mb-4">
+                                    <label for="fechaRegistro" class="form-label fw-semibold">
+                                        <i class="fas fa-clock me-2 text-secondary"></i>Fecha Registro
+                                    </label>
+                                    <input id="fechaRegistro" class="form-control" type="datetime-local"
+                                        th:field="*{fechaRegistro}" required>
+                                    <div class="invalid-feedback">Seleccione la fecha</div>
+                                </div>
 
-                            <div class="form-group">
-                                <label>Días Trabajados:</label>
-                                <input class="form-control" type="number" min="0" th:field="*{diasTrabajados}" required>
-                            </div>
-
-                            <div class="form-group">
-                                <label>Fecha Registro:</label>
-                                <input class="form-control" type="datetime-local" th:field="*{fechaRegistro}" required>
-                            </div>
-
-                            <button type="submit" class="btn-guardar">
-                                <i class="fa-solid fa-floppy-disk"></i> Guardar
-                            </button>
-                        </form>
+                                <button type="submit" class="btn btn-success w-100 py-2">
+                                    <i class="fa-solid fa-floppy-disk me-2"></i>Guardar Empleado
+                                </button>
+                            </form>
+                        </div>
                     </div>
                 </div>
 
-                <!-- TABLA: derecha -->
-                <div class="tabla-section">
-                    <div class="card table-card">
-                        <div class="header">
-                            <h2>Lista de Empleados</h2>
+                <!-- TABLA: Columna derecha -->
+                <div class="col-lg-8">
+                    <div class="card shadow-sm border-0">
+                        <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+                            <h5 class="card-title mb-0">
+                                <i class="fas fa-list me-2 text-primary"></i>Lista de Empleados
+                            </h5>
+                            <span class="badge bg-primary" th:text="${#lists.size(empleados)} + ' registros'">0
+                                registros</span>
                         </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-hover align-middle">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Registro</th>
+                                            <th>Nombres</th>
+                                            <th>Teléfono</th>
+                                            <th>Pago Diario</th>
+                                            <th>Días</th>
+                                            <th>Total</th>
+                                            <th>Puesto</th>
+                                            <th>Acciones</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr th:each="empleado : ${empleados}"
+                                            th:class="${empleado.salario_calculado > 5000 ? 'table-warning' : ''}">
+                                            <td><span class="badge bg-secondary"
+                                                    th:text="${empleado.id_empleado}">1</span></td>
+                                            <td
+                                                th:text="${#temporals.format(empleado.fechaRegistro, 'dd/MM/yyyy HH:mm')}">
+                                                01/01/2024 14:30</td>
+                                            <td class="fw-semibold" th:text="${empleado.nombres}" unique="true" >Juan Pérez</td>
+                                            <td th:text="${empleado.telefono}" unique="true">55-1234-5678</td>
+                                            <td class="fw-bold"
+                                                th:text="'$' + ${#numbers.formatDecimal(empleado.pagoDiario, 1, 'COMMA', 2, 'POINT')}">
+                                                $150.00</td>
+                                                <td class="fw-bold text-center" th:text="${empleado.diasTrabajados}">5
+                                                </td>
+                                                <td class="fw-bold text-success"
+                                                    th:text="'$' + ${#numbers.formatDecimal(empleado.salario_calculado, 1, 'COMMA', 2, 'POINT')}">
+                                                    $750.00</td>
+                                                <td>
+                                                    <span class="badge bg-info"
+                                                        th:text="${empleado.puesto}">Cajero</span>
+                                                </td>
+                                                <td>
+                                                    <div class="btn-group btn-group-sm" role="group">
+                                                        <a th:href="@{'/empleados/editar/' + ${empleado.id_empleado}}"
+                                                            class="btn btn-outline-primary" title="Editar">
+                                                            <i class="fas fa-edit"></i>
+                                                        </a>
+                                                        <a th:href="@{'/empleados/eliminar/' + ${empleado.id_empleado}}"
+                                                            class="btn btn-outline-danger" title="Eliminar"
+                                                            onclick="return confirm('¿Está seguro de eliminar este empleado?')">
+                                                            <i class="fas fa-trash"></i>
+                                                        </a>
+                                                    </div>
+                                                </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
 
-                        <div class="table-container empleados-tabla">
-                            <table class="empleados-table">
-                                <thead>
-                                    <tr>
-                                        <th>ID</th>
-                                        <th>Registro</th>
-                                        <th>Nombres</th>
-                                        <th>Teléfono</th>
-                                        <th>Pago diario</th>
-                                        <th>Días</th>
-                                        <th>Total</th>
-                                        <th>Puesto</th>
-                                        <th>Acciones</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr th:each="empleado : ${empleados}">
-                                        <td th:text="${empleado.id_empleado}"></td>
-                                        <td th:text="${empleado.fechaRegistro}"></td>
-                                        <td th:text="${empleado.nombres}"></td>
-                                        <td th:text="${empleado.telefono}"></td>
-                                        <td th:text="${empleado.pagoDiario}"></td>
-                                        <td th:text="${empleado.diasTrabajados}"></td>
-                                        <td th:text="${empleado.salario_calculado}"></td>
-                                        <td th:text="${empleado.puesto}"></td>
-                                        <td class="acciones">
-                                            <a th:href="@{'/empleados/editar/' + ${empleado.id_empleado}}" class="btn-editar">Editar</a>
-                                            <a th:href="@{'/empleados/eliminar/' + ${empleado.id_empleado}}" class="btn-eliminar">Eliminar</a>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                            <!-- Total en sueldos -->
+                            <div class="d-flex justify-content-end mt-4 pt-3 border-top">
+                                <div class="bg-light p-3 rounded">
+                                    <span class="fw-bold me-3">Total en sueldos:</span>
+                                    <span class="h5 mb-0 text-danger fw-bold">
+                                        <i class="fas fa-dollar-sign me-1"></i>
+                                        <span
+                                            th:text="${#numbers.formatDecimal(totalSalarios, 1, 'COMMA', 2, 'POINT')}">0.00</span>
+                                        MXN
+                                    </span>
+                                </div>
+                            </div>
                         </div>
-
-                        <!-- Total en sueldos (texto simple, valor en rojo) -->
-                        <p class="total-sueldo-texto">
-                            Total en sueldos:
-                            <span class="total-rojo"
-                                  th:text="|MXN $ ${#numbers.formatDecimal(totalSalarios, 1, 'COMMA', 2, 'POINT')}|">
-                            </span>
-                        </p>
                     </div>
                 </div>
-
-            </div> <!-- /empleados-layout -->
-
-            <!-- Alertas -->
-            <div id="alerta-flotante" th:if="${error}" th:text="${error}" class="alerta-flotante error"></div>
-            <div id="alerta-flotante" th:if="${success}" th:text="${success}" class="alerta-flotante success"></div>
-        </div> <!-- /empleados-page -->
+            </div>
+        </div>
     </main>
 
-    <!-- hidden values -->
+    <!-- hidden values para alertas -->
     <input type="hidden" id="success" th:value="${success}">
     <input type="hidden" id="error" th:value="${error}">
 
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script th:src="@{/Js/JSEmpleados.js}"></script>
-    <script th:inline="javascript">let rolesDisponibles = /*[[${roles}]]*/[];</script>
+    <script th:inline="javascript">
+        let rolesDisponibles = /*[[${roles}]]*/[];
 
+        // Validación de formulario Bootstrap
+        (function () {
+            'use strict';
+            var forms = document.querySelectorAll('.needs-validation');
+            Array.prototype.slice.call(forms).forEach(function (form) {
+                form.addEventListener('submit', function (event) {
+                    if (!form.checkValidity()) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+                    form.classList.add('was-validated');
+                }, false);
+            });
+        })();
 
-    <script>
+        // Toggle sidebar en móvil
         document.addEventListener('DOMContentLoaded', () => {
             const hamburger = document.querySelector('.hamburger');
             const sidebar = document.querySelector('.sidebar');
+
             hamburger.addEventListener('click', () => {
-                sidebar.classList.toggle('menu-open');
+                sidebar.classList.toggle('active');
+            });
+
+            // Cerrar sidebar al hacer click fuera en móvil
+            document.addEventListener('click', (e) => {
+                if (window.innerWidth <= 768) {
+                    if (!sidebar.contains(e.target) && !hamburger.contains(e.target)) {
+                        sidebar.classList.remove('active');
+                    }
+                }
             });
         });
-    </script>
-    <script>
-document.querySelector(".hamburger").addEventListener("click", () => {
-    document.querySelector(".sidebar").classList.toggle("active");
-});
-</script>
 
+        // Alertas con SweetAlert2
+        window.onload = function () {
+            let successMsg = document.getElementById('success')?.value;
+            let errorMsg = document.getElementById('error')?.value;
+
+            if (successMsg && successMsg.trim() !== '') {
+                Swal.fire({
+                    icon: 'success',
+                    title: '¡Éxito!',
+                    text: successMsg,
+                    timer: 3000,
+                    showConfirmButton: false,
+                    position: 'top-end',
+                    toast: true
+                });
+            }
+
+            if (errorMsg && errorMsg.trim() !== '') {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: errorMsg,
+                    position: 'top-end',
+                    toast: true,
+                    showConfirmButton: false,
+                    timer: 4000
+                });
+            }
+        };
+    </script>
 </body>
+
 </html>

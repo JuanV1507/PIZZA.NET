@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
 import com.Proyecto.Web.Service.UsuarioService;
@@ -13,20 +14,19 @@ import com.Proyecto.Web.Service.UsuarioService;
 public class SecurityConfig {
 
     private final UsuarioService usuarioService;
+    private final PasswordEncoder passwordEncoder;
 
-    public SecurityConfig(UsuarioService usuarioService) {
+    public SecurityConfig(UsuarioService usuarioService, PasswordEncoder passwordEncoder) {
         this.usuarioService = usuarioService;
+        this.passwordEncoder = passwordEncoder;
     }
 
-    //Este método crea y configura un objeto SecurityFilterChain que Spring Security necesita para proteger la aplicación
-
     @Bean
-    //intercepta todas las peticiones HTTP y decide si el usuario puede acceder o no
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/login", "/css/**", "/js/**", "/images/**", "/imagenes/**").permitAll()
+                .requestMatchers("/login", "/css/**", "/js/**", "/uploads/**", "/images/**", "/imagenes/**").permitAll()
                 .anyRequest().authenticated()
             )
             .formLogin(form -> form
@@ -47,14 +47,8 @@ public class SecurityConfig {
     public DaoAuthenticationProvider authProvider() {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
         authProvider.setUserDetailsService(usuarioService);
-        authProvider.setPasswordEncoder(passwordEncoder());
+        authProvider.setPasswordEncoder(passwordEncoder);
         return authProvider;
     }
-    //Se incripta la contraseña y devuelve la contraseña encriptada 
-    @Bean
-    public BCryptPasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-
-   
 }
+

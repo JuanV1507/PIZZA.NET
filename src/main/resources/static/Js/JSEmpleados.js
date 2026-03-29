@@ -1,21 +1,27 @@
+document.addEventListener("DOMContentLoaded", () => {
 
-    // Mostrar mensaje cuando el usuario fue creado correctamente
-    const url2 = new URL(window.location.href);
-    const usuarioCreado = url2.searchParams.get("usuarioCreado");
+    const hamburger = document.querySelector('.hamburger');
+    const sidebar = document.querySelector('.sidebar');
+
+    const url = new URL(window.location.href);
+
+    const usuarioCreado = url.searchParams.get("usuarioCreado");
+    const idEmpleado = url.searchParams.get("crearUsuario");
+
+    const success = document.getElementById("success")?.value;
+    const error = document.getElementById("error")?.value;
+
+    // =============================
+    // MENSAJES GENERALES
+    // =============================
 
     if (usuarioCreado === "ok") {
         Swal.fire({
             title: "Usuario creado",
             text: "El usuario se registró correctamente.",
-            icon: "success",
-            confirmButtonText: "Aceptar"
+            icon: "success"
         });
     }
-
-
-document.addEventListener("DOMContentLoaded", () => {
-    const success = document.getElementById("success")?.value;
-    const error = document.getElementById("error")?.value;
 
     if (success) {
         Swal.fire({
@@ -32,68 +38,132 @@ document.addEventListener("DOMContentLoaded", () => {
             text: error
         });
     }
-});
 
-    // Capturar el parámetro crearUsuario
-    const url = new URL(window.location.href);
-    const idEmpleado = url.searchParams.get("crearUsuario");
+    // =============================
+    // CREAR USUARIO (FIX REAL)
+    // =============================
 
     if (idEmpleado) {
 
-        Swal.fire({
-            title: "Empleado guardado",
-            text: "¿Deseas crear un usuario para este empleado?",
-            icon: "question",
-            showCancelButton: true,
-            confirmButtonText: "Sí, crear usuario",
-            cancelButtonText: "No"
-        }).then((result) => {
+        console.log("crearUsuario:", idEmpleado);
 
-            if (result.isConfirmed) {
+        // delay pequeño para evitar conflicto con otros alerts
+        setTimeout(() => {
 
-                Swal.fire({
+            Swal.fire({
+                title: "Empleado guardado",
+                text: "¿Deseas crear un usuario para este empleado?",
+                icon: "question",
+                showCancelButton: true,
+                confirmButtonText: "Sí, crear usuario",
+                cancelButtonText: "No"
+            }).then((result) => {
+
+                if (result.isConfirmed) {
+
+                    Swal.fire({
                     title: "Crear Usuario",
                     html: `
-        <form id="formUsuario" method="POST" action="/usuarios/guardar">
-            <input type="hidden" name="id_empleado" value="${idEmpleado}">
+                <form id="formUsuario" class="form-swal" method="POST" action="/usuarios/guardar" enctype="multipart/form-data">
 
-            <label class="swal-label">Usuario:</label>
-            <input type="text" name="username" class="swal2-input swal-input-custom" required>
+                    <input type="hidden" name="id_empleado" value="${idEmpleado}">
 
-            <label class="swal-label">Rol:</label>
-            <select id="rol" name="rol" class="swal2-input swal-input-custom" required></select>
+                    <div class="form-group">
+                        <label>Usuario</label>
+                        <input type="text" name="username" id="username" required minlength="4">
+                        <small id="userError" class="error-text"></small>
+                    </div>
 
-            <label class="swal-label">Contraseña:</label>
-            <input type="password" name="contrasena" class="swal2-input swal-input-custom" required>
-        </form>
-    `,
-                    didOpen: () => {
-                        let select = document.getElementById("rol");
-                        rolesDisponibles.forEach(r => {
-                            let option = document.createElement("option");
-                            option.value = r;
-                            option.textContent = r;
-                            select.appendChild(option);
-                        });
-                    },
-                    showCancelButton: true,
-                    confirmButtonText: "Guardar",
-                    cancelButtonText: "Cancelar",
-                    preConfirm: () => {
-                        document.getElementById("formUsuario").submit();
-                    }
-                });
+                    <div class="form-group">
+                        <label>Rol</label>
+                        <select id="rol" name="rol" required></select>
+                    </div>
 
+                    <div class="form-group">
+                        <label>Contraseña</label>
+                        <input type="password" name="contrasena" id="contrasena" required minlength="8">
+                        <small id="passError" class="error-text"></small>
+                    </div>
 
-            }
-        });
+                    <div class="form-group">
+                        <label>Correo Electrónico</label>
+                        <input type="email" name="correo" id="correo" required>
+                        <small id="emailError" class="error-text"></small>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Foto</label>
+                        <input type="file" name="archivoFoto" id="fotoInput">
+                    </div>
+
+                </form>
+                `,
+                        showCancelButton: true,
+                        confirmButtonText: "Guardar",
+                        focusConfirm: false,
+                        preConfirm: () => {
+
+                            const username = document.getElementById("username").value.trim();
+                            const password = document.getElementById("contrasena").value.trim();
+
+                            const userError = document.getElementById("userError");
+                            const passError = document.getElementById("passError");
+
+                            let valido = true;
+
+                            // Reset errores
+                            userError.textContent = "";
+                            passError.textContent = "";
+
+                            // VALIDAR USUARIO
+                            if (username.length < 4) {
+                                userError.textContent = "Mínimo 4 caracteres";
+                                valido = false;
+                            }
+
+                            // VALIDAR PASSWORD
+                            if (password.length < 8) {
+                                passError.textContent = "Mínimo 8 caracteres";
+                                valido = false;
+                            }
+
+                            if (!valido) {
+                                return false; // DETIENE el submit
+                            }
+
+                            // enviar form
+                            document.getElementById("formUsuario").submit();
+                        },
+
+                        didOpen: () => {
+                            let select = document.getElementById("rol");
+
+                            if (typeof rolesDisponibles !== "undefined") {
+                                rolesDisponibles.forEach(r => {
+                                    let option = document.createElement("option");
+                                    option.value = r;
+                                    option.textContent = r;
+                                    select.appendChild(option);
+                                });
+                            }
+                        }
+                    });
+                }
+
+                // LIMPIAR URL
+                window.history.replaceState({}, document.title, "/empleados");
+
+            });
+
+        }, 300); //  DELAY
     }
 
-        document.addEventListener('DOMContentLoaded', () => {
-            const hamburger = document.querySelector('.hamburger');
-            const sidebar = document.querySelector('.sidebar');
+    // =============================
+    // MENU
+    // =============================
 
-            hamburger.addEventListener('click', () => {
-                sidebar.classList.toggle('menu-open');
-            });
-        });
+    hamburger?.addEventListener('click', () => {
+        sidebar?.classList.toggle('menu-open');
+    });
+
+});

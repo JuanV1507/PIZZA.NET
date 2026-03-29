@@ -32,4 +32,12 @@ public class EmpleadoService {
     public void eliminar(Long id) {
         empleadoRepository.deleteById(id);
     }
+
+    public boolean telefonoDuplicado(Empleado empleado) {
+    return empleadoRepository
+        .existsByTelefonoAndIdEmpleadoNot(
+            empleado.getTelefono(), 
+            empleado.getId_empleado() == null ? 0 : empleado.getId_empleado()
+        );
+}
 }

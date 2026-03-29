@@ -1,5 +1,10 @@
 package com.Proyecto.Web.Controller;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
@@ -9,6 +14,8 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.Proyecto.Web.Model.Usuario;
@@ -24,9 +31,9 @@ public class ControllerUsuario {
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
 
-    // ==========================
+  
     //  FORMULARIO PARA CREAR USUARIO
-    // ==========================
+
     @GetMapping("/crear/{idEmpleado}")
     public String mostrarFormularioUsuario(@PathVariable Long idEmpleado, Model model) {
 
@@ -43,22 +50,28 @@ public class ControllerUsuario {
     }
 
 
-    // ==========================
+  
     //   GUARDAR USUARIO EN BD
-    // ==========================
-  @PostMapping("/guardar")
-    public String guardarUsuario(@ModelAttribute Usuario usuario, RedirectAttributes redirectAttrs) {
+  
+ @PostMapping("/guardar")
+public String guardarUsuario(
+        @ModelAttribute Usuario usuario,
+        @RequestParam("archivoFoto") MultipartFile archivoFoto,
+        RedirectAttributes redirectAttrs) {
 
-    // 1. Validar si el username ya existe
+    System.out.println("ENTRO AL METODO GUARDAR USUARIO");
+
     if (usuarioRepository.existsByUsername(usuario.getUsername())) {
-        redirectAttrs.addFlashAttribute("error", "El nombre de usuario ya existe, elige otro.");
-        return "redirect:/empleados"; 
+        redirectAttrs.addFlashAttribute("error", "El nombre de usuario ya existe.");
+        return "redirect:/empleados";
     }
+    if (usuarioRepository.existsByUsername(usuario.getUsername())) {
+    redirectAttrs.addFlashAttribute("error", "El usuario ya existe");
+    return "redirect:/empleados";
+}
 
-    // 2. Encriptar contraseña
     usuario.setContrasena(passwordEncoder.encode(usuario.getContrasena()));
 
-    // 3. Convertir rol elegido a rol interno (necesario para Spring Security)
     switch (usuario.getRol()) {
         case "Administrador":
             usuario.setRol("ROLE_ADMIN");
@@ -71,13 +84,35 @@ public class ControllerUsuario {
             break;
     }
 
-    // 4. Guardar usuario
+    // Manejo de imagen
+    if (archivoFoto != null && !archivoFoto.isEmpty()) {
+
+        try {
+            String nombreArchivo = System.currentTimeMillis() + "_" + archivoFoto.getOriginalFilename();
+
+            Path ruta = Paths.get("C:/imagenes_usuarios/");
+            if (!Files.exists(ruta)) {
+                Files.createDirectories(ruta);
+            }
+
+            Files.copy(archivoFoto.getInputStream(),
+                       ruta.resolve(nombreArchivo),
+                       StandardCopyOption.REPLACE_EXISTING);
+
+            usuario.setFoto(nombreArchivo);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    } else {
+        usuario.setFoto("user-default.png");
+    }
+
     usuarioRepository.save(usuario);
 
-    // 5. Mensaje para SweetAlert
     redirectAttrs.addFlashAttribute("success", "Usuario creado correctamente.");
 
-    // 6. Redirigir
     return "redirect:/empleados";
 }
 

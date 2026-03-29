@@ -3,68 +3,357 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PIZZA.NET</title>
+    <title>Inicio - Pizza.NET</title>
 
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Iconos Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <!-- CSS Personalizado -->
     <link rel="stylesheet" th:href="@{/css/layout-global.css}">
     <link rel="stylesheet" th:href="@{/css/styleHome.css}">
-
-    <!-- Iconos -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
+<body class="bg-light">
 
-<body>
-
-    <!-- BOTÓN HAMBURGUESA SIEMPRE PRESENTE -->
-    <button class="hamburger" aria-label="Abrir Menú">
+    <!-- BOTÓN HAMBURGUESA -->
+    <button class="hamburger btn btn-dark position-fixed m-3" style="z-index: 1001;" aria-label="Abrir Menú">
         <i class="fas fa-bars"></i>
     </button>
 
-    <!-- SIDEBAR GLOBAL FIJO -->
-    <aside class="sidebar">
-        <div class="header-sidebar">
-            <div class="logo">PIZZA.NET</div>
+    <!-- SIDEBAR GLOBAL -->
+    <aside class="sidebar bg-dark text-white">
+        <div class="header-sidebar p-4 text-center border-bottom border-secondary">
+            <div class="logo fs-4 fw-bold text-warning">🍕 PIZZA.NET</div>
         </div>
 
-        <nav class="nav-menu">
-            <ul>
-                <li><a th:href="@{/home}"><i class="fas fa-home"></i> Inicio</a></li>
-                <li><a th:href="@{/empleados}"><i class="fas fa-users"></i> Empleados</a></li>
-                <li><a th:href="@{/ventas}"><i class="fas fa-shopping-cart"></i> Ventas</a></li>
-                <li><a th:href="@{/reportes}"><i class="fas fa-chart-line"></i> Reportes</a></li>
-                <li><a th:href="@{/productos}"><i class="fas fa-pizza-slice"></i> Productos</a></li>
+        <nav class="nav-menu mt-4">
+            <ul class="nav flex-column">
+                <li class="nav-item">
+                    <a th:href="@{/home}" class="nav-link text-white bg-primary bg-opacity-25">
+                        <i class="fas fa-home me-3"></i> Inicio
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a th:href="@{/empleados}" class="nav-link text-white-50 hover-bg-secondary">
+                        <i class="fas fa-users me-3"></i> Empleados
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a th:href="@{/ventas}" class="nav-link text-white-50 hover-bg-secondary">
+                        <i class="fas fa-shopping-cart me-3"></i> Ventas
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a th:href="@{/reportes}" class="nav-link text-white-50 hover-bg-secondary">
+                        <i class="fas fa-chart-line me-3"></i> Reportes
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a th:href="@{/productos}" class="nav-link text-white-50 hover-bg-secondary">
+                        <i class="fas fa-pizza-slice me-3"></i> Productos
+                    </a>
+                </li>
             </ul>
         </nav>
 
-        <div class="extra-links">
-            <a href="#">Cerrar Ventas</a>
-            <a href="#">Cerrar Sesión</a>
+        <div class="extra-links position-absolute bottom-0 w-100 p-4 border-top border-secondary">
+            <a href="#" class="d-block text-white-50 text-decoration-none mb-3">
+                <i class="fas fa-lock me-2"></i>Cerrar Ventas
+            </a>
+            <form th:action="@{/logout}" method="post">
+            <button type="submit" class="d-block text-white-50 text-decoration-none border-0 bg-transparent">
+        <i class="fas fa-sign-out-alt me-2"></i> Cerrar Sesión
+    </button>
+</form>
         </div>
     </aside>
 
-    <!-- Botón REGRESAR (solo móvil) -->
-    <button class="btn-volver" onclick="history.back()">
+    <!-- Botón REGRESAR (móvil) -->
+    <button type="button" class="btn-volver btn btn-light rounded-circle shadow-sm position-fixed" 
+            onclick="history.back()" style="bottom: 20px; right: 20px; z-index: 1000; display: none;">
         <i class="fas fa-arrow-left"></i>
     </button>
 
     <!-- CONTENIDO PRINCIPAL -->
-    <main class="main-content">
-        <section class="dashboard-bienvenida">
-            <h1>Bienvenido a PIZZA.NET</h1>
-            <p>Selecciona una opción del menú para comenzar.</p>
-        </section>
+    <main class="main-content-wrapper p-4">
+        <div class="container-fluid px-0">
+            <!-- Título y breadcrumb -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1 class="h3 mb-0 text-gray-800">
+                    <i class="fas fa-home me-2 text-primary"></i>Dashboard
+                </h1>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb mb-0">
+                        <li class="breadcrumb-item active" aria-current="page">Inicio</li>
+                    </ol>
+                </nav>
+            </div>
+
+            <!-- Tarjetas de resumen (KPIs) -->
+            <div class="row g-4 mb-4">
+                <div class="col-xl-3 col-md-6">
+                    <div class="card border-0 shadow-sm h-100">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center">
+                                <div class="flex-shrink-0 bg-primary bg-opacity-10 p-3 rounded-circle">
+                                    <i class="fas fa-dollar-sign fa-2x text-primary"></i>
+                                </div>
+                                <div class="flex-grow-1 ms-3">
+                                    <h6 class="text-muted mb-1">Ventas del Día</h6>
+                                    <h4 class="mb-0 fw-bold">$2,450.00</h4>
+                                    <small class="text-success"><i class="fas fa-arrow-up"></i> +12%</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-xl-3 col-md-6">
+                    <div class="card border-0 shadow-sm h-100">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center">
+                                <div class="flex-shrink-0 bg-success bg-opacity-10 p-3 rounded-circle">
+                                    <i class="fas fa-shopping-cart fa-2x text-success"></i>
+                                </div>
+                                <div class="flex-grow-1 ms-3">
+                                    <h6 class="text-muted mb-1">Órdenes Hoy</h6>
+                                    <h4 class="mb-0 fw-bold">24</h4>
+                                    <small class="text-success"><i class="fas fa-arrow-up"></i> +8%</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-xl-3 col-md-6">
+                    <div class="card border-0 shadow-sm h-100">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center">
+                                <div class="flex-shrink-0 bg-warning bg-opacity-10 p-3 rounded-circle">
+                                    <i class="fas fa-users fa-2x text-warning"></i>
+                                </div>
+                                <div class="flex-grow-1 ms-3">
+                                    <h6 class="text-muted mb-1">Empleados Activos</h6>
+                                    <h4 class="mb-0 fw-bold" th:text="${totalEmpleados}">12</h4>
+                                    <small class="text-muted">+3 hoy</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-xl-3 col-md-6">
+                    <div class="card border-0 shadow-sm h-100">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center">
+                                <div class="flex-shrink-0 bg-danger bg-opacity-10 p-3 rounded-circle">
+                                    <i class="fas fa-pizza-slice fa-2x text-danger"></i>
+                                </div>
+                                <div class="flex-grow-1 ms-3">
+                                    <h6 class="text-muted mb-1">Productos</h6>
+                                    <h4 class="mb-0 fw-bold" th:text="${totalProductos}">45</h4>
+                                    <small class="text-muted">en catálogo</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sección de bienvenida y contenido principal -->
+            <div class="row g-4">
+                <!-- Columna izquierda - Bienvenida y gráfico -->
+                <div class="col-lg-8">
+                    <div class="card border-0 shadow-sm mb-4">
+                        <div class="card-body p-4">
+                            <div class="d-flex align-items-center mb-4">
+                                <div class="flex-shrink-0">
+                                    <img src="https://via.placeholder.com/80x80" class="rounded-circle border" alt="Avatar">
+                                </div>
+                                <div class="flex-grow-1 ms-3">
+                                    <h4 class="mb-1">¡Bienvenido a Pizza.NET!</h4>
+                                    <p class="text-muted mb-0">Sistema de gestión integral para pizzerías</p>
+                                </div>
+                            </div>
+                            
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <div class="bg-light p-3 rounded">
+                                        <h6 class="fw-semibold mb-2">Accesos Rápidos</h6>
+                                        <div class="d-grid gap-2">
+                                            <a th:href="@{/ventas}" class="btn btn-outline-primary text-start">
+                                                <i class="fas fa-shopping-cart me-2"></i>Nueva Venta
+                                            </a>
+                                            <a th:href="@{/productos}" class="btn btn-outline-success text-start">
+                                                <i class="fas fa-pizza-slice me-2"></i>Gestionar Productos
+                                            </a>
+                                            <a th:href="@{/empleados}" class="btn btn-outline-warning text-start">
+                                                <i class="fas fa-users me-2"></i>Gestionar Empleados
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="bg-light p-3 rounded">
+                                        <h6 class="fw-semibold mb-2">Estado del Sistema</h6>
+                                        <div class="d-flex justify-content-between mb-2">
+                                            <span><i class="fas fa-circle text-success me-2"></i>Sistema</span>
+                                            <span class="badge bg-success">Operativo</span>
+                                        </div>
+                                        <div class="d-flex justify-content-between mb-2">
+                                            <span><i class="fas fa-database me-2"></i>Base de Datos</span>
+                                            <span class="badge bg-success">Conectada</span>
+                                        </div>
+                                        <div class="d-flex justify-content-between">
+                                            <span><i class="fas fa-clock me-2"></i>Última actualización</span>
+                                            <span class="text-muted">hace 2 min</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Gráfico de ventas (simulado) -->
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-header bg-white py-3">
+                            <h5 class="card-title mb-0">
+                                <i class="fas fa-chart-line me-2 text-primary"></i>Ventas Semanales
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="bg-light p-4 rounded text-center">
+                                <i class="fas fa-chart-bar fa-4x text-muted mb-3"></i>
+                                <p class="text-muted">Gráfico de ventas - Últimos 7 días</p>
+                                <!-- Aquí iría un gráfico real con Chart.js o similar -->
+                                <div class="d-flex justify-content-between align-items-end mt-3" style="height: 150px;">
+                                    <div style="width: 12%; height: 60px; background: #4A90E2; border-radius: 8px 8px 0 0;"></div>
+                                    <div style="width: 12%; height: 90px; background: #4A90E2; border-radius: 8px 8px 0 0;"></div>
+                                    <div style="width: 12%; height: 75px; background: #4A90E2; border-radius: 8px 8px 0 0;"></div>
+                                    <div style="width: 12%; height: 110px; background: #4A90E2; border-radius: 8px 8px 0 0;"></div>
+                                    <div style="width: 12%; height: 85px; background: #4A90E2; border-radius: 8px 8px 0 0;"></div>
+                                    <div style="width: 12%; height: 130px; background: #4A90E2; border-radius: 8px 8px 0 0;"></div>
+                                    <div style="width: 12%; height: 95px; background: #4A90E2; border-radius: 8px 8px 0 0;"></div>
+                                </div>
+                                <div class="d-flex justify-content-between mt-2">
+                                    <span class="small">Lun</span>
+                                    <span class="small">Mar</span>
+                                    <span class="small">Mié</span>
+                                    <span class="small">Jue</span>
+                                    <span class="small">Vie</span>
+                                    <span class="small">Sáb</span>
+                                    <span class="small">Dom</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Columna derecha - Actividad reciente y promociones -->
+                <div class="col-lg-4">
+                    <!-- Últimas ventas -->
+                    <div class="card border-0 shadow-sm mb-4">
+                        <div class="card-header bg-white py-3">
+                            <h5 class="card-title mb-0">
+                                <i class="fas fa-history me-2 text-primary"></i>Ventas Recientes
+                            </h5>
+                        </div>
+                        <div class="card-body p-0">
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <small class="text-muted">#V001</small>
+                                        <div class="fw-semibold">Juan Pérez</div>
+                                    </div>
+                                    <span class="badge bg-success">$450.00</span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <small class="text-muted">#V002</small>
+                                        <div class="fw-semibold">María García</div>
+                                    </div>
+                                    <span class="badge bg-success">$320.00</span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <small class="text-muted">#V003</small>
+                                        <div class="fw-semibold">Carlos López</div>
+                                    </div>
+                                    <span class="badge bg-success">$780.00</span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <small class="text-muted">#V004</small>
+                                        <div class="fw-semibold">Ana Martínez</div>
+                                    </div>
+                                    <span class="badge bg-success">$210.00</span>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="card-footer bg-white text-center">
+                            <a th:href="@{/ventas}" class="text-decoration-none small">Ver todas las ventas</a>
+                        </div>
+                    </div>
+
+                    <!-- Promociones -->
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-header bg-white py-3">
+                            <h5 class="card-title mb-0">
+                                <i class="fas fa-tag me-2 text-primary"></i>Promociones Activas
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="bg-warning bg-opacity-10 p-3 rounded mb-3">
+                                <h6 class="fw-bold mb-2">🍕 2x1 en pizzas</h6>
+                                <p class="small text-muted mb-0">Válido todos los martes</p>
+                            </div>
+                            <div class="bg-danger bg-opacity-10 p-3 rounded mb-3">
+                                <h6 class="fw-bold mb-2">🥤 Refresco gratis</h6>
+                                <p class="small text-muted mb-0">En compras mayores a $200</p>
+                            </div>
+                            <div class="bg-success bg-opacity-10 p-3 rounded">
+                                <h6 class="fw-bold mb-2">🎉 Happy hour</h6>
+                                <p class="small text-muted mb-0">20% descuento de 6-8pm</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </main>
 
-    <!-- Script -->
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const hamburger = document.querySelector('.hamburger');
             const sidebar = document.querySelector('.sidebar');
-
+            const btnVolver = document.querySelector('.btn-volver');
+            
+            // Toggle sidebar
             hamburger.addEventListener('click', () => {
-                sidebar.classList.toggle('menu-open');
+                sidebar.classList.toggle('active');
             });
-        });
-    </script>
 
+            // Cerrar sidebar al hacer click fuera en móvil
+            document.addEventListener('click', (e) => {
+                if (window.innerWidth <= 768) {
+                    if (!sidebar.contains(e.target) && !hamburger.contains(e.target)) {
+                        sidebar.classList.remove('active');
+                    }
+                }
+            });
+
+            // Mostrar botón volver solo si hay historial
+            if (window.history.length > 1) {
+                btnVolver.style.display = 'flex';
+            }
+        });
+
+        // Datos dinámicos (simulados, estos vendrían del backend)
+        const totalEmpleados = /*[[${totalEmpleados}]]*/ 12;
+        const totalProductos = /*[[${totalProductos}]]*/ 45;
+    </script>
 </body>
 </html>

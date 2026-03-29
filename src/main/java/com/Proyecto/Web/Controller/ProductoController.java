@@ -74,7 +74,7 @@ public String listar(@RequestParam(required = false) String categoria,
                 if (!imagenFile.isEmpty()) {
                     String nombreArchivo = imagenFile.getOriginalFilename();
 
-                    Path ruta = Paths.get("src/main/resources/static/uploads/" + nombreArchivo);
+                    Path ruta = Paths.get("C:/imagenes_productos/" + nombreArchivo);
                     Files.createDirectories(ruta.getParent());
                     Files.write(ruta, imagenFile.getBytes());
 

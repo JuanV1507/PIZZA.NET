@@ -3,228 +3,390 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Lista de Productos</title>
-    <!-- ASEGURA EL RESPONSIVE EN PANTALLAS MENEROS A 480 PX-->
+    <title>Lista de Productos - Pizza.NET</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Font Awesome (para iconos) -->
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Iconos Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-
-    <!-- Estilos CSS personalizados -->
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- CSS Personalizado (manteniendo tus estilos originales) -->
     <link rel="stylesheet" th:href="@{/css/styleProductos.css}">
     <link rel="stylesheet" th:href="@{/css/layout-global.css}">
-    <link rel="stylesheet" th:href="@{/css/styleHome.css}">
+    <style>
+        /* Ajustes para integrar Bootstrap */
+        .table td, .table th {
+            vertical-align: middle;
+        }
+        .btn-group-sm > .btn {
+            padding: 0.25rem 0.5rem;
+        }
+        .badge {
+            font-weight: 500;
+        }
+    </style>
 </head>
 
-<body>
-    <!-- BOTÓN HAMBURGUESA SIEMPRE PRESENTE -->
-    <button class="hamburger" aria-label="Abrir Menú">
+<body class="bg-light">
+    <!-- BOTÓN HAMBURGUESA -->
+    <button class="hamburger btn btn-dark position-fixed m-3" style="z-index: 1001;" aria-label="Abrir Menú">
         <i class="fas fa-bars"></i>
     </button>
 
-    <!-- SIDEBAR GLOBAL FIJO -->
-    <aside class="sidebar">
-        <div class="header-sidebar">
-            <div class="logo">PIZZA.NET</div>
+    <!-- SIDEBAR GLOBAL MEJORADO (con tus clases pero Bootstrap) -->
+    <aside class="sidebar bg-dark text-white">
+        <div class="header-sidebar p-4 text-center border-bottom border-secondary">
+            <div class="logo fs-4 fw-bold text-warning">🍕 PIZZA.NET</div>
         </div>
 
-        <nav class="nav-menu">
-            <ul>
-                <li><a th:href="@{/home}"><i class="fas fa-home"></i> Inicio</a></li>
-                <li><a th:href="@{/empleados}"><i class="fas fa-users"></i> Empleados</a></li>
-                <li><a th:href="@{/ventas}"><i class="fas fa-shopping-cart"></i> Ventas</a></li>
-                <li><a th:href="@{/reportes}"><i class="fas fa-chart-line"></i> Reportes</a></li>
-                <li><a th:href="@{/productos}"><i class="fas fa-pizza-slice"></i> Productos</a></li>
+        <nav class="nav-menu mt-4">
+            <ul class="nav flex-column">
+                <li class="nav-item">
+                    <a th:href="@{/home}" class="nav-link text-white-50 hover-bg-secondary">
+                        <i class="fas fa-home me-3"></i> Inicio
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a th:href="@{/empleados}" class="nav-link text-white-50 hover-bg-secondary">
+                        <i class="fas fa-users me-3"></i> Empleados
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a th:href="@{/ventas}" class="nav-link text-white-50 hover-bg-secondary">
+                        <i class="fas fa-shopping-cart me-3"></i> Ventas
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a th:href="@{/reportes}" class="nav-link text-white-50 hover-bg-secondary">
+                        <i class="fas fa-chart-line me-3"></i> Reportes
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a th:href="@{/productos}" class="nav-link text-white bg-primary bg-opacity-25">
+                        <i class="fas fa-pizza-slice me-3"></i> Productos
+                    </a>
+                </li>
             </ul>
         </nav>
 
-        <div class="extra-links">
-            <a href="#">Cerrar Ventas</a>
-            <a href="#">Cerrar Sesión</a>
+        <div class="extra-links position-absolute bottom-0 w-100 p-4 border-top border-secondary">
+            <a href="#" class="d-block text-white-50 text-decoration-none mb-3">
+                <i class="fas fa-lock me-2"></i>Cerrar Ventas
+            </a>
+            <a href="#" class="d-block text-white-50 text-decoration-none">
+                <i class="fas fa-sign-out-alt me-2"></i>Cerrar Sesión
+            </a>
         </div>
     </aside>
 
     <!-- Botón REGRESAR (solo móvil) -->
-    <button class="btn-volver" onclick="history.back()">
+    <button class="btn-volver btn btn-light rounded-circle shadow-sm position-fixed" 
+            onclick="history.back()" style="bottom: 20px; right: 20px; z-index: 1000;">
         <i class="fas fa-arrow-left"></i>
     </button>
-    <main class="main-content-wrapper">
-        <div class="productos-page">
 
-            <!-- CONTENEDOR GENERAL PARA FORM + TABLA -->
+    <main class="main-content-wrapper p-4">
+        <div class="productos-page">
+            <!-- Título con breadcrumb estilo Bootstrap -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1 class="h3 mb-0">
+                    <i class="fas fa-pizza-slice me-2 text-primary"></i>Gestión de Productos
+                </h1>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb mb-0">
+                        <li class="breadcrumb-item"><a th:href="@{/home}" class="text-decoration-none">Inicio</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Productos</li>
+                    </ol>
+                </nav>
+            </div>
+
+            <!-- CONTENEDOR GENERAL PARA FORM + TABLA (manteniendo tu estructura) -->
             <div class="productos-layout">
 
                 <!-- ================= FORMULARIO A LA IZQUIERDA ================= -->
                 <div class="form-section">
-                    <div class="card form-card">
-                        <h2>Nuevo producto</h2>
+                    <div class="card form-card shadow-sm border-0">
+                        <h2 class="text-success border-bottom pb-2">
+                            <i class="fas fa-plus-circle me-2"></i>Nuevo producto
+                        </h2>
 
                         <form th:action="@{/productos/guardar}" th:object="${producto}" method="post"
-                            enctype="multipart/form-data">
+                              enctype="multipart/form-data" class="needs-validation" novalidate>
                             <input type="hidden" th:field="*{id_producto}" />
 
-                            <div class="form-group">
-                                <label>Nombre:</label>
-                                <input type="text" th:field="*{nombre}" required>
+                            <div class="form-group mb-3">
+                                <label class="fw-semibold">
+                                    <i class="fas fa-tag me-2 text-secondary"></i>Nombre:
+                                </label>
+                                <input type="text" class="form-control" th:field="*{nombre}" placeholder="Ingrese el nombre del producto" required>
+                                <div class="invalid-feedback">El nombre es requerido</div>
                             </div>
 
-                            <div class="form-group">
-                                <label>Descripcion:</label>
-                                <input type="text" th:field="*{descripcion}" required>
+                            <div class="form-group mb-3">
+                                <label class="fw-semibold">
+                                    <i class="fas fa-align-left me-2 text-secondary"></i>Descripción:
+                                </label>
+                                <input type="text" class="form-control" th:field="*{descripcion}" placeholder="Ingrese la descripción del producto" required>
+                                <div class="invalid-feedback">La descripción es requerida</div>
                             </div>
 
-                            <div class="form-group">
-                                <label>Categoría:</label>
-                                <select th:field="*{categoria}" class="form-control">
+                            <div class="form-group mb-3">
+                                <label class="fw-semibold">
+                                    <i class="fas fa-list me-2 text-secondary"></i>Categoría:
+                                </label>
+                                <select th:field="*{categoria}" class="form-select" aria-label="Seleccionar categoría" required>
                                     <option value="">-- Seleccionar --</option>
                                     <option th:each="cat : ${categorias}" th:value="${cat}" th:text="${cat}"></option>
                                 </select>
+                                <div class="invalid-feedback">Seleccione una categoría</div>
                             </div>
 
-                            <div class="form-group">
-                                <label>Precio:</label>
-                                <input type="number" step="0.01" th:field="*{precio}" required>
+                            <div class="row g-2 mb-3">
+                                    <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="fw-semibold">
+                                            <i class="fas fa-dollar-sign me-2 text-secondary"></i>Precio:
+                                        </label>
+                                        <div class="input-group">
+                                            <span class="input-group-text">$</span>
+                                            <input type="number" step="0.01" class="form-control" th:field="*{precio}" placeholder="Ingrese el precio" required>
+                                        </div>
+                                        <div class="invalid-feedback">Precio requerido</div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="fw-semibold">
+                                            <i class="fas fa-cubes me-2 text-secondary"></i>Stock:
+                                        </label>
+                                        <input type="number" class="form-control" th:field="*{stock}" min="0" placeholder="Ingrese la cantidad en stock" required>
+                                        <div class="invalid-feedback">Stock requerido</div>
+                                    </div>
+                                </div>
                             </div>
 
-                            <div class="form-group">
-                                <label>Stock:</label>
-                                <input type="number" th:field="*{stock}" min="0" required>
-                            </div>
-
-                            <div class="form-group">
-                                <label>Imagen del producto:</label>
-                                <div th:if="${producto.imagen}">
-                                    <img th:src="@{'/uploads/' + ${producto.imagen}}" alt="imagen" width="80"
-                                        style="display:block;margin-bottom:8px;">
+                            <div class="form-group mb-3">
+                                <label class="fw-semibold">
+                                    <i class="fas fa-image me-2 text-secondary"></i>Imagen del producto:
+                                </label>
+                                <div th:if="${producto.imagen}" class="mb-2 text-center">
+                                    <img th:src="@{'/imagenes/' + ${producto.imagen}}" alt="imagen" width="80" 
+                                         class="img-thumbnail" style="max-width: 120px;">
+                                    <p class="small text-muted mt-1">Imagen actual</p>
+                                </div>
+                                <input type="file" name="imagenFile" accept="image/*" class="form-control" title="Seleccionar imagen del producto">
+                                <div class="form-text">Formatos permitidos: JPG, PNG, GIF</div>
+                                </div>
+                                
+                                <div class="form-group mb-4">
+                                    <label class="fw-semibold d-block mb-2">
+                                        <i class="fas fa-check-circle me-2 text-secondary"></i>Disponibilidad
+                                    </label>
+                                    <div class="btn-group w-100" role="group">
+                                        <input type="radio" class="btn-check" name="activo" id="disponible-si" value="true" th:field="*{activo}"
+                                            th:checked="${producto.activo}" autocomplete="off">
+                                        <label class="btn btn-outline-success" for="disponible-si">
+                                            <i class="fas fa-check-circle me-1"></i> Disponible
+                                        </label>
+                                
+                                        <input type="radio" class="btn-check" name="activo" id="disponible-no" value="false" th:field="*{activo}"
+                                            th:checked="${!producto.activo}" autocomplete="off">
+                                        <label class="btn btn-outline-danger" for="disponible-no">
+                                            <i class="fas fa-times-circle me-1"></i> No disponible
+                                        </label>
+                                    </div>
                                 </div>
 
-                                <!-- quitar required para que no obligue a subir nueva imagen en editar -->
-                                <input type="file" name="imagenFile" accept="image/*">
-                            </div>
-
-                            <div class="form-group">
-                                <label>Disponible:</label>
-                                <input type="checkbox" th:field="*{activo}">
-                            </div>
-
-                            <button type="submit" class="btn-guardar">
-                                <i class="fa-solid fa-floppy-disk"></i> Guardar
+                            <button type="submit" class="btn btn-success w-100 py-2">
+                                <i class="fa-solid fa-floppy-disk me-2"></i> Guardar Producto
                             </button>
-
                         </form>
                     </div>
                 </div>
                 <!-- ================= FIN FORMULARIO ================= -->
 
-
                 <!-- ================= TABLA A LA DERECHA ================= -->
                 <div class="tabla-section">
+                    <div class="card shadow-sm border-0">
+                        <div class="card-header bg-white py-3">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h5 class="card-title mb-0">
+                                    <i class="fas fa-list me-2 text-primary"></i>Lista de Productos
+                                </h5>
+                                <span class="badge bg-primary" th:text="${#lists.size(productos)} + ' registros'"></span>
+                            </div>
 
-                    <div class="header">
-                        <h1>Lista de Productos</h1>
+                            <!-- Filtros (manteniendo tu estructura) -->
+                            <div class="mt-3">
+                                <form method="get" action="/productos" class="filtros">
+                                    <div class="filtro-grupo">
+                                        <label class="fw-semibold">Categoría</label>
+                                        <select name="categoria" class="form-select form-select-sm" aria-label="Filtrar por categoría">
+                                            <option value="">-- Todas --</option>
+                                            <option th:each="cat : ${categorias}" 
+                                                    th:value="${cat}" th:text="${cat}"
+                                                    th:selected="${cat == categoriaSeleccionada}">
+                                            </option>
+                                        </select>
+                                    </div>
 
+                                    <div class="filtro-grupo">
+                                        <label class="fw-semibold">Disponible</label>
+                                        <select name="activo" class="form-select form-select-sm" aria-label="Filtrar por disponibilidad">
+                                            <option value="">-- Todos --</option>
+                                            <option value="true" th:selected="${activoSeleccionado == true}">Disponible</option>
+                                            <option value="false" th:selected="${activoSeleccionado == false}">No disponible</option>
+                                        </select>
+                                    </div>
+
+                                    <button type="submit" class="btn btn-primary btn-sm">
+                                        <i class="fa-solid fa-filter me-1"></i> Filtrar
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+
+                        <div class="card-body p-0">
+                            <div class="table-container">
+                                <table class="table table-hover align-middle mb-0 productos-table">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Nombre</th>
+                                            <th>Descripción</th>
+                                            <th>Categoría</th>
+                                            <th>Precio</th>
+                                            <th>Stock</th>
+                                            <th>Imagen</th>
+                                            <th>Disponible</th>
+                                            <th>Acciones</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr th:each="producto : ${productos}">
+                                            <td><span class="badge bg-secondary" th:text="${producto.id_producto}">1</span></td>
+                                            <td class="fw-semibold" th:text="${producto.nombre}">Producto</td>
+                                            <td><small th:text="${producto.descripcion}">Descripción</small></td>
+                                            <td>
+                                                <span class="badge bg-info" th:text="${producto.categoria}">Categoría</span>
+                                            </td>
+                                            <td class="fw-bold text-primary" 
+                                                th:text="'$' + ${#numbers.formatDecimal(producto.precio, 1, 'COMMA', 2, 'POINT')}">
+                                                $0.00
+                                            </td>
+                                            <td>
+                                                <span class="badge" 
+                                                      th:classappend="${producto.stock > 10 ? 'bg-success' : 
+                                                                       (producto.stock > 0 ? 'bg-warning' : 'bg-danger')}"
+                                                      th:text="${producto.stock} + ' und'">
+                                                    10 und
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <img th:src="@{'/imagenes/' + ${producto.imagen}}"
+                                                     width="50" height="50" 
+                                                     class="rounded border"
+                                                     style="object-fit: cover;"
+                                                     onerror="this.src='https://via.placeholder.com/50x50?text=No+Image'">
+                                            </td>
+                                            <td>
+                                                <span class="badge" 
+                                                      th:classappend="${producto.activo} ? 'bg-success' : 'bg-danger'"
+                                                      th:text="${producto.activo} ? 'Sí' : 'No'">
+                                                    Sí
+                                                </span>
+                                            </td>
+                                            <td class="acciones">
+                                                <div class="btn-group btn-group-sm" role="group">
+                                                    <a th:href="@{'/productos/editar/' + ${producto.id_producto}}"
+                                                       class="btn btn-outline-primary" title="Editar">
+                                                        <i class="fas fa-edit"></i>
+                                                    </a>
+                                                    <a th:href="@{'/productos/eliminar/' + ${producto.id_producto}}"
+                                                       class="btn btn-outline-danger" title="Eliminar"
+                                                       onclick="return confirm('¿Está seguro de eliminar este producto?')">
+                                                        <i class="fas fa-trash"></i>
+                                                    </a>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            
+                            <!-- Mensaje si no hay productos -->
+                            <div th:if="${#lists.isEmpty(productos)}" class="text-center py-5">
+                                <i class="fas fa-box-open fa-3x text-muted mb-3"></i>
+                                <p class="text-muted">No hay productos disponibles</p>
+                            </div>
+                        </div>
                     </div>
-                       
-                            <form method="get" action="/productos" class="filtros">
-                                <div class="filtro-grupo">
-                                    <label>Categoría</label>
-                                    <select name="categoria">
-                                        <option value="">-- Todas --</option>
-                                        <option th:each="cat : ${categorias}" th:value="${cat}" th:text="${cat}"
-                                            th:selected="${cat == categoriaSeleccionada}">
-                                        </option>
-                                    </select>
-                                </div>
-
-                                <div class="filtro-grupo">
-                                    <label>Disponible</label>
-                                    <select name="activo">
-                                        <option value="">-- Todos --</option>
-                                        <option value="true" th:selected="${activoSeleccionado == true}">
-                                            Disponible
-                                        </option>
-                                        <option value="false" th:selected="${activoSeleccionado == false}">
-                                            No disponible
-                                        </option>
-                                    </select>
-                                </div>
-
-                                <button type="submit" class="btn-filtrar">
-                                    <i class="fa-solid fa-filter"></i> Filtrar
-                                </button>
-                            </form>
-                        
-
-                    <div class="table-container">
-                        <table class="productos-table">
-                            <thead>
-                                <tr>
-                                    <th>ID</th>
-                                    <th>Nombre</th>
-                                    <th>Descripción</th>
-                                    <th>Categoría</th>
-                                    <th>Precio</th>
-                                    <th>Stock</th>
-                                    <th>Imagen</th>
-                                    <th>Disponible</th>
-                                    <th>Acciones</th>
-                                </tr>
-                            </thead>
-
-                            <tbody>
-                                <tr th:each="producto : ${productos}">
-                                    <td th:text="${producto.id_producto}"></td>
-                                    <td th:text="${producto.nombre}"></td>
-                                    <td th:text="${producto.Descripcion}"></td>
-                                    <td th:text="${producto.Categoria}"></td>
-                                    <td th:text="${producto.Precio}"></td>
-                                    <td th:text="${producto.Stock}"></td>
-
-                                    <td>
-                                        <img th:src="@{'/uploads/' + ${producto.imagen}}" width="60" height="60"
-                                            style="object-fit: cover; border-radius: 8px;">
-                                    </td>
-
-                                    <td th:text="${producto.activo ? 'Sí' : 'No'}"></td>
-
-                                    <td class="acciones">
-                                        <a th:href="@{'/productos/editar/' + ${producto.id_producto}}"
-                                            class="btn-editar">Editar</a>
-                                        <a th:href="@{'/productos/eliminar/' + ${producto.id_producto}}"
-                                            class="btn-eliminar">
-                                            Eliminar
-                                        </a>
-
-
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-
                 </div>
                 <!-- ================= FIN TABLA ================= -->
-                <div id="alerta-flotante" th:if="${error}" th:text="${error}" class="alerta-flotante error">
-                </div>
-
-                <div id="alerta-flotante" th:if="${success}" th:text="${success}" class="alerta-flotante success">
-                </div>
-
+                
+                <!-- Alertas flotantes -->
+                <div id="alerta-flotante" th:if="${error}" th:text="${error}" class="alerta-flotante error"></div>
+                <div id="alerta-flotante" th:if="${success}" th:text="${success}" class="alerta-flotante success"></div>
 
             </div> <!-- FIN productos-layout -->
-
         </div>
     </main>
 
-</body>
-<script>
-    document.addEventListener('DOMContentLoaded', () => {
-        const hamburger = document.querySelector('.hamburger');
-        const sidebar = document.querySelector('.sidebar');
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const hamburger = document.querySelector('.hamburger');
+            const sidebar = document.querySelector('.sidebar');
 
-        hamburger.addEventListener('click', () => {
-            sidebar.classList.toggle('menu-open');
+            hamburger.addEventListener('click', () => {
+                sidebar.classList.toggle('menu-open');
+                sidebar.classList.toggle('active');
+            });
+
+            // Validación de formulario Bootstrap
+            var forms = document.querySelectorAll('.needs-validation');
+            Array.prototype.slice.call(forms).forEach(function(form) {
+                form.addEventListener('submit', function(event) {
+                    if (!form.checkValidity()) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+                    form.classList.add('was-validated');
+                }, false);
+            });
+
+            // Mostrar alertas con SweetAlert2
+            const successMsg = /*[[${success}]]*/ '';
+            const errorMsg = /*[[${error}]]*/ '';
+            
+            if (successMsg) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Éxito',
+                    text: successMsg,
+                    timer: 3000,
+                    showConfirmButton: false,
+                    position: 'top-end',
+                    toast: true
+                });
+            }
+            
+            if (errorMsg) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: errorMsg,
+                    timer: 4000,
+                    showConfirmButton: false,
+                    position: 'top-end',
+                    toast: true
+                });
+            }
         });
-    });
-</script>
-
+    </script>
+</body>
 </html>

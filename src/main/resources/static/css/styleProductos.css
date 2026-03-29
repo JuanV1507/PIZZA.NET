@@ -382,3 +382,48 @@
         width: 100%;
     }
 }
+
+/* ================================================= */
+/* MEJORAS PARA INTEGRACIÓN CON BOOTSTRAP */
+/* ================================================= */
+
+/* Ajustes para los badges */
+.badge.bg-info {
+    background-color: #e3f2fd !important;
+    color: #0d6efd;
+}
+
+/* Hover en filas de tabla */
+.table-hover tbody tr:hover {
+    background-color: rgba(0,0,0,0.02);
+}
+
+/* Botones de acción */
+.btn-outline-primary, .btn-outline-danger {
+    border-width: 1px;
+}
+
+.btn-outline-primary:hover, .btn-outline-danger:hover {
+    transform: translateY(-1px);
+}
+
+/* SweetAlert2 toast */
+.swal2-toast {
+    padding: 12px 20px !important;
+}
+
+/* Animación para alertas flotantes (tus alertas originales) */
+.alerta-flotante {
+    animation: slideInRight 0.3s ease-out;
+}
+
+@keyframes slideInRight {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}

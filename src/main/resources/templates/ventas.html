@@ -1,140 +1,462 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Ventas</title>
+    <title>Ventas - Pizza.NET</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Iconos Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- CSS Personalizado -->
     <link rel="stylesheet" th:href="@{/css/styleVenta.css}">
     <link rel="stylesheet" th:href="@{/css/layout-global.css}">
-    <link rel="stylesheet" th:href="@{/css/styleHome.css}">
-
-    <script th:src="@{/Js/JSVentas.js}"></script>
-    <!-- Iconos -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-
 </head>
-<body>
-    <!-- BOTÓN HAMBURGUESA SIEMPRE PRESENTE -->
-<button class="hamburger" aria-label="Abrir Menú">
-    <i class="fas fa-bars"></i>
-</button>
+<body class="bg-light">
+    <!-- BOTÓN HAMBURGUESA -->
+    <button class="hamburger btn btn-dark position-fixed m-3" aria-label="Abrir Menú">
+        <i class="fas fa-bars"></i>
+    </button>
 
-<!-- SIDEBAR GLOBAL FIJO -->
-<aside class="sidebar">
-    <div class="header-sidebar">
-        <div class="logo">PIZZA.NET</div>
-    </div>
+    <!-- SIDEBAR -->
+    <aside class="sidebar bg-dark text-white">
+        <div class="header-sidebar p-4 text-center border-bottom border-secondary">
+            <div class="logo fs-4 fw-bold text-warning">🍕 PIZZA.NET</div>
+        </div>
 
-    <nav class="nav-menu">
-        <ul>
-            <li><a th:href="@{/home}"><i class="fas fa-home"></i> Inicio</a></li>
-            <li><a th:href="@{/empleados}"><i class="fas fa-users"></i> Empleados</a></li>
-            <li><a th:href="@{/ventas}"><i class="fas fa-shopping-cart"></i> Ventas</a></li>
-            <li><a th:href="@{/reportes}"><i class="fas fa-chart-line"></i> Reportes</a></li>
-            <li><a th:href="@{/productos}"><i class="fas fa-pizza-slice"></i> Productos</a></li>
-        </ul>
-    </nav>
+        <nav class="nav-menu mt-4">
+            <ul class="nav flex-column">
+                <li class="nav-item">
+                    <a th:href="@{/home}" class="nav-link text-white-50 hover-bg-secondary">
+                        <i class="fas fa-home me-3"></i> Inicio
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a th:href="@{/empleados}" class="nav-link text-white-50 hover-bg-secondary">
+                        <i class="fas fa-users me-3"></i> Empleados
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a th:href="@{/ventas}" class="nav-link text-white bg-primary bg-opacity-25">
+                        <i class="fas fa-shopping-cart me-3"></i> Ventas
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a th:href="@{/reportes}" class="nav-link text-white-50 hover-bg-secondary">
+                        <i class="fas fa-chart-line me-3"></i> Reportes
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a th:href="@{/productos}" class="nav-link text-white-50 hover-bg-secondary">
+                        <i class="fas fa-pizza-slice me-3"></i> Productos
+                    </a>
+                </li>
+            </ul>
+        </nav>
 
-    <div class="extra-links">
-        <a href="#">Cerrar Ventas</a>
-        <a href="#">Cerrar Sesión</a>
-    </div>
-</aside>
+        <div class="extra-links position-absolute bottom-0 w-100 p-4 border-top border-secondary">
+            <a href="#" class="d-block text-white-50 text-decoration-none mb-3">
+                <i class="fas fa-lock me-2"></i>Cerrar Ventas
+            </a>
+            <a href="#" class="d-block text-white-50 text-decoration-none">
+                <i class="fas fa-sign-out-alt me-2"></i>Cerrar Sesión
+            </a>
+        </div>
+    </aside>
 
-<!-- Botón REGRESAR (solo móvil) -->
-<button class="btn-volver" onclick="history.back()">
-    <i class="fas fa-arrow-left"></i>
-</button>
+    <!-- Botón REGRESAR (móvil) -->
+    <button type="button" class="btn-volver btn btn-light rounded-circle shadow-sm position-fixed" 
+            onclick="history.back()">
+        <i class="fas fa-arrow-left"></i>
+    </button>
 
-    <div class="container">
-        <!-- Productos -->
-        <section class="productos">
-            <h2>Productos</h2>
+    <main class="main-content-wrapper p-4 main-content">
+    <div class="container-fluid px-0">
+        <!-- Título y breadcrumb (igual) -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="h3 mb-0 text-gray-800">
+                <i class="fas fa-shopping-cart me-2 text-primary"></i>Punto de Venta
+            </h1>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb mb-0">
+                    <li class="breadcrumb-item"><a th:href="@{/home}">Inicio</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Ventas</li>
+                </ol>
+            </nav>
+        </div>
 
-                <div class="vcard-list">
-                <div class="vcard" th:each="producto : ${productos}">
-                    
-                    <!-- CORRECTO PARA TU PROYECTO -->
-                    <img th:src="@{'/uploads/' + ${producto.imagen}}" alt="Producto">
+        <!-- Filtros (igual) -->
+        <div class="card shadow-sm border-0 mb-4">
+            <div class="card-body">
+                <form method="get" action="/ventas" class="row g-3 align-items-end">
+                    <div class="col-md-4">
+                        <label class="form-label fw-semibold">
+                            <i class="fas fa-tag me-2 text-secondary"></i>Categoría
+                        </label>
+                        <select name="categoria" class="form-select" aria-label="Filtrar por categoría">
+                            <option value="">-- Todas las categorías --</option>
+                            <option th:each="cat : ${categorias}"
+                                    th:value="${cat}"
+                                    th:text="${#strings.capitalize(cat.name().toLowerCase())}">
+                            </option>
+                        </select>
+                    </div>
 
-                    <div class="nombre" th:text="${producto.nombre}"></div>
+                    <div class="col-md-4">
+                        <label class="form-label fw-semibold">
+                            <i class="fas fa-check-circle me-2 text-secondary"></i>Disponibilidad
+                        </label>
+                        <select name="activo" class="form-select" aria-label="Filtrar por disponibilidad">
+                            <option value="">-- Todos --</option>
+                            <option value="true" th:selected="${activoSeleccionado == true}">Disponible</option>
+                            <option value="false" th:selected="${activoSeleccionado == false}">No disponible</option>
+                        </select>
+                    </div>
 
-                    <div class="precio" th:text="'$' + ${producto.precio}"></div>
+                    <div class="col-md-4">
+                        <button type="submit" class="btn btn-primary w-100 py-2">
+                            <i class="fa-solid fa-filter me-2"></i>Aplicar Filtros
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
 
-                <button type="button"
-                    class="btn-agregar"
-                    th:attr="data-id=${producto.id_producto},
-                    data-nombre=${producto.nombre},
-                    data-precio=${producto.precio}"
-                    onclick="activarControles(this)">
-                    Agregar
-                    </button>
-
-
+        <!-- Layout principal: Productos y Carrito -->
+        <div class="row g-4">
+            <!-- Productos (izquierda) - CON SCROLL INDEPENDIENTE -->
+            <div class="col-lg-8 productos-container">
+                <div class="card shadow-sm border-0 h-100">
+                    <div class="card-header bg-white py-3">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h5 class="card-title mb-0">
+                                <i class="fas fa-pizza-slice me-2 text-primary"></i>Productos Disponibles
+                            </h5>
+                            <span class="badge bg-primary" th:text="${#lists.size(productos)} + ' productos'"></span>
+                        </div>
+                    </div>
+                    <div class="card-body overflow-auto carrito-scroll">
+                        <div class="row g-3" id="productos-container">
+                            <div class="col-md-6 col-lg-4" th:each="producto : ${productos}">
+                                <div class="card h-100 border-0 shadow-sm producto-card">
+                                    <div class="position-relative">
+                                        <img th:src="@{'/imagenes/' + ${producto.imagen}}" 
+                                             class="card-img-top producto-img" 
+                                             alt="Producto">
+                                        <span class="position-absolute top-0 end-0 m-2 badge bg-success" 
+                                              th:if="${producto.activo}">Disponible</span>
+                                        <span class="position-absolute top-0 end-0 m-2 badge bg-danger" 
+                                              th:unless="${producto.activo}">No disponible</span>
+                                    </div>
+                                    <div class="card-body p-3">
+                                        <h6 class="card-title fw-bold text-truncate" th:text="${producto.nombre}">Producto</h6>
+                                        <p class="text-primary fw-bold fs-6 mb-2" th:text="'$' + ${#numbers.formatDecimal(producto.precio, 1, 'COMMA', 2, 'POINT')}">$0.00</p>
+                                        
+                                        <!-- Controles de cantidad -->
+                                        <div class="d-flex justify-content-center gap-2 mb-2">
+                                            <button type="button" class="btn-restar" 
+                                                    th:attr="data-id=${producto.id_producto}"
+                                                    onclick="cambiarCantidad(this, -1)">−</button>
+                                            <input type="number" class="form-control text-center cantidad-input" 
+                                                   th:id="'cantidad-' + ${producto.id_producto}"
+                                                   value="0" min="1" max="99" readonly
+                                                   title="Cantidad del producto"
+                                                   placeholder="Cantidad">
+                                            <button type="button" class="btn-sumar" 
+                                                    th:attr="data-id=${producto.id_producto}"
+                                                    onclick="cambiarCantidad(this, 1)">+</button>
+                                        </div>
+                                        
+                                        <button type="button" class="btn btn-success w-100 btn-sm"
+                                                th:attr="data-id=${producto.id_producto},
+                                                          data-nombre=${producto.nombre},
+                                                          data-precio=${producto.precio}"
+                                                onclick="agregarAlCarrito(this)">
+                                            <i class="fas fa-cart-plus me-1"></i>Agregar
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+            
+                        <!-- Mensaje si no hay productos -->
+                        <div class="text-center py-5" th:if="${#lists.isEmpty(productos)}">
+                            <i class="fas fa-box-open fa-3x text-muted mb-3"></i>
+                            <p class="text-muted">No hay productos disponibles</p>
+                        </div>
+                    </div>
                 </div>
-             </div>
-
-        </section>
-
-
-
-
-        <!-- Carrito y Cliente -->
-        <section class="carrito-y-cliente">
-            <!-- Carrito -->
-            <div class="carrito">
-                <h2>Carrito</h2>
-                <div class="folio">Folio: <span id="folio-numero">000123</span></div>
-                <ul class="carrito-lista">
-                    <!-- Ejemplo de item en carrito -->
-                    <li>
-                        <span class="nombre">Hamburguesa</span>
-                        <span class="cantidad">x2</span>
-                        <span class="precio">$160.00</span>
-                        <button title="Eliminar">&#10005;</button>
-                    </li>
-                    <li>
-                        <span class="nombre">Refresco</span>
-                        <span class="cantidad">x1</span>
-                        <span class="precio">$25.00</span>
-                        <button title="Eliminar">&#10005;</button>
-                    </li>
-                </ul>
-                <div class="carrito-total">Total: $185.00</div>
             </div>
 
-            <!-- Información del Cliente -->
-            <div class="cliente-info">
-                <h2>Información del Cliente</h2>
-                <label for="nombre">Nombre</label>
-                <input type="text" id="nombre" placeholder="Nombre del cliente">
-
-                <label for="telefono">Teléfono</label>
-                <input type="tel" id="telefono" placeholder="Ej. 5551234567">
-
-                <label>Tipo de orden</label>
-                <div class="opciones">
-                    <label><input type="radio" name="tipo-orden" value="comedor" checked> Comedor</label>
-                    <label><input type="radio" name="tipo-orden" value="esperando"> Esperando</label>
-                    <label><input type="radio" name="tipo-orden" value="domicilio"> Domicilio</label>
+            <!-- Carrito y Cliente (derecha) - FIJO -->
+            <div class="col-lg-4">
+                <!-- Carrito -->
+                <div class="card shadow-sm border-0 mb-4">
+                    <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+                        <h5 class="card-title mb-0">
+                            <i class="fas fa-shopping-cart me-2 text-primary"></i>Carrito
+                        </h5>
+                        <span class="badge bg-primary" id="contador-items">0</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="folio bg-light p-2 rounded mb-3">
+                            <span class="fw-bold">Folio:</span>
+                            <span id="folio-numero" class="text-primary">VENTA-001</span>
+                        </div>
+                        
+                        <!-- Lista de items del carrito CON SCROLL -->
+                        <div id="carrito-contenedor" class="carrito-items-scroll">
+                            <ul class="carrito-lista list-unstyled mb-0" id="carrito-lista">
+                                <li class="text-center text-muted py-3">
+                                    <i class="fas fa-shopping-basket fa-2x mb-2"></i>
+                                    <p class="mb-0">Carrito vacío</p>
+                                </li>
+                            </ul>
+                        </div>
+                        
+                        <!-- Total -->
+                        <div class="d-flex justify-content-between align-items-center mt-3 pt-3 border-top">
+                            <span class="fw-bold">Total:</span>
+                            <span class="h5 mb-0 text-danger fw-bold" id="total-carrito">$0.00</span>
+                        </div>
+                    </div>
                 </div>
 
-                <button class="btn-confirmar">Confirmar Orden</button>
+                <!-- Información del Cliente -->
+                <div class="card shadow-sm border-0">
+                    <div class="card-header bg-white py-3">
+                        <h5 class="card-title mb-0">
+                            <i class="fas fa-user me-2 text-primary"></i>Información del Cliente
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <form id="form-venta">
+                            <div class="mb-2">
+                                <label class="form-label small fw-semibold">Nombre</label>
+                                <input type="text" class="form-control form-control-sm" id="nombre-cliente" 
+                                       placeholder="Nombre completo">
+                            </div>
+
+                            <div class="mb-2">
+                                <label class="form-label small fw-semibold">Teléfono</label>
+                                <input type="tel" class="form-control form-control-sm" id="telefono-cliente" 
+                                       placeholder="Ej. 55-1234-5678">
+                            </div>
+
+                            <div class="mb-2">
+                                <label class="form-label small fw-semibold">Comentario</label>
+                                <input type="text" class="form-control form-control-sm" id="nota-cliente" 
+                                       placeholder="Comentario adicional">
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label small fw-semibold">Tipo de orden</label>
+                                <div class="d-flex gap-2">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="tipo-orden" 
+                                               id="tipo-comedor" value="comedor" checked>
+                                        <label class="form-check-label small" for="tipo-comedor">Comedor</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="tipo-orden" 
+                                               id="tipo-esperando" value="esperando">
+                                        <label class="form-check-label small" for="tipo-esperando">Esperando</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="tipo-orden" 
+                                               id="tipo-domicilio" value="domicilio">
+                                        <label class="form-check-label small" for="tipo-domicilio">Domicilio</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <button type="button" class="btn btn-success w-100" id="btn-confirmar" onclick="confirmarVenta()">
+                                <i class="fas fa-check-circle me-2"></i>Confirmar Orden
+                            </button>
+                        </form>
+                    </div>
+                </div>
             </div>
-        </section>
+        </div>
     </div>
+</main>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script th:src="@{/Js/JSVentas.js}"></script>
     
-</body>
-
-
-  <script>
+    <script>
+        // Toggle sidebar en móvil
         document.addEventListener('DOMContentLoaded', () => {
             const hamburger = document.querySelector('.hamburger');
             const sidebar = document.querySelector('.sidebar');
-
+            
             hamburger.addEventListener('click', () => {
-                sidebar.classList.toggle('menu-open');
+                sidebar.classList.toggle('active');
             });
+
+            // Cerrar sidebar al hacer click fuera en móvil
+            document.addEventListener('click', (e) => {
+                if (window.innerWidth <= 768) {
+                    if (!sidebar.contains(e.target) && !hamburger.contains(e.target)) {
+                        sidebar.classList.remove('active');
+                    }
+                }
+            });
+
+            // Inicializar carrito desde localStorage si existe
+            cargarCarrito();
+            actualizarContador();
         });
+
+        // Funciones del carrito
+        let carrito = [];
+
+        function cambiarCantidad(btn, delta) {
+            const id = btn.getAttribute('data-id');
+            const input = document.getElementById(`cantidad-${id}`);
+            let valor = parseInt(input.value) + delta;
+            if (valor < 1) valor = 1;
+            if (valor > 99) valor = 99;
+            input.value = valor;
+        }
+
+        function agregarAlCarrito(btn) {
+            const id = btn.getAttribute('data-id');
+            const nombre = btn.getAttribute('data-nombre');
+            const precio = parseFloat(btn.getAttribute('data-precio'));
+            const cantidad = parseInt(document.getElementById(`cantidad-${id}`).value);
+            
+            // Buscar si ya existe en el carrito
+            const existente = carrito.find(item => item.id === id);
+            
+            if (existente) {
+                existente.cantidad += cantidad;
+            } else {
+                carrito.push({
+                    id: id,
+                    nombre: nombre,
+                    precio: precio,
+                    cantidad: cantidad
+                });
+            }
+            
+            actualizarCarrito();
+            
+            // SweetAlert de confirmación
+            Swal.fire({
+                icon: 'success',
+                title: 'Agregado',
+                text: `${nombre} x${cantidad} agregado al carrito`,
+                timer: 1500,
+                showConfirmButton: false,
+                position: 'top-end',
+                toast: true
+            });
+        }
+
+        function eliminarDelCarrito(id) {
+            carrito = carrito.filter(item => item.id !== id);
+            actualizarCarrito();
+        }
+
+        function actualizarCarrito() {
+            const lista = document.getElementById('carrito-lista');
+            const totalSpan = document.getElementById('total-carrito');
+            
+            if (carrito.length === 0) {
+                lista.innerHTML = `
+                    <li class="text-center text-muted py-3">
+                        <i class="fas fa-shopping-basket fa-2x mb-2"></i>
+                        <p class="mb-0">Carrito vacío</p>
+                    </li>
+                `;
+                totalSpan.textContent = '$0.00';
+                actualizarContador();
+                return;
+            }
+            
+            let html = '';
+            let total = 0;
+            
+            carrito.forEach(item => {
+                const subtotal = item.precio * item.cantidad;
+                total += subtotal;
+                
+                html += `
+                    <li class="d-flex justify-content-between align-items-center py-2 border-bottom">
+                        <div>
+                            <span class="fw-semibold">${item.nombre}</span>
+                            <span class="badge bg-secondary ms-2">x${item.cantidad}</span>
+                        </div>
+                        <div class="d-flex align-items-center gap-2">
+                            <span class="fw-bold text-primary">$${subtotal.toFixed(2)}</span>
+                            <button class="btn btn-sm btn-danger" onclick="eliminarDelCarrito('${item.id}')">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    </li>
+                `;
+            });
+            
+            lista.innerHTML = html;
+            totalSpan.textContent = `$${total.toFixed(2)}`;
+            actualizarContador();
+        }
+
+        function actualizarContador() {
+            const contador = document.getElementById('contador-items');
+            const totalItems = carrito.reduce((sum, item) => sum + item.cantidad, 0);
+            contador.textContent = totalItems;
+        }
+
+        function cargarCarrito() {
+            // Aquí puedes cargar desde localStorage si es necesario
+            actualizarCarrito();
+        }
+
+        function confirmarVenta() {
+            const nombre = document.getElementById('nombre-cliente').value;
+            const telefono = document.getElementById('telefono-cliente').value;
+            const tipoOrden = document.querySelector('input[name="tipo-orden"]:checked').value;
+            
+            if (!nombre || !telefono) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Campos incompletos',
+                    text: 'Por favor complete el nombre y teléfono del cliente',
+                    confirmButtonColor: '#f37a18'
+                });
+                return;
+            }
+            
+            if (carrito.length === 0) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Carrito vacío',
+                    text: 'Agregue productos al carrito antes de confirmar',
+                    confirmButtonColor: '#f37a18'
+                });
+                return;
+            }
+            
+            Swal.fire({
+                icon: 'success',
+                title: '¡Venta confirmada!',
+                text: 'La orden se ha procesado correctamente',
+                confirmButtonColor: '#28a745'
+            }).then(() => {
+                // Limpiar carrito
+                carrito = [];
+                actualizarCarrito();
+                document.getElementById('nombre-cliente').value = '';
+                document.getElementById('telefono-cliente').value = '';
+                document.getElementById('nota-cliente').value = '';
+            });
+        }
     </script>
+</body>
 </html>

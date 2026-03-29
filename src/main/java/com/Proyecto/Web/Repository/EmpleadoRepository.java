@@ -9,4 +9,7 @@ import com.Proyecto.Web.Model.Empleado;
 public interface EmpleadoRepository extends JpaRepository<Empleado, Long> {
    
     Empleado findByTelefono(String telefono);
+    //boolean existsByTelefono(String telefono);
+    boolean existsByTelefonoAndIdEmpleadoNot(String telefono, Long idEmpleado);
+    
 }

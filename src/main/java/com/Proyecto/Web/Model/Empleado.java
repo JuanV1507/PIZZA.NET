@@ -12,6 +12,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.Pattern;
 
 @Entity
 @Table(name = "empleados")
@@ -19,9 +20,11 @@ public class Empleado {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY) // clave primaria auto incrementable
-    private Long id_empleado;
+    @Column(name = "id_empleado")
+    private Long idEmpleado;
 
     @Column(nullable=false, length=100)
+    @Pattern(regexp = "^[a-zA-ZáéíóúÁÉÍÓÚüÜñÑ\\s]+$", message = "El nombre solo puede contener letras y espacios")
     private String nombres;
 
     @Column(nullable=false, length=50)
@@ -48,8 +51,8 @@ public class Empleado {
     }
 
     // Getters y setters
-    public Long getId_empleado() { return id_empleado; }
-    public void setId_empleado(Long id_empleado) { this.id_empleado = id_empleado; }
+    public Long getId_empleado() { return idEmpleado; }
+    public void setId_empleado(Long id_empleado) { this.idEmpleado = id_empleado; }
 
     public String getNombres() { return nombres; }
     public void setNombres(String nombres) { this.nombres = nombres; }

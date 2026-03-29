@@ -1,221 +1,387 @@
-/* ================================ */
-/* EMPLEADOS - CSS FINAL UNIFICADO  */
-/* ================================ */
+/* ================================= */
+/* EMPLEADOS - CSS MEJORADO BOOTSTRAP */
+/* ================================= */
 
-/* Reset caja */
-* { box-sizing: border-box; }
-
-/* ---------- CONTENEDOR PRINCIPAL (igual que productos) ---------- */
-.empleados-page {
-    width: auto;
-    margin: 30px 30px 30px 280px; /* deja espacio para sidebar (250px) + 30px */
-    padding: 20px;
-    background: #ffffff;
-    border-radius: 12px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.08);
-    font-family: "Segoe UI", sans-serif;
+/* Variables de color */
+:root {
+    --primary-color: #0d6efd;
+    --success-color: #28a745;
+    --danger-color: #dc3545;
+    --warning-color: #ffc107;
+    --dark-bg: #212529;
+    --sidebar-width: 260px;
 }
 
-/* si tu layout-global tiene main-content-wrapper con margin-left, este override mantiene comportamiento */
-@media (max-width: 992px) {
-    .empleados-page { margin: 20px auto; width: 95%; }
-}
-
-/* ---------- LAYOUT: FORM IZQUIERDA + TABLA DERECHA ---------- */
-.empleados-layout {
-    display: flex;
-    gap: 30px;
-    align-items: flex-start;
-    flex-wrap: nowrap;
-}
-
-/* reutilizamos las clases que usas en HTML */
-.form-section { flex: 0 0 30%; max-width: 30%; }
-.tabla-section { flex: 1; min-width: 0; }
-
-/* ---------- TARJETAS ---------- */
-.card {
-    background: #f8f9fa;
-    padding: 20px;
-    border-radius: 10px;
-    border: 1px solid #e9ecef;
-}
-
-/* ---------- FORMULARIO ---------- */
-.form-card h2 { font-size: 20px; color: #28a745; margin: 0 0 16px 0; padding-bottom: 8px; border-bottom: 2px solid #121314; }
-
-.form-group { margin-bottom: 12px; }
-.form-group label { display:block; font-weight:600; margin-bottom:6px; color:#444; font-size:14px; }
-.form-control,
-.form-group input,
-.form-group select { width:100%; padding:10px; border:1px solid #ced4da; border-radius:6px; font-size:14px; }
-.form-control:focus, .form-group input:focus, .form-group select:focus {
-    outline:none; border-color:#007bff; box-shadow:0 0 0 0.08rem rgba(0,123,255,0.15);
-}
-
-/* Estilo para datetime-local */
-input[type="datetime-local"] {
-    padding: 10px;
-    border: 1px solid #dcdcdc;
-    border-radius: 6px;
-    font-size: 14px;
-    font-family: inherit;
-    background-color: #fff;
-    color: #333;
-    width: 100%;
+/* Reset */
+* {
     box-sizing: border-box;
-}
-input[type="datetime-local"]::-webkit-datetime-edit,
-input[type="datetime-local"]::-webkit-inner-spin-button,
-input[type="datetime-local"]::-webkit-calendar-picker-indicator {
-    color: #555; opacity: 0.9;
+    margin: 0;
+    padding: 0;
 }
 
-/* Botón guardar */
-.btn-guardar {
-    background: #28a745; color: white; border: none;
-    padding: 10px 16px; border-radius: 6px; font-weight:700;
-    cursor:pointer; width: 100%; margin-top: 10px;
-}
-.btn-guardar:hover { background:#1e7d34; }
-
-/* ---------- TABLA ---------- */
-.table-container { overflow-x: auto; }
-
-.table-card {
-    min-width: 100% !important;
+/* Sidebar styles */
+.sidebar {
+    width: var(--sidebar-width);
+    height: 100vh;
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 1000;
+    transition: transform 0.3s ease-in-out;
+    box-shadow: 2px 0 10px rgba(0,0,0,0.1);
 }
 
-.table-container {
-    overflow-x: auto;
+.sidebar .nav-link {
+    padding: 12px 20px;
+    margin: 4px 8px;
+    border-radius: 8px;
+    transition: all 0.3s;
 }
 
-.empleados-table {
-    min-width: 750px; /* aumenta el mínimo para que la tabla no se aplaste */
+.sidebar .nav-link:hover {
+    background-color: rgba(255,255,255,0.1);
+    color: white !important;
 }
 
-
-/* CLAVE: evita que la tabla empuje el layout */
-.empleados-tabla table,
-.empleados-table {
-    width: 100%;
-    border-collapse: collapse;
-    table-layout: fixed; /* importante */
+.sidebar .nav-link i {
+    width: 24px;
+    font-size: 1.1rem;
 }
 
-/* celdas deben permitir quiebre */
-.empleados-table th,
-.empleados-table td {
-    padding: 12px 10px;
-    border-bottom: 1px solid #ddd;
-    text-align: left;
-    vertical-align: middle;
-    word-wrap: break-word;
-    white-space: normal;
+/* Main content wrapper */
+.main-content-wrapper {
+    margin-left: var(--sidebar-width);
+    min-height: 100vh;
+    background-color: #f8f9fc;
+    transition: margin-left 0.3s;
 }
 
-/* cabeceras */
-.empleados-table thead { background: #f3f3f3; }
-.empleados-table th { font-weight: 700; color: #444; font-size: 14px; }
-
-/* hover fila */
-.empleados-table tbody tr:hover { background: #f9f9f9; }
-
-/* negritas en columnas: Pago diario (5), Días (6), Total (7) */
-.empleados-table td:nth-child(5),
-.empleados-table td:nth-child(6),
-.empleados-table td:nth-child(7) {
-    font-weight: 700;
-}
-.empleados-table th:nth-child(5),
-.empleados-table th:nth-child(6),
-.empleados-table th:nth-child(7) {
-    font-weight: 800;
+/* Botón hamburguesa */
+.hamburger {
+    display: none;
+    left: 20px;
+    top: 20px;
+    z-index: 1001;
 }
 
-/* Acciones (botones inline) */
-.acciones { text-align:center; white-space: nowrap; }
-.btn-editar, .btn-eliminar {
-    display:inline-block; padding:6px 12px; border-radius:6px; color:#fff; text-decoration:none; margin:0 4px;
+/* Botón volver móvil */
+.btn-volver {
+    width: 45px;
+    height: 45px;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    background: white;
+    border: none;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
 }
-.btn-editar { background:#0d6efd; }
-.btn-eliminar { background:#dc3545; }
-.btn-editar:hover { background:#0a58ca; }
-.btn-eliminar:hover { background:#b02a37; }
 
-/* ---------- TOTAL SUELDOS (texto al final) ---------- */
-.total-sueldo-texto {
-    margin-top: 12px;
-    text-align: right;
-    font-size: 18px;
+.btn-volver:hover {
+    background: #f8f9fa;
+    transform: scale(1.05);
+}
+
+/* Cards mejoradas */
+.card {
+    border-radius: 12px;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.card:hover {
+    box-shadow: 0 8px 20px rgba(0,0,0,0.12) !important;
+}
+
+/* Formulario */
+.form-control, .input-group-text {
+    border-radius: 8px;
+    padding: 10px 15px;
+    border: 1px solid #e0e0e0;
+}
+
+.form-control:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.15);
+}
+
+.form-label {
+    font-size: 0.9rem;
+    color: #495057;
+    margin-bottom: 5px;
+}
+
+/* Tabla mejorada */
+.table {
+    font-size: 0.9rem;
+}
+
+.table thead th {
+    background-color: #f8f9fa;
+    color: #495057;
     font-weight: 600;
-}
-.total-sueldo-texto .total-rojo {
-    color: #e00000;
-    font-weight: 800;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    letter-spacing: 0.5px;
+    border-bottom: 2px solid #dee2e6;
 }
 
-/* ---------- ALERTAS ---------- */
+.table tbody tr {
+    transition: background-color 0.2s;
+}
+
+.table tbody tr:hover {
+    background-color: #f8f9ff !important;
+}
+
+.table td {
+    vertical-align: middle;
+    padding: 15px 10px;
+}
+
+/* Badges personalizados */
+.badge {
+    padding: 6px 12px;
+    font-weight: 500;
+    letter-spacing: 0.3px;
+}
+
+.badge.bg-info {
+    background-color: #e3f2fd !important;
+    color: #0d6efd;
+}
+
+/* Botones de acción */
+.btn-group .btn {
+    padding: 6px 10px;
+    border-radius: 6px !important;
+}
+
+.btn-outline-primary, .btn-outline-danger {
+    border-width: 1px;
+}
+
+.btn-outline-primary:hover, .btn-outline-danger:hover {
+    transform: translateY(-1px);
+}
+
+/* Total sueldos */
+.bg-light.p-3.rounded {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%) !important;
+    border: 1px solid #dee2e6;
+}
+
+.text-danger {
+    color: var(--danger-color) !important;
+}
+
+/* Alertas flotantes */
 .alerta-flotante {
-    position: fixed; top: 20px; right: 20px; padding: 12px 18px; border-radius:10px; color:#fff; z-index:9999;
-    box-shadow:0 4px 10px rgba(0,0,0,0.2);
-}
-.alerta-flotante.error { background:#e63946; }
-.alerta-flotante.success { background:#2a9d8f; }
-
-/* ---------- RESPONSIVE ---------- */
-
-/* Tablets / móviles horizontales */
-@media (max-width: 1024px) {
-    .empleados-layout { flex-direction: column; gap:20px; }
-    .form-section, .tabla-section { max-width: 100%; flex: 1 1 100%; }
-    .empleados-page { margin: 20px auto; width: 95%; }
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 15px 25px;
+    border-radius: 10px;
+    color: white;
+    z-index: 9999;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    animation: slideInRight 0.3s ease-out;
 }
 
-/* móviles */
-@media (max-width: 768px) {
-    /* Quita margen-left del contenedor principal para que no se empuje por el sidebar */
-    .empleados-page { margin-left: 20px; margin-right: 20px; width: auto; flex-direction: column; }
-
-    /* Asegura que main content no tenga margen extra si layout-global lo impone */
-    .main-content-wrapper { margin-left: 0 !important; width: 100% !important; }
-
-    /* Evita scroll horizontal global */
-    body { overflow-x: hidden; }
-
-    /* tabla: permite scroll solo dentro del contenedor */
-    .empleados-tabla { overflow-x: auto; max-width: 100%; }
-    .empleados-tabla table { width: 100%; max-width: 100%; }
-
-    /* reduce padding */
-    .card { padding: 16px; }
-
-    .table-card {
-        width: 100% !important;
-        min-width: 100% !important;
-        flex-grow: 1;
+@keyframes slideInRight {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
     }
 }
 
-/* teléfonos muy pequeños */
-@media (max-width: 480px) {
-    .empleados-table th, .empleados-table td { padding: 8px; font-size: 12px; }
-    .form-group label { font-size: 13px; }
-    .btn-guardar { padding: 8px 12px; }
+.alerta-flotante.error {
+    background: linear-gradient(135deg, #f56565 0%, #e53e3e 100%);
 }
-@media (max-width: 768px) {
+
+.alerta-flotante.success {
+    background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+}
+
+/* Responsive Design */
+@media (max-width: 992px) {
+    .main-content-wrapper {
+        margin-left: 0;
+        padding: 15px !important;
+    }
+    
     .sidebar {
         transform: translateX(-100%);
-        transition: 0.3s ease;
-        position: fixed;
-        top: 0;
-        left: 0;
-        height: 100vh;
-        width: 260px;
-        z-index: 2000;
+        box-shadow: none;
     }
-
+    
     .sidebar.active {
         transform: translateX(0);
+        box-shadow: 2px 0 20px rgba(0,0,0,0.2);
     }
+    
+    .hamburger {
+        display: block;
+    }
+    
+    .btn-volver {
+        display: flex;
+    }
+    
+    .col-lg-4, .col-lg-8 {
+        width: 100%;
+    }
+}
+
+@media (max-width: 768px) {
+    .main-content-wrapper {
+        padding: 10px !important;
+    }
+    
+    .card-header {
+        flex-direction: column;
+        align-items: flex-start !important;
+        gap: 10px;
+    }
+    
+    .table {
+        font-size: 0.8rem;
+    }
+    
+    .btn-group .btn {
+        padding: 4px 8px;
+    }
+    
+    .badge {
+        padding: 4px 8px;
+        font-size: 0.7rem;
+    }
+    
+    .d-flex.justify-content-end.mt-4 {
+        justify-content: center !important;
+    }
+}
+
+@media (max-width: 576px) {
+    .table td, .table th {
+        padding: 10px 5px;
+    }
+    
+    .btn-group {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+    }
+    
+    .btn-group .btn {
+        border-radius: 4px !important;
+        margin: 0;
+    }
+}
+
+/* Utilidades adicionales */
+.hover-bg-secondary:hover {
+    background-color: rgba(255,255,255,0.1);
+    color: white;
+}
+
+/* Personalización scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+}
+
+/* Estilos para SweetAlert2 personalizado */
+.form-usuario-swal {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.swal-form-group {
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+}
+
+.swal-form-group label {
+    font-weight: 600;
+    margin-bottom: 5px;
+    font-size: 14px;
+    color: #495057;
+}
+
+.swal-form-group input,
+.swal-form-group select {
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: 1px solid #ced4da;
+    font-size: 14px;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.swal-form-group input:focus,
+.swal-form-group select:focus {
+    border-color: var(--primary-color);
+    outline: 0;
+    box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+}
+
+.swal-preview {
+    display: flex;
+    justify-content: center;
+    margin-top: 15px;
+}
+
+.swal-preview img {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid var(--primary-color);
+    padding: 3px;
+}
+.form-swal {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+}
+
+.form-group label {
+    font-size: 14px;
+    margin-bottom: 4px;
+    font-weight: 600;
+}
+
+.form-group input,
+.form-group select {
+    padding: 8px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    width: 100%;
+}
+
+.swal2-popup {
+    width: 400px !important;
 }
