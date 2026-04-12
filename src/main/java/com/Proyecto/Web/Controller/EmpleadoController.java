@@ -66,7 +66,6 @@ public String guardar(
         model.addAttribute("empleado", empleado);
         return "empleados";
     }
-
     // GUARDAR
     Empleado empleadoGuardado = empleadoService.guardar(empleado);
 

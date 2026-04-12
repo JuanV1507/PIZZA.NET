@@ -54,223 +54,252 @@
                     </a>
                 </li>
             </ul>
-        </nav>
-
-        <div class="extra-links position-absolute bottom-0 w-100 p-4 border-top border-secondary">
-            <a href="#" class="d-block text-white-50 text-decoration-none mb-3">
-                <i class="fas fa-lock me-2"></i>Cerrar Ventas
-            </a>
-            <form th:action="@{/logout}" method="post">
-            <button type="submit" class="d-block text-white-50 text-decoration-none border-0 bg-transparent">
-        <i class="fas fa-sign-out-alt me-2"></i> Cerrar Sesión
-    </button>
-</form>
-        </div>
-    </aside>
-
-    <!-- Botón REGRESAR (móvil) -->
-    <button type="button" class="btn-volver btn btn-light rounded-circle shadow-sm position-fixed" 
-            onclick="history.back()" style="bottom: 20px; right: 20px; z-index: 1000; display: none;">
-        <i class="fas fa-arrow-left"></i>
-    </button>
-
-    <!-- CONTENIDO PRINCIPAL -->
-    <main class="main-content-wrapper p-4">
-        <div class="container-fluid px-0">
-            <!-- Título y breadcrumb -->
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <h1 class="h3 mb-0 text-gray-800">
-                    <i class="fas fa-home me-2 text-primary"></i>Dashboard
-                </h1>
-                <nav aria-label="breadcrumb">
-                    <ol class="breadcrumb mb-0">
-                        <li class="breadcrumb-item active" aria-current="page">Inicio</li>
-                    </ol>
+            <li class="nav-item">
+                    <a th:href="@{/clientes}" class="nav-link text-white-50 hover-bg-secondary">
+                        <i class="fas fa-address-book me-3"></i> Clientes
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a th:href="@{/Devoluciones}" class="nav-link text-white-50 hover-bg-secondary">
+                        <i class="fas fa-exchange-alt me-3"></i> Devoluciones
+                    </a>
+                </li>
                 </nav>
-            </div>
-
-            <!-- Tarjetas de resumen (KPIs) -->
-            <div class="row g-4 mb-4">
-                <div class="col-xl-3 col-md-6">
-                    <div class="card border-0 shadow-sm h-100">
-                        <div class="card-body">
-                            <div class="d-flex align-items-center">
-                                <div class="flex-shrink-0 bg-primary bg-opacity-10 p-3 rounded-circle">
-                                    <i class="fas fa-dollar-sign fa-2x text-primary"></i>
-                                </div>
-                                <div class="flex-grow-1 ms-3">
-                                    <h6 class="text-muted mb-1">Ventas del Día</h6>
-                                    <h4 class="mb-0 fw-bold">$2,450.00</h4>
-                                    <small class="text-success"><i class="fas fa-arrow-up"></i> +12%</small>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                
+                <div class="extra-links position-absolute bottom-0 w-100 p-4 border-top border-secondary">
+                    <a href="#" class="d-block text-white-50 text-decoration-none mb-3">
+                        <i class="fas fa-lock me-2"></i>Cerrar Ventas
+                    </a>
+                    <form th:action="@{/logout}" method="post">
+                        <button type="submit" class="d-block text-white-50 text-decoration-none border-0 bg-transparent">
+                            <i class="fas fa-sign-out-alt me-2"></i> Cerrar Sesión
+                        </button>
+                    </form>
                 </div>
-
-                <div class="col-xl-3 col-md-6">
-                    <div class="card border-0 shadow-sm h-100">
-                        <div class="card-body">
-                            <div class="d-flex align-items-center">
-                                <div class="flex-shrink-0 bg-success bg-opacity-10 p-3 rounded-circle">
-                                    <i class="fas fa-shopping-cart fa-2x text-success"></i>
-                                </div>
-                                <div class="flex-grow-1 ms-3">
-                                    <h6 class="text-muted mb-1">Órdenes Hoy</h6>
-                                    <h4 class="mb-0 fw-bold">24</h4>
-                                    <small class="text-success"><i class="fas fa-arrow-up"></i> +8%</small>
-                                </div>
-                            </div>
+                </aside>
+                
+                <!-- Botón REGRESAR (móvil) -->
+                <button type="button" class="btn-volver btn btn-light rounded-circle shadow-sm position-fixed" onclick="history.back()"
+                    style="bottom: 20px; right: 20px; z-index: 1000; display: none;">
+                    <i class="fas fa-arrow-left"></i>
+                </button>
+                
+                <!-- CONTENIDO PRINCIPAL -->
+                <main class="main-content-wrapper p-4">
+                    <div class="container-fluid px-0">
+                        <!-- Título y breadcrumb -->
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <h1 class="h3 mb-0 text-gray-800">
+                                <i class="fas fa-home me-2 text-primary"></i>Dashboard
+                            </h1>
+                            <nav aria-label="breadcrumb">
+                                <ol class="breadcrumb mb-0">
+                                    <li class="breadcrumb-item active" aria-current="page">Inicio</li>
+                                </ol>
+                            </nav>
                         </div>
-                    </div>
-                </div>
-
-                <div class="col-xl-3 col-md-6">
-                    <div class="card border-0 shadow-sm h-100">
-                        <div class="card-body">
-                            <div class="d-flex align-items-center">
-                                <div class="flex-shrink-0 bg-warning bg-opacity-10 p-3 rounded-circle">
-                                    <i class="fas fa-users fa-2x text-warning"></i>
-                                </div>
-                                <div class="flex-grow-1 ms-3">
-                                    <h6 class="text-muted mb-1">Empleados Activos</h6>
-                                    <h4 class="mb-0 fw-bold" th:text="${totalEmpleados}">12</h4>
-                                    <small class="text-muted">+3 hoy</small>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-xl-3 col-md-6">
-                    <div class="card border-0 shadow-sm h-100">
-                        <div class="card-body">
-                            <div class="d-flex align-items-center">
-                                <div class="flex-shrink-0 bg-danger bg-opacity-10 p-3 rounded-circle">
-                                    <i class="fas fa-pizza-slice fa-2x text-danger"></i>
-                                </div>
-                                <div class="flex-grow-1 ms-3">
-                                    <h6 class="text-muted mb-1">Productos</h6>
-                                    <h4 class="mb-0 fw-bold" th:text="${totalProductos}">45</h4>
-                                    <small class="text-muted">en catálogo</small>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Sección de bienvenida y contenido principal -->
-            <div class="row g-4">
-                <!-- Columna izquierda - Bienvenida y gráfico -->
-                <div class="col-lg-8">
-                    <div class="card border-0 shadow-sm mb-4">
-                        <div class="card-body p-4">
-                            <div class="d-flex align-items-center mb-4">
-                                <div class="flex-shrink-0">
-                                    <img src="https://via.placeholder.com/80x80" class="rounded-circle border" alt="Avatar">
-                                </div>
-                                <div class="flex-grow-1 ms-3">
-                                    <h4 class="mb-1">¡Bienvenido a Pizza.NET!</h4>
-                                    <p class="text-muted mb-0">Sistema de gestión integral para pizzerías</p>
-                                </div>
-                            </div>
-                            
-                            <div class="row g-3">
-                                <div class="col-md-6">
-                                    <div class="bg-light p-3 rounded">
-                                        <h6 class="fw-semibold mb-2">Accesos Rápidos</h6>
-                                        <div class="d-grid gap-2">
-                                            <a th:href="@{/ventas}" class="btn btn-outline-primary text-start">
-                                                <i class="fas fa-shopping-cart me-2"></i>Nueva Venta
-                                            </a>
-                                            <a th:href="@{/productos}" class="btn btn-outline-success text-start">
-                                                <i class="fas fa-pizza-slice me-2"></i>Gestionar Productos
-                                            </a>
-                                            <a th:href="@{/empleados}" class="btn btn-outline-warning text-start">
-                                                <i class="fas fa-users me-2"></i>Gestionar Empleados
-                                            </a>
+                
+                        <!-- Tarjetas de resumen (KPIs) -->
+                        <div class="row g-4 mb-4">
+                            <div class="col-xl-3 col-md-6">
+                                <div class="card border-0 shadow-sm h-100">
+                                    <div class="card-body">
+                                        <div class="d-flex align-items-center">
+                                            <div class="flex-shrink-0 bg-primary bg-opacity-10 p-3 rounded-circle">
+                                                <i class="fas fa-dollar-sign fa-2x text-primary"></i>
+                                            </div>
+                                            <div class="flex-grow-1 ms-3">
+                                                <h6 class="text-muted mb-1">Ventas del Día</h6>
+                                                <h4 class="mb-0 fw-bold">$2,450.00</h4>
+                                                <small class="text-success"><i class="fas fa-arrow-up"></i> +12%</small>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-md-6">
-                                    <div class="bg-light p-3 rounded">
-                                        <h6 class="fw-semibold mb-2">Estado del Sistema</h6>
-                                        <div class="d-flex justify-content-between mb-2">
-                                            <span><i class="fas fa-circle text-success me-2"></i>Sistema</span>
-                                            <span class="badge bg-success">Operativo</span>
+                            </div>
+                
+                            <div class="col-xl-3 col-md-6">
+                                <div class="card border-0 shadow-sm h-100">
+                                    <div class="card-body">
+                                        <div class="d-flex align-items-center">
+                                            <div class="flex-shrink-0 bg-success bg-opacity-10 p-3 rounded-circle">
+                                                <i class="fas fa-shopping-cart fa-2x text-success"></i>
+                                            </div>
+                                            <div class="flex-grow-1 ms-3">
+                                                <h6 class="text-muted mb-1">Órdenes Hoy</h6>
+                                                <h4 class="mb-0 fw-bold">24</h4>
+                                                <small class="text-success"><i class="fas fa-arrow-up"></i> +8%</small>
+                                            </div>
                                         </div>
-                                        <div class="d-flex justify-content-between mb-2">
-                                            <span><i class="fas fa-database me-2"></i>Base de Datos</span>
-                                            <span class="badge bg-success">Conectada</span>
+                                    </div>
+                                </div>
+                            </div>
+                
+                            <div class="col-xl-3 col-md-6">
+                                <div class="card border-0 shadow-sm h-100">
+                                    <div class="card-body">
+                                        <div class="d-flex align-items-center">
+                                            <div class="flex-shrink-0 bg-warning bg-opacity-10 p-3 rounded-circle">
+                                                <i class="fas fa-users fa-2x text-warning"></i>
+                                            </div>
+                                            <div class="flex-grow-1 ms-3">
+                                                <h6 class="text-muted mb-1">Empleados Activos</h6>
+                                                <h4 class="mb-0 fw-bold" th:text="${totalEmpleados}">12</h4>
+                                                <small class="text-muted">+3 hoy</small>
+                                            </div>
                                         </div>
-                                        <div class="d-flex justify-content-between">
-                                            <span><i class="fas fa-clock me-2"></i>Última actualización</span>
-                                            <span class="text-muted">hace 2 min</span>
+                                    </div>
+                                </div>
+                            </div>
+                
+                            <div class="col-xl-3 col-md-6">
+                                <div class="card border-0 shadow-sm h-100">
+                                    <div class="card-body">
+                                        <div class="d-flex align-items-center">
+                                            <div class="flex-shrink-0 bg-danger bg-opacity-10 p-3 rounded-circle">
+                                                <i class="fas fa-pizza-slice fa-2x text-danger"></i>
+                                            </div>
+                                            <div class="flex-grow-1 ms-3">
+                                                <h6 class="text-muted mb-1">Productos</h6>
+                                                <h4 class="mb-0 fw-bold" th:text="${totalProductos}">45</h4>
+                                                <small class="text-muted">en catálogo</small>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-
-                    <!-- Gráfico de ventas (simulado) -->
-                    <div class="card border-0 shadow-sm">
-                        <div class="card-header bg-white py-3">
-                            <h5 class="card-title mb-0">
-                                <i class="fas fa-chart-line me-2 text-primary"></i>Ventas Semanales
-                            </h5>
-                        </div>
-                        <div class="card-body">
-                            <div class="bg-light p-4 rounded text-center">
-                                <i class="fas fa-chart-bar fa-4x text-muted mb-3"></i>
-                                <p class="text-muted">Gráfico de ventas - Últimos 7 días</p>
-                                <!-- Aquí iría un gráfico real con Chart.js o similar -->
-                                <div class="d-flex justify-content-between align-items-end mt-3" style="height: 150px;">
-                                    <div style="width: 12%; height: 60px; background: #4A90E2; border-radius: 8px 8px 0 0;"></div>
-                                    <div style="width: 12%; height: 90px; background: #4A90E2; border-radius: 8px 8px 0 0;"></div>
-                                    <div style="width: 12%; height: 75px; background: #4A90E2; border-radius: 8px 8px 0 0;"></div>
-                                    <div style="width: 12%; height: 110px; background: #4A90E2; border-radius: 8px 8px 0 0;"></div>
-                                    <div style="width: 12%; height: 85px; background: #4A90E2; border-radius: 8px 8px 0 0;"></div>
-                                    <div style="width: 12%; height: 130px; background: #4A90E2; border-radius: 8px 8px 0 0;"></div>
-                                    <div style="width: 12%; height: 95px; background: #4A90E2; border-radius: 8px 8px 0 0;"></div>
+                
+                        <!-- Sección de bienvenida y contenido principal -->
+                        <div class="row g-4">
+                            <!-- Columna izquierda - Bienvenida y gráfico -->
+                            <div class="col-lg-8">
+                                <div class="card border-0 shadow-sm mb-4">
+                                    <div class="card-body p-4">
+                                        <div class="d-flex align-items-center mb-4">
+                
+                                             <div class="flex-shrink-0">
+                                                <img th:src="@{'/uploads/' + ${usuario.foto}}"
+                                                    class="rounded-circle border" 
+                                                    alt="Avatar"
+                                                    style="width: 80px; height: 80px; object-fit: cover;"
+                                                    onerror="this.src='https://via.placeholder.com/80x80'">
+                                            </div>
+                                            
+                                            <div class="flex-grow-1 ms-3">
+                                                <h4 class="mb-1">
+                                                    ¡Bienvenido, <span th:text="${usuario.username}">Usuario</span>!
+                                                </h4>
+                
+                                                <p class="text-muted mb-0">
+                                                    Sistema de gestión integral para pizzerías
+                                                </p>
+                                            </div>
+                                        </div>
+                
+                                        <div class="row g-3">
+                                            <div class="col-md-6">
+                                                <div class="bg-light p-3 rounded">
+                                                    <h6 class="fw-semibold mb-2">Accesos Rápidos</h6>
+                                                    <div class="d-grid gap-2">
+                                                        <a th:href="@{/ventas}" class="btn btn-outline-primary text-start">
+                                                            <i class="fas fa-shopping-cart me-2"></i>Nueva Venta
+                                                        </a>
+                                                        <a th:href="@{/productos}" class="btn btn-outline-success text-start">
+                                                            <i class="fas fa-pizza-slice me-2"></i>Gestionar Productos
+                                                        </a>
+                                                        <a th:href="@{/empleados}" class="btn btn-outline-warning text-start">
+                                                            <i class="fas fa-users me-2"></i>Gestionar Empleados
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="bg-light p-3 rounded">
+                                                    <h6 class="fw-semibold mb-2">Estado del Sistema</h6>
+                                                    <div class="d-flex justify-content-between mb-2">
+                                                        <span><i class="fas fa-circle text-success me-2"></i>Sistema</span>
+                                                        <span class="badge bg-success">Operativo</span>
+                                                    </div>
+                                                    <div class="d-flex justify-content-between mb-2">
+                                                        <span><i class="fas fa-database me-2"></i>Base de Datos</span>
+                                                        <span class="badge bg-success">Conectada</span>
+                                                    </div>
+                                                    <div class="d-flex justify-content-between">
+                                                        <span><i class="fas fa-clock me-2"></i>Última actualización</span>
+                                                        <span class="text-muted">hace 2 min</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="d-flex justify-content-between mt-2">
-                                    <span class="small">Lun</span>
-                                    <span class="small">Mar</span>
-                                    <span class="small">Mié</span>
-                                    <span class="small">Jue</span>
-                                    <span class="small">Vie</span>
-                                    <span class="small">Sáb</span>
-                                    <span class="small">Dom</span>
+                
+                                <!-- Gráfico de ventas (simulado) -->
+                                <div class="card border-0 shadow-sm">
+                                    <div class="card-header bg-white py-3">
+                                        <h5 class="card-title mb-0">
+                                            <i class="fas fa-chart-line me-2 text-primary"></i>Ventas Semanales
+                                        </h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="bg-light p-4 rounded text-center">
+                                            <i class="fas fa-chart-bar fa-4x text-muted mb-3"></i>
+                                            <p class="text-muted">Gráfico de ventas - Últimos 7 días</p>
+                                            <!-- Aquí iría un gráfico real con Chart.js o similar -->
+                                            <div class="d-flex justify-content-between align-items-end mt-3" style="height: 150px;">
+                                                <div style="width: 12%; height: 60px; background: #4A90E2; border-radius: 8px 8px 0 0;">
+                                                </div>
+                                                <div style="width: 12%; height: 90px; background: #4A90E2; border-radius: 8px 8px 0 0;">
+                                                </div>
+                                                <div style="width: 12%; height: 75px; background: #4A90E2; border-radius: 8px 8px 0 0;">
+                                                </div>
+                                                <div
+                                                    style="width: 12%; height: 110px; background: #4A90E2; border-radius: 8px 8px 0 0;">
+                                                </div>
+                                                <div style="width: 12%; height: 85px; background: #4A90E2; border-radius: 8px 8px 0 0;">
+                                                </div>
+                                                <div
+                                                    style="width: 12%; height: 130px; background: #4A90E2; border-radius: 8px 8px 0 0;">
+                                                </div>
+                                                <div style="width: 12%; height: 95px; background: #4A90E2; border-radius: 8px 8px 0 0;">
+                                                </div>
+                                            </div>
+                                            <div class="d-flex justify-content-between mt-2">
+                                                <span class="small">Lun</span>
+                                                <span class="small">Mar</span>
+                                                <span class="small">Mié</span>
+                                                <span class="small">Jue</span>
+                                                <span class="small">Vie</span>
+                                                <span class="small">Sáb</span>
+                                                <span class="small">Dom</span>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Columna derecha - Actividad reciente y promociones -->
-                <div class="col-lg-4">
-                    <!-- Últimas ventas -->
-                    <div class="card border-0 shadow-sm mb-4">
-                        <div class="card-header bg-white py-3">
-                            <h5 class="card-title mb-0">
-                                <i class="fas fa-history me-2 text-primary"></i>Ventas Recientes
-                            </h5>
-                        </div>
-                        <div class="card-body p-0">
-                            <ul class="list-group list-group-flush">
-                                <li class="list-group-item d-flex justify-content-between align-items-center">
-                                    <div>
-                                        <small class="text-muted">#V001</small>
-                                        <div class="fw-semibold">Juan Pérez</div>
+                
+                            <!-- Columna derecha - Actividad reciente y promociones -->
+                            <div class="col-lg-4">
+                                <!-- Últimas ventas -->
+                                <div class="card border-0 shadow-sm mb-4">
+                                    <div class="card-header bg-white py-3">
+                                        <h5 class="card-title mb-0">
+                                            <i class="fas fa-history me-2 text-primary"></i>Ventas Recientes
+                                        </h5>
                                     </div>
-                                    <span class="badge bg-success">$450.00</span>
-                                </li>
-                                <li class="list-group-item d-flex justify-content-between align-items-center">
-                                    <div>
-                                        <small class="text-muted">#V002</small>
-                                        <div class="fw-semibold">María García</div>
+                                    <div class="card-body p-0">
+                                        <ul class="list-group list-group-flush">
+                                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                <div>
+                                                    <small class="text-muted">#V001</small>
+                                                    <div class="fw-semibold">Juan Pérez</div>
+                                                </div>
+                                                <span class="badge bg-success">$450.00</span>
+                                            </li>
+                                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                <div>
+                                                    <small class="text-muted">#V002</small>                     <div class="fw-semibold">María García</div>
                                     </div>
                                     <span class="badge bg-success">$320.00</span>
                                 </li>
@@ -303,18 +332,15 @@
                             </h5>
                         </div>
                         <div class="card-body">
-                            <div class="bg-warning bg-opacity-10 p-3 rounded mb-3">
-                                <h6 class="fw-bold mb-2">🍕 2x1 en pizzas</h6>
-                                <p class="small text-muted mb-0">Válido todos los martes</p>
-                            </div>
-                            <div class="bg-danger bg-opacity-10 p-3 rounded mb-3">
-                                <h6 class="fw-bold mb-2">🥤 Refresco gratis</h6>
-                                <p class="small text-muted mb-0">En compras mayores a $200</p>
-                            </div>
-                            <div class="bg-success bg-opacity-10 p-3 rounded">
-                                <h6 class="fw-bold mb-2">🎉 Happy hour</h6>
-                                <p class="small text-muted mb-0">20% descuento de 6-8pm</p>
-                            </div>
+                            <div th:each="paquete : ${paquetes}" class="bg-warning bg-opacity-10 p-3 rounded mb-3">
+            <h6 class="fw-bold mb-2">
+                <span th:text="${paquete.nombre}">Paquete</span>
+            </h6>
+            <p class="small text-muted mb-1" th:text="${paquete.descripcion}">Descripción</p>
+            <p class="small text-info mb-0">
+                <i class="fas fa-tag me-1"></i> Precio: $<span th:text="${#numbers.formatDecimal(paquete.precio, 1, 'COMMA', 2, 'POINT')}">0.00</span>
+            </p>
+        </div>
                         </div>
                     </div>
                 </div>

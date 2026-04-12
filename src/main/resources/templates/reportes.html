@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reportes de Ventas - Pizza.NET</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <!-- Chart.js para gráficos -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <!-- Estilos personalizados -->
+    
+    <link rel="stylesheet" th:href="@{/css/styleReporte.css}">
+    <link rel="stylesheet" th:href="@{/css/layout-global.css}">
+
+</head>
+<body>
+
+    <!-- Botón hamburguesa -->
+    <button class="hamburger" aria-label="Abrir Menú">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar bg-dark text-white">
+        <div class="header-sidebar p-4 text-center border-bottom border-secondary">
+            <div class="logo fs-4 fw-bold text-warning">🍕 PIZZA.NET</div>
+        </div>
+
+        <nav class="nav-menu mt-4">
+            <ul class="nav flex-column">
+                <li class="nav-item">
+                    <a th:href="@{/home}" class="nav-link text-white-50 hover-bg-secondary">
+                        <i class="fas fa-home me-3"></i> Inicio
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a th:href="@{/empleados}" class="nav-link text-white bg-primary bg-opacity-25">
+                        <i class="fas fa-users me-3"></i> Empleados
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a th:href="@{/ventas}" class="nav-link text-white-50 hover-bg-secondary">
+                        <i class="fas fa-shopping-cart me-3"></i> Ventas
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a th:href="@{/reportes}" class="nav-link text-white-50 hover-bg-secondary">
+                        <i class="fas fa-chart-line me-3"></i> Reportes
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a th:href="@{/productos}" class="nav-link text-white-50 hover-bg-secondary">
+                        <i class="fas fa-pizza-slice me-3"></i> Productos
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a th:href="@{/clientes}" class="nav-link text-white-50 hover-bg-secondary">
+                        <i class="fas fa-address-book me-3"></i> Clientes
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a th:href="@{/Devoluciones}" class="nav-link text-white-50 hover-bg-secondary">
+                        <i class="fas fa-exchange-alt me-3"></i> Devoluciones
+                    </a>
+                </li>
+            </ul>
+        </nav>
+
+        <div class="extra-links position-absolute bottom-0 w-100 p-4 border-top border-secondary">
+            <a href="#" class="d-block text-white-50 text-decoration-none mb-3">
+                <i class="fas fa-lock me-2"></i>Cerrar Ventas
+            </a>
+            <a href="#" class="d-block text-white-50 text-decoration-none">
+                <i class="fas fa-sign-out-alt me-2"></i>Cerrar Sesión
+            </a>
+        </div>
+    </aside>
+
+    <!-- Botón REGRESAR (móvil) -->
+    <button type="button" class="btn-volver btn btn-light rounded-circle shadow-sm position-fixed"
+        onclick="history.back()" style="bottom: 20px; right: 20px; z-index: 1000;">
+        <i class="fas fa-arrow-left"></i>
+    </button>
+
+    <!-- Contenido principal -->
+    <main class="main-content">
+        <div class="container-fluid px-0">
+            <!-- Header -->
+            <div class="page-header">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h1 class="h3 mb-0">
+                        <i class="fas fa-chart-line me-2" style="color: #f97316;"></i>Reportes de Ventas
+                    </h1>
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb mb-0">
+                            <li class="breadcrumb-item"><a th:href="@{/home}">Inicio</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">Reportes</li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+
+            <!-- Selector de período global -->
+            <div class="card report-card mb-4">
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col-md-8">
+                            <label for="periodo-selector" class="mb-2" style="color: #64748b;">
+                                <i class="fas fa-calendar-alt me-2" style="color: #f97316;"></i>Período de análisis
+                            </label>
+                            <select class="period-selector" id="periodo-selector" title="Período de análisis">
+                                <option value="hoy">📅 Hoy</option>
+                                <option value="semana" selected>📊 Esta Semana</option>
+                                <option value="mes">📈 Este Mes</option>
+                                <option value="año">🎯 Este Año</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4 text-md-end mt-3 mt-md-0">
+                            <button class="btn" style="background: #f97316; color: white;" onclick="actualizarReportes()">
+                                <i class="fas fa-sync-alt me-2"></i>Actualizar
+                            </button>
+                            <button class="btn btn-outline-secondary ms-2">
+                                <i class="fas fa-download me-2"></i>Exportar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Grid de reportes -->
+            <div class="row g-4">
+                <!-- Reporte 1: Ventas por Período -->
+                <div class="col-md-6 col-xl-3">
+                    <div class="card report-card">
+                        <div class="card-header">
+                            <i class="fas fa-chart-simple me-2" style="color: #f97316;"></i>Ventas Totales
+                        </div>
+                        <div class="card-body">
+                            <div class="text-center mb-3">
+                                <span class="stat-value" style="font-size: 2rem;">$45,320</span>
+                                <div class="mt-2">
+                                    <span class="trend-up"><i class="fas fa-arrow-up me-1"></i>+12.5%</span>
+                                </div>
+                            </div>
+                            <div class="metric-item">
+                                <span class="metric-label"><i class="fas fa-receipt me-2"></i>Órdenes</span>
+                                <span class="metric-value">234</span>
+                            </div>
+                            <div class="metric-item">
+                                <span class="metric-label"><i class="fas fa-chart-line me-2"></i>Ticket Promedio</span>
+                                <span class="metric-value">$193.77</span>
+                            </div>
+                            <div class="chart-wrapper">
+                                <canvas id="ventasChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Reporte 2: Top Productos -->
+                <div class="col-md-6 col-xl-4">
+                    <div class="card report-card">
+                        <div class="card-header">
+                            <i class="fas fa-trophy me-2" style="color: #f97316;"></i>Top Productos Más Vendidos
+                        </div>
+                        <div class="card-body">
+                            <div class="ranking-item">
+                                <div class="ranking-position">1</div>
+                                <span class="ranking-name">Pizza Margherita</span>
+                                <div class="ranking-stats">
+                                    <span class="ranking-amount">145 ud</span>
+                                    <span class="ranking-percent">32.1%</span>
+                                </div>
+                            </div>
+                            <div class="ranking-item">
+                                <div class="ranking-position">2</div>
+                                <span class="ranking-name">Hamburguesa Clásica</span>
+                                <div class="ranking-stats">
+                                    <span class="ranking-amount">128 ud</span>
+                                    <span class="ranking-percent">28.4%</span>
+                                </div>
+                            </div>
+                            <div class="ranking-item">
+                                <div class="ranking-position">3</div>
+                                <span class="ranking-name">Ensalada César</span>
+                                <div class="ranking-stats">
+                                    <span class="ranking-amount">98 ud</span>
+                                    <span class="ranking-percent">21.8%</span>
+                                </div>
+                            </div>
+                            <div class="ranking-item">
+                                <div class="ranking-position">4</div>
+                                <span class="ranking-name">Pasta Alfredo</span>
+                                <div class="ranking-stats">
+                                    <span class="ranking-amount">76 ud</span>
+                                    <span class="ranking-percent">16.9%</span>
+                                </div>
+                            </div>
+                            <div class="ranking-item">
+                                <div class="ranking-position">5</div>
+                                <span class="ranking-name">Sopa del Día</span>
+                                <div class="ranking-stats">
+                                    <span class="ranking-amount">55 ud</span>
+                                    <span class="ranking-percent">12.2%</span>
+                                </div>
+                            </div>
+                            <div class="text-center mt-3">
+                                <a href="#" style="color: #f97316; text-decoration: none;" class="small">
+                                    Ver top 10 completo <i class="fas fa-arrow-right ms-1"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Reporte 3: Tipo de Orden -->
+                <div class="col-md-6 col-xl-5">
+                    <div class="card report-card">
+                        <div class="card-header">
+                            <i class="fas fa-truck me-2" style="color: #f97316;"></i>Ventas por Tipo de Orden
+                        </div>
+                        <div class="card-body">
+                            <div class="order-type-card">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <i class="fas fa-utensils me-2" style="color: #f97316;"></i>
+                                        <strong>Comedor</strong>
+                                    </div>
+                                    <span class="badge" style="background: #22c55e;">51.3%</span>
+                                </div>
+                                <div class="d-flex justify-content-between mt-2">
+                                    <small style="color: #64748b;">120 órdenes</small>
+                                    <small style="color: #22c55e;">$189.42 promedio</small>
+                                </div>
+                            </div>
+                            <div class="order-type-card">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <i class="fas fa-motorcycle me-2" style="color: #3b82f6;"></i>
+                                        <strong>Domicilio</strong>
+                                    </div>
+                                    <span class="badge" style="background: #3b82f6;">37.2%</span>
+                                </div>
+                                <div class="d-flex justify-content-between mt-2">
+                                    <small style="color: #64748b;">87 órdenes</small>
+                                    <small style="color: #22c55e;">$156.80 promedio</small>
+                                </div>
+                            </div>
+                            <div class="order-type-card">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <i class="fas fa-clock me-2" style="color: #64748b;"></i>
+                                        <strong>Esperando</strong>
+                                    </div>
+                                    <span class="badge bg-secondary">11.5%</span>
+                                </div>
+                                <div class="d-flex justify-content-between mt-2">
+                                    <small style="color: #64748b;">27 órdenes</small>
+                                    <small style="color: #22c55e;">$142.15 promedio</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Fila 2 -->
+            <div class="row g-4 mt-2">
+                <!-- Reporte 4: Ingresos -->
+                <div class="col-md-6">
+                    <div class="card report-card">
+                        <div class="card-header">
+                            <i class="fas fa-dollar-sign me-2" style="color: #f97316;"></i>Métricas de Ingresos
+                        </div>
+                        <div class="card-body">
+                            <div class="row g-3">
+                                <div class="col-6">
+                                    <div class="stat-box">
+                                        <i class="fas fa-chart-line"></i>
+                                        <div class="stat-label">Ingreso Total</div>
+                                        <div class="stat-value">$45,320</div>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="stat-box">
+                                        <i class="fas fa-calendar-day"></i>
+                                        <div class="stat-label">Promedio/Día</div>
+                                        <div class="stat-value">$5,790</div>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="stat-box">
+                                        <i class="fas fa-clock"></i>
+                                        <div class="stat-label">Promedio/Hora</div>
+                                        <div class="stat-value">$241</div>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="stat-box">
+                                        <i class="fas fa-ticket-alt"></i>
+                                        <div class="stat-label">Ticket Promedio</div>
+                                        <div class="stat-value">$193.77</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="metric-item mt-3">
+                                <span class="metric-label">Ticket Mínimo</span>
+                                <span class="metric-value">$45.00</span>
+                            </div>
+                            <div class="metric-item">
+                                <span class="metric-label">Ticket Máximo</span>
+                                <span class="metric-value">$542.80</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Reporte 5: Horas Pico -->
+                <div class="col-md-6">
+                    <div class="card report-card">
+                        <div class="card-header">
+                            <i class="fas fa-hourglass-half me-2" style="color: #f97316;"></i>Horas de Mayor Venta
+                        </div>
+                        <div class="card-body">
+                            <div class="ranking-item">
+                                <div class="ranking-position">🥇</div>
+                                <span class="ranking-name">8:00 PM - 9:00 PM</span>
+                                <div class="ranking-stats">
+                                    <span class="ranking-amount">$8,450</span>
+                                    <span class="ranking-percent">18.6%</span>
+                                </div>
+                            </div>
+                            <div class="ranking-item">
+                                <div class="ranking-position">🥈</div>
+                                <span class="ranking-name">1:00 PM - 2:00 PM</span>
+                                <div class="ranking-stats">
+                                    <span class="ranking-amount">$7,230</span>
+                                    <span class="ranking-percent">15.9%</span>
+                                </div>
+                            </div>
+                            <div class="ranking-item">
+                                <div class="ranking-position">🥉</div>
+                                <span class="ranking-name">9:00 PM - 10:00 PM</span>
+                                <div class="ranking-stats">
+                                    <span class="ranking-amount">$5,980</span>
+                                    <span class="ranking-percent">13.2%</span>
+                                </div>
+                            </div>
+                            <div class="chart-wrapper mt-2">
+                                <canvas id="horasChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Botón volver -->
+        <button class="btn-volver position-fixed" onclick="history.back()">
+            <i class="fas fa-arrow-left"></i>
+        </button>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Toggle sidebar móvil
+        document.addEventListener('DOMContentLoaded', () => {
+            const hamburger = document.querySelector('.hamburger');
+            const sidebar = document.querySelector('.sidebar');
+            
+            if (hamburger && sidebar) {
+                hamburger.addEventListener('click', () => {
+                    sidebar.classList.toggle('active');
+                });
+                
+                document.addEventListener('click', (e) => {
+                    if (window.innerWidth <= 768) {
+                        if (!sidebar.contains(e.target) && !hamburger.contains(e.target)) {
+                            sidebar.classList.remove('active');
+                        }
+                    }
+                });
+            }
+            
+            // Inicializar gráficos
+            iniciarGraficos();
+        });
+        
+        function iniciarGraficos() {
+            // Gráfico de ventas
+            const ctx1 = document.getElementById('ventasChart')?.getContext('2d');
+            if (ctx1) {
+                new Chart(ctx1, {
+                    type: 'line',
+                    data: {
+                        labels: ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'],
+                        datasets: [{
+                            label: 'Ventas',
+                            data: [5200, 4800, 6100, 5900, 7200, 8500, 7800],
+                            borderColor: '#f97316',
+                            backgroundColor: 'rgba(249,115,22,0.1)',
+                            tension: 0.4,
+                            fill: true
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: true,
+                        plugins: { 
+                            legend: { labels: { color: '#1a1a2e' } } 
+                        }
+                    }
+                });
+            }
+            
+            // Gráfico de horas pico
+            const ctx2 = document.getElementById('horasChart')?.getContext('2d');
+            if (ctx2) {
+                new Chart(ctx2, {
+                    type: 'bar',
+                    data: {
+                        labels: ['12pm', '1pm', '2pm', '7pm', '8pm', '9pm', '10pm'],
+                        datasets: [{
+                            label: 'Ventas por hora',
+                            data: [3200, 7230, 5100, 4450, 8450, 5980, 4120],
+                            backgroundColor: '#f97316',
+                            borderRadius: 8
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: true,
+                        plugins: { 
+                            legend: { labels: { color: '#1a1a2e' } } 
+                        }
+                    }
+                });
+            }
+        }
+        
+        function actualizarReportes() {
+            console.log('Actualizando reportes...');
+        }
+    </script>
+</body>
+</html>

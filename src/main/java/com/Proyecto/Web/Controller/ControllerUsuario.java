@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -59,17 +60,29 @@ public String guardarUsuario(
         @RequestParam("archivoFoto") MultipartFile archivoFoto,
         RedirectAttributes redirectAttrs) {
 
-    System.out.println("ENTRO AL METODO GUARDAR USUARIO");
-
     if (usuarioRepository.existsByUsername(usuario.getUsername())) {
         redirectAttrs.addFlashAttribute("error", "El nombre de usuario ya existe.");
         return "redirect:/empleados";
     }
+    if (usuarioRepository.existsByCorreo(usuario.getCorreo())) {
+        redirectAttrs.addFlashAttribute("error", "El correo electrónico ya existe.");
+        return "redirect:/empleados";
+    }
     if (usuarioRepository.existsByUsername(usuario.getUsername())) {
-    redirectAttrs.addFlashAttribute("error", "El usuario ya existe");
-    return "redirect:/empleados";
+       redirectAttrs.addFlashAttribute("error", "El usuario ya existe");
+   return "redirect:/empleados";
 }
-
+    // Validar que el correo no esté vacío
+    if (usuario.getCorreo() == null || usuario.getCorreo().trim().isEmpty()) {
+        redirectAttrs.addFlashAttribute("error", "El correo electrónico es obligatorio");
+        return "redirect:/usuarios/nuevo";
+    }
+    
+    // Validar si el correo ya existe
+    if (usuarioRepository.existsByCorreo(usuario.getCorreo())) {
+        redirectAttrs.addFlashAttribute("error", "El correo " + usuario.getCorreo() + " ya está registrado");
+        return "redirect:/usuarios/nuevo";
+    }
     usuario.setContrasena(passwordEncoder.encode(usuario.getContrasena()));
 
     switch (usuario.getRol()) {
@@ -114,6 +127,12 @@ public String guardarUsuario(
     redirectAttrs.addFlashAttribute("success", "Usuario creado correctamente.");
 
     return "redirect:/empleados";
+}
+
+@GetMapping("/verificar-correo")
+@ResponseBody
+public boolean verificarCorreo(@RequestParam String correo) {
+    return usuarioRepository.existsByCorreo(correo);
 }
 
 }

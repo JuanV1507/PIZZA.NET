@@ -55,7 +55,7 @@ public String listar(@RequestParam(required = false) String categoria,
     // GUARDAR PRODUCTO (NUEVO O EDITADO)
         @PostMapping("/guardar")
         public String guardarProducto(@ModelAttribute Productos producto,
-                                    @RequestParam("imagenFile") MultipartFile imagenFile) {
+                                    @RequestParam("imagenFile") MultipartFile imagenFile, RedirectAttributes redirectAttributes) {
 
             try {
                 Productos productoExistente = null;
@@ -88,13 +88,14 @@ public String listar(@RequestParam(required = false) String categoria,
                 e.printStackTrace();
             }
 
+            redirectAttributes.addFlashAttribute("success", "Producto guardado correctamente");
             return "redirect:/productos";
         }
 
 
     // EDITAR PRODUCTO
     @GetMapping("/editar/{id}")
-    public String editar(@PathVariable Long id, Model model) {
+    public String editar(@PathVariable Long id, Model model, RedirectAttributes redirectAttributes) {
 
         var productos = productoService.listarTodos();
 
@@ -102,6 +103,8 @@ public String listar(@RequestParam(required = false) String categoria,
         model.addAttribute("producto", productoService.buscarPorId(id).orElse(new Productos()));
         model.addAttribute("categorias", Productos.Categoria.values());
 
+
+        redirectAttributes.addFlashAttribute("success", "Producto editado correctamente");
         return "productos"; 
     }
 

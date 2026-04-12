@@ -5,6 +5,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import com.Proyecto.Web.Model.Productos;
+import com.Proyecto.Web.Model.Productos.Categoria;
 import com.Proyecto.Web.Repository.ProductoRepository;
 
 @Service
@@ -19,6 +20,9 @@ public class ProductoService {
     public List <Productos> listarTodos() {
         return productoRepository.findAll();
     }
+
+    // Ejemplo de uso del filtro por categoría
+    //List<Productos> paquetes = productoRepository.findByCategoria(Categoria.Paquete);
     
     public Productos guardar(Productos producto) {
         return productoRepository.save(producto);
@@ -64,5 +68,8 @@ public class ProductoService {
     return productos;
 }
 
+public List<Productos> findByCategoria(Categoria categoria) {
+    return productoRepository.findByCategoria(categoria);
+}
     
 }

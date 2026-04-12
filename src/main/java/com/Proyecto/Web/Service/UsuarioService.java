@@ -4,11 +4,11 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.Proyecto.Web.Model.Usuario;
 import com.Proyecto.Web.Repository.UsuarioRepository;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Service
 public class UsuarioService implements UserDetailsService {
@@ -19,6 +19,7 @@ public class UsuarioService implements UserDetailsService {
     public UsuarioService(UsuarioRepository usuarioRepository, PasswordEncoder passwordEncoder) {
         this.usuarioRepository = usuarioRepository;
         this.passwordEncoder = passwordEncoder;
+        
     }
 
     @Override
@@ -47,6 +48,11 @@ public void registrarUsuario(Usuario usuario) {
     usuario.setContrasena(passwordEncoder.encode(usuario.getContrasena()));
 
     usuarioRepository.save(usuario);
+}
+
+public Usuario findByUsername(String username) {
+    return usuarioRepository.findByUsername(username)
+            .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));  
 }
 
 }
