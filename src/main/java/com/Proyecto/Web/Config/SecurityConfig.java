@@ -27,8 +27,11 @@ public class SecurityConfig {
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/login", "/css/**", "/js/**", "/uploads/**", "/images/**", "/imagenes/**").permitAll()
+                .requestMatchers("/empleados/**", "/usuarios/**").hasRole("ADMIN")
+                .requestMatchers("/productos/guardar", "/productos/editar/**", "/productos/eliminar/**").hasRole("ADMIN")
                 .anyRequest().authenticated()
             )
+            .exceptionHandling(ex -> ex.accessDeniedPage("/acceso-denegado"))
             .formLogin(form -> form
                 .loginPage("/login")
                 .loginProcessingUrl("/login")

@@ -129,6 +129,60 @@ public String guardarUsuario(
     return "redirect:/empleados";
 }
 
+@PostMapping("/guardar-ajax")
+@ResponseBody
+public org.springframework.http.ResponseEntity<?> guardarUsuarioAjax(
+        @ModelAttribute Usuario usuario,
+        @RequestParam(value = "archivoFoto", required = false) MultipartFile archivoFoto) {
+
+    if (usuarioRepository.existsByUsername(usuario.getUsername())) {
+        return org.springframework.http.ResponseEntity.badRequest().body("{\"error\":\"El nombre de usuario ya existe.\"}");
+    }
+    if (usuarioRepository.existsByCorreo(usuario.getCorreo())) {
+        return org.springframework.http.ResponseEntity.badRequest().body("{\"error\":\"El correo electrónico ya existe.\"}");
+    }
+    if (usuario.getCorreo() == null || usuario.getCorreo().trim().isEmpty()) {
+        return org.springframework.http.ResponseEntity.badRequest().body("{\"error\":\"El correo electrónico es obligatorio.\"}");
+    }
+
+    usuario.setContrasena(passwordEncoder.encode(usuario.getContrasena()));
+
+    switch (usuario.getRol()) {
+        case "Administrador":
+            usuario.setRol("ROLE_ADMIN");
+            break;
+        case "Cajera":
+            usuario.setRol("ROLE_CAJERA");
+            break;
+        default:
+            usuario.setRol("ROLE_USER");
+            break;
+    }
+
+    // Manejo de imagen
+    if (archivoFoto != null && !archivoFoto.isEmpty()) {
+        try {
+            String nombreArchivo = System.currentTimeMillis() + "_" + archivoFoto.getOriginalFilename();
+            Path ruta = Paths.get("C:/imagenes_usuarios/");
+            if (!Files.exists(ruta)) {
+                Files.createDirectories(ruta);
+            }
+            Files.copy(archivoFoto.getInputStream(),
+                       ruta.resolve(nombreArchivo),
+                       StandardCopyOption.REPLACE_EXISTING);
+            usuario.setFoto(nombreArchivo);
+        } catch (Exception e) {
+            e.printStackTrace();
+            usuario.setFoto("user-default.png");
+        }
+    } else {
+        usuario.setFoto("user-default.png");
+    }
+
+    usuarioRepository.save(usuario);
+    return org.springframework.http.ResponseEntity.ok().body("{\"mensaje\":\"Usuario creado correctamente.\"}");
+}
+
 @GetMapping("/verificar-correo")
 @ResponseBody
 public boolean verificarCorreo(@RequestParam String correo) {

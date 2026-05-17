@@ -33,9 +33,14 @@
                         <i class="fas fa-home me-3"></i> Inicio
                     </a>
                 </li>
-                <li class="nav-item">
+                <li class="nav-item" th:if="${esAdmin}">
                     <a th:href="@{/empleados}" class="nav-link text-white-50 hover-bg-secondary">
                         <i class="fas fa-users me-3"></i> Empleados
+                    </a>
+                </li>
+                <li class="nav-item" th:unless="${esAdmin}">
+                    <a href="#" class="nav-link text-white-50 d-flex align-items-center" style="cursor: not-allowed; background-color: rgba(220, 53, 69, 0.05);" onclick="Swal.fire('Acceso Restringido', 'Tu rol de Cajera no tiene permisos para acceder a Empleados.', 'error'); return false;">
+                        <i class="fas fa-users me-3 text-secondary"></i> <span class="text-secondary">Empleados</span> <i class="fas fa-lock ms-auto text-danger"></i>
                     </a>
                 </li>
                 <li class="nav-item">
@@ -110,8 +115,8 @@
                                             </div>
                                             <div class="flex-grow-1 ms-3">
                                                 <h6 class="text-muted mb-1">Ventas del Día</h6>
-                                                <h4 class="mb-0 fw-bold">$2,450.00</h4>
-                                                <small class="text-success"><i class="fas fa-arrow-up"></i> +12%</small>
+                                                <h4 class="mb-0 fw-bold" th:text="${'$' + #numbers.formatDecimal(reporteHoy.totalIngresos, 1, 'COMMA', 2, 'POINT')}">$2,450.00</h4>
+                                                <small class="text-success"><i class="fas fa-arrow-up"></i> Hoy</small>
                                             </div>
                                         </div>
                                     </div>
@@ -127,8 +132,8 @@
                                             </div>
                                             <div class="flex-grow-1 ms-3">
                                                 <h6 class="text-muted mb-1">Órdenes Hoy</h6>
-                                                <h4 class="mb-0 fw-bold">24</h4>
-                                                <small class="text-success"><i class="fas fa-arrow-up"></i> +8%</small>
+                                                <h4 class="mb-0 fw-bold" th:text="${reporteHoy.totalOrdenes}">24</h4>
+                                                <small class="text-success"><i class="fas fa-arrow-up"></i> Hoy</small>
                                             </div>
                                         </div>
                                     </div>
@@ -290,34 +295,17 @@
                                     </div>
                                     <div class="card-body p-0">
                                         <ul class="list-group list-group-flush">
-                                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                            <li th:each="venta : ${ventasRecientes}" class="list-group-item d-flex justify-content-between align-items-center">
                                                 <div>
-                                                    <small class="text-muted">#V001</small>
-                                                    <div class="fw-semibold">Juan Pérez</div>
+                                                    <small class="text-muted" th:text="'#' + ${venta.folioVenta}">#V001</small>
+                                                    <div class="fw-semibold" th:text="${venta.nombreCliente}">Juan Pérez</div>
                                                 </div>
-                                                <span class="badge bg-success">$450.00</span>
+                                                <span class="badge bg-success" th:text="'$' + ${#numbers.formatDecimal(venta.total, 1, 'COMMA', 2, 'POINT')}">$450.00</span>
                                             </li>
-                                            <li class="list-group-item d-flex justify-content-between align-items-center">
-                                                <div>
-                                                    <small class="text-muted">#V002</small>                     <div class="fw-semibold">María García</div>
-                                    </div>
-                                    <span class="badge bg-success">$320.00</span>
-                                </li>
-                                <li class="list-group-item d-flex justify-content-between align-items-center">
-                                    <div>
-                                        <small class="text-muted">#V003</small>
-                                        <div class="fw-semibold">Carlos López</div>
-                                    </div>
-                                    <span class="badge bg-success">$780.00</span>
-                                </li>
-                                <li class="list-group-item d-flex justify-content-between align-items-center">
-                                    <div>
-                                        <small class="text-muted">#V004</small>
-                                        <div class="fw-semibold">Ana Martínez</div>
-                                    </div>
-                                    <span class="badge bg-success">$210.00</span>
-                                </li>
-                            </ul>
+                                            <li th:if="${#lists.isEmpty(ventasRecientes)}" class="list-group-item text-center text-muted">
+                                                No hay ventas registradas hoy.
+                                            </li>
+                                        </ul>
                         </div>
                         <div class="card-footer bg-white text-center">
                             <a th:href="@{/ventas}" class="text-decoration-none small">Ver todas las ventas</a>
@@ -351,7 +339,7 @@
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     
-    <script>
+    <script th:inline="javascript">
         document.addEventListener('DOMContentLoaded', () => {
             const hamburger = document.querySelector('.hamburger');
             const sidebar = document.querySelector('.sidebar');
@@ -375,9 +363,22 @@
             if (window.history.length > 1) {
                 btnVolver.style.display = 'flex';
             }
+
+            // Gráfico dinámico CSS
+            const ventasSemanaData = /*[[${ventasSemanaData}]]*/ [1,2,3,4,5,6,7];
+            const maxVenta = Math.max(...ventasSemanaData, 1); // Avoid div by zero
+            const bars = document.querySelectorAll('.d-flex.justify-content-between.align-items-end.mt-3 > div');
+            
+            bars.forEach((bar, index) => {
+                if (ventasSemanaData[index] !== undefined) {
+                    const heightPercent = (ventasSemanaData[index] / maxVenta) * 100;
+                    bar.style.height = Math.max(heightPercent, 5) + '%'; // Min 5% to be visible
+                    bar.title = "$" + ventasSemanaData[index].toFixed(2);
+                }
+            });
         });
 
-        // Datos dinámicos (simulados, estos vendrían del backend)
+        // Datos dinámicos
         const totalEmpleados = /*[[${totalEmpleados}]]*/ 12;
         const totalProductos = /*[[${totalProductos}]]*/ 45;
     </script>

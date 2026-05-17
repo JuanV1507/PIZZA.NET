@@ -37,9 +37,14 @@
                         <i class="fas fa-home me-3"></i> Inicio
                     </a>
                 </li>
-                <li class="nav-item">
-                    <a th:href="@{/empleados}" class="nav-link text-white bg-primary bg-opacity-25">
+                <li class="nav-item" th:if="${esAdmin}">
+                    <a th:href="@{/empleados}" class="nav-link text-white-50 hover-bg-secondary">
                         <i class="fas fa-users me-3"></i> Empleados
+                    </a>
+                </li>
+                <li class="nav-item" th:unless="${esAdmin}">
+                    <a href="#" class="nav-link text-white-50 d-flex align-items-center" style="cursor: not-allowed; background-color: rgba(220, 53, 69, 0.05);" onclick="Swal.fire('Acceso Restringido', 'Tu rol de Cajera no tiene permisos para acceder a Empleados.', 'error'); return false;">
+                        <i class="fas fa-users me-3 text-secondary"></i> <span class="text-secondary">Empleados</span> <i class="fas fa-lock ms-auto text-danger"></i>
                     </a>
                 </li>
                 <li class="nav-item">
@@ -48,7 +53,7 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a th:href="@{/reportes}" class="nav-link text-white-50 hover-bg-secondary">
+                    <a th:href="@{/reportes}" class="nav-link text-white bg-primary bg-opacity-25">
                         <i class="fas fa-chart-line me-3"></i> Reportes
                     </a>
                 </li>
@@ -105,257 +110,301 @@
             </div>
 
             <!-- Selector de período global -->
-            <div class="card report-card mb-4">
+            <!-- Selector de período global -->
+            <form method="get" th:action="@{/reportes}" class="card report-card mb-4">
                 <div class="card-body">
-                    <div class="row align-items-center">
-                        <div class="col-md-8">
+                    <div class="row align-items-end">
+                        <div class="col-md-6">
                             <label for="periodo-selector" class="mb-2" style="color: #64748b;">
                                 <i class="fas fa-calendar-alt me-2" style="color: #f97316;"></i>Período de análisis
                             </label>
-                            <select class="period-selector" id="periodo-selector" title="Período de análisis">
-                                <option value="hoy">📅 Hoy</option>
-                                <option value="semana" selected>📊 Esta Semana</option>
-                                <option value="mes">📈 Este Mes</option>
-                                <option value="año">🎯 Este Año</option>
+                            <select class="period-selector w-100" name="periodo" id="periodo-selector" title="Período de análisis" onchange="this.form.submit()">
+                                <option value="hoy" th:selected="${periodoSeleccionado == 'hoy'}">📅 Hoy</option>
+                                <option value="semana" th:selected="${periodoSeleccionado == 'semana'}">📊 Esta Semana</option>
+                                <option value="mes" th:selected="${periodoSeleccionado == 'mes'}">📈 Este Mes</option>
+                                <option value="año" th:selected="${periodoSeleccionado == 'año'}">🎯 Este Año</option>
                             </select>
                         </div>
-                        <div class="col-md-4 text-md-end mt-3 mt-md-0">
-                            <button class="btn" style="background: #f97316; color: white;" onclick="actualizarReportes()">
-                                <i class="fas fa-sync-alt me-2"></i>Actualizar
+                        <div class="col-md-6 text-md-end mt-3 mt-md-0 d-flex justify-content-md-end gap-2">
+                            <button type="button" class="btn" style="background: #f97316; color: white;" onclick="enviarEmail('ventas')">
+                                <i class="fas fa-envelope me-2"></i>Enviar Reporte
                             </button>
-                            <button class="btn btn-outline-secondary ms-2">
-                                <i class="fas fa-download me-2"></i>Exportar
-                            </button>
+                            <a th:href="@{/api/reportes/pdf/ventas(periodo=${periodoSeleccionado})}" class="btn btn-outline-secondary">
+                                <i class="fas fa-file-pdf me-2"></i>PDF Ventas
+                            </a>
                         </div>
                     </div>
                 </div>
-            </div>
+            </form>
 
-            <!-- Grid de reportes -->
-            <div class="row g-4">
-                <!-- Reporte 1: Ventas por Período -->
-                <div class="col-md-6 col-xl-3">
-                    <div class="card report-card">
-                        <div class="card-header">
-                            <i class="fas fa-chart-simple me-2" style="color: #f97316;"></i>Ventas Totales
-                        </div>
-                        <div class="card-body">
-                            <div class="text-center mb-3">
-                                <span class="stat-value" style="font-size: 2rem;">$45,320</span>
-                                <div class="mt-2">
-                                    <span class="trend-up"><i class="fas fa-arrow-up me-1"></i>+12.5%</span>
+            <!-- Nav Tabs -->
+            <ul class="nav nav-pills mb-4" id="reportesTabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="ingresos-tab" data-bs-toggle="pill" data-bs-target="#ingresos" type="button" role="tab">Ingresos Generales</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="historial-tab" data-bs-toggle="pill" data-bs-target="#historial" type="button" role="tab">Historial de Ventas</button>
+                </li>
+                <li class="nav-item" role="presentation" th:if="${esAdmin}">
+                    <button class="nav-link" id="sueldos-tab" data-bs-toggle="pill" data-bs-target="#sueldos" type="button" role="tab">Sueldos de Empleados</button>
+                </li>
+            </ul>
+
+            <!-- Tab Content -->
+            <div class="tab-content" id="reportesTabsContent">
+                
+                <!-- TAB 1: INGRESOS GENERALES -->
+                <div class="tab-pane fade show active" id="ingresos" role="tabpanel">
+                    <!-- Grid de reportes -->
+                    <div class="row g-4">
+                        <!-- Reporte 1: Ventas por Período -->
+                        <div class="col-md-6 col-xl-3">
+                            <div class="card report-card h-100">
+                                <div class="card-header">
+                                    <i class="fas fa-chart-simple me-2" style="color: #f97316;"></i>Ventas Totales
+                                </div>
+                                <div class="card-body">
+                                    <div class="text-center mb-3">
+                                        <span class="stat-value" style="font-size: 2rem;" th:text="${'$' + #numbers.formatDecimal(reporte.totalIngresos, 1, 'COMMA', 2, 'POINT')}">$45,320</span>
+                                    </div>
+                                    <div class="metric-item">
+                                        <span class="metric-label"><i class="fas fa-receipt me-2"></i>Órdenes</span>
+                                        <span class="metric-value" th:text="${reporte.totalOrdenes}">234</span>
+                                    </div>
+                                    <div class="metric-item">
+                                        <span class="metric-label"><i class="fas fa-chart-line me-2"></i>Ticket Promedio</span>
+                                        <span class="metric-value" th:text="${'$' + #numbers.formatDecimal(reporte.ticketPromedio, 1, 'COMMA', 2, 'POINT')}">$193.77</span>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="metric-item">
-                                <span class="metric-label"><i class="fas fa-receipt me-2"></i>Órdenes</span>
-                                <span class="metric-value">234</span>
+                        </div>
+
+                        <!-- Reporte 2: Top Productos -->
+                        <div class="col-md-6 col-xl-4">
+                            <div class="card report-card h-100">
+                                <div class="card-header">
+                                    <i class="fas fa-trophy me-2" style="color: #f97316;"></i>Top Productos Más Vendidos
+                                </div>
+                                <div class="card-body p-0">
+                                    <div class="list-group list-group-flush">
+                                        <div class="list-group-item ranking-item" th:each="prod, iterStat : ${reporte.topProductos}">
+                                            <div class="ranking-position" th:text="${iterStat.count}">1</div>
+                                            <span class="ranking-name" th:text="${prod.nombre}">Pizza</span>
+                                            <div class="ranking-stats">
+                                                <span class="ranking-amount" th:text="${prod.unidades + ' ud'}">145 ud</span>
+                                                <span class="ranking-percent" th:text="${#numbers.formatDecimal(prod.porcentaje, 1, 'COMMA', 1, 'POINT') + '%'}">32.1%</span>
+                                            </div>
+                                        </div>
+                                        <div th:if="${#lists.isEmpty(reporte.topProductos)}" class="p-4 text-center text-muted">
+                                            No hay productos vendidos en este período.
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="metric-item">
-                                <span class="metric-label"><i class="fas fa-chart-line me-2"></i>Ticket Promedio</span>
-                                <span class="metric-value">$193.77</span>
+                        </div>
+
+                        <!-- Reporte 3: Tipo de Orden -->
+                        <div class="col-md-6 col-xl-5">
+                            <div class="card report-card h-100">
+                                <div class="card-header">
+                                    <i class="fas fa-truck me-2" style="color: #f97316;"></i>Ventas por Tipo de Orden
+                                </div>
+                                <div class="card-body">
+                                    <div class="order-type-card" th:each="tipo : ${reporte.ventasPorTipo}">
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <div>
+                                                <i class="fas fa-utensils me-2" th:if="${tipo.tipo == 'Comedor'}" style="color: #f97316;"></i>
+                                                <i class="fas fa-motorcycle me-2" th:if="${tipo.tipo == 'Domicilio'}" style="color: #3b82f6;"></i>
+                                                <i class="fas fa-clock me-2" th:if="${tipo.tipo == 'Esperando'}" style="color: #64748b;"></i>
+                                                <strong th:text="${tipo.tipo}">Comedor</strong>
+                                            </div>
+                                            <span class="badge" th:classappend="${tipo.tipo == 'Comedor'} ? 'bg-success' : (${tipo.tipo == 'Domicilio'} ? 'bg-primary' : 'bg-secondary')" th:text="${#numbers.formatDecimal(tipo.porcentaje, 1, 'COMMA', 1, 'POINT') + '%'}">51.3%</span>
+                                        </div>
+                                        <div class="d-flex justify-content-between mt-2">
+                                            <small style="color: #64748b;" th:text="${tipo.ordenes + ' órdenes'}">120 órdenes</small>
+                                            <small style="color: #22c55e;" th:text="${'$' + #numbers.formatDecimal(tipo.promedio, 1, 'COMMA', 2, 'POINT') + ' promedio'}">$189.42 promedio</small>
+                                        </div>
+                                    </div>
+                                    <div th:if="${#lists.isEmpty(reporte.ventasPorTipo)}" class="text-center text-muted">
+                                        No hay tipos de órdenes registrados.
+                                    </div>
+                                </div>
                             </div>
-                            <div class="chart-wrapper">
-                                <canvas id="ventasChart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Fila 2 -->
+                    <div class="row g-4 mt-2">
+                        <!-- Reporte 4: Ingresos -->
+                        <div class="col-md-6">
+                            <div class="card report-card h-100">
+                                <div class="card-header">
+                                    <i class="fas fa-dollar-sign me-2" style="color: #f97316;"></i>Métricas de Ingresos
+                                </div>
+                                <div class="card-body">
+                                    <div class="row g-3">
+                                        <div class="col-6">
+                                            <div class="stat-box">
+                                                <i class="fas fa-chart-line"></i>
+                                                <div class="stat-label">Ingreso Total</div>
+                                                <div class="stat-value" th:text="${'$' + #numbers.formatDecimal(reporte.totalIngresos, 1, 'COMMA', 2, 'POINT')}">$45,320</div>
+                                            </div>
+                                        </div>
+                                        <div class="col-6">
+                                            <div class="stat-box">
+                                                <i class="fas fa-calendar-day"></i>
+                                                <div class="stat-label">Promedio/Día</div>
+                                                <div class="stat-value" th:text="${'$' + #numbers.formatDecimal(reporte.promedioPorDia, 1, 'COMMA', 2, 'POINT')}">$5,790</div>
+                                            </div>
+                                        </div>
+                                        <div class="col-6">
+                                            <div class="stat-box">
+                                                <i class="fas fa-clock"></i>
+                                                <div class="stat-label">Órdenes Totales</div>
+                                                <div class="stat-value" th:text="${reporte.totalOrdenes}">241</div>
+                                            </div>
+                                        </div>
+                                        <div class="col-6">
+                                            <div class="stat-box">
+                                                <i class="fas fa-ticket-alt"></i>
+                                                <div class="stat-label">Ticket Promedio</div>
+                                                <div class="stat-value" th:text="${'$' + #numbers.formatDecimal(reporte.ticketPromedio, 1, 'COMMA', 2, 'POINT')}">$193.77</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="metric-item mt-3">
+                                        <span class="metric-label">Ticket Mínimo</span>
+                                        <span class="metric-value" th:text="${'$' + #numbers.formatDecimal(reporte.ticketMinimo, 1, 'COMMA', 2, 'POINT')}">$45.00</span>
+                                    </div>
+                                    <div class="metric-item">
+                                        <span class="metric-label">Ticket Máximo</span>
+                                        <span class="metric-value" th:text="${'$' + #numbers.formatDecimal(reporte.ticketMaximo, 1, 'COMMA', 2, 'POINT')}">$542.80</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Reporte 5: Horas Pico -->
+                        <div class="col-md-6">
+                            <div class="card report-card h-100">
+                                <div class="card-header">
+                                    <i class="fas fa-hourglass-half me-2" style="color: #f97316;"></i>Horas de Mayor Venta
+                                </div>
+                                <div class="card-body">
+                                    <div class="ranking-item" th:each="hora, iterStat : ${reporte.ventasPorHora}" th:if="${iterStat.index < 3}">
+                                        <div class="ranking-position" th:text="${iterStat.index == 0 ? '🥇' : (iterStat.index == 1 ? '🥈' : '🥉')}">🥇</div>
+                                        <span class="ranking-name" th:text="${hora.hora}">8:00 PM</span>
+                                        <div class="ranking-stats">
+                                            <span class="ranking-amount" th:text="${'$' + #numbers.formatDecimal(hora.totalIngresos, 1, 'COMMA', 2, 'POINT')}">$8,450</span>
+                                            <span class="ranking-percent" th:text="${#numbers.formatDecimal(hora.porcentaje, 1, 'COMMA', 1, 'POINT') + '%'}">18.6%</span>
+                                        </div>
+                                    </div>
+                                    <div class="chart-wrapper mt-4">
+                                        <canvas id="horasChart"></canvas>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Reporte 2: Top Productos -->
-                <div class="col-md-6 col-xl-4">
+                <!-- TAB 2: HISTORIAL DE VENTAS -->
+                <div class="tab-pane fade" id="historial" role="tabpanel">
                     <div class="card report-card">
-                        <div class="card-header">
-                            <i class="fas fa-trophy me-2" style="color: #f97316;"></i>Top Productos Más Vendidos
-                        </div>
-                        <div class="card-body">
-                            <div class="ranking-item">
-                                <div class="ranking-position">1</div>
-                                <span class="ranking-name">Pizza Margherita</span>
-                                <div class="ranking-stats">
-                                    <span class="ranking-amount">145 ud</span>
-                                    <span class="ranking-percent">32.1%</span>
-                                </div>
-                            </div>
-                            <div class="ranking-item">
-                                <div class="ranking-position">2</div>
-                                <span class="ranking-name">Hamburguesa Clásica</span>
-                                <div class="ranking-stats">
-                                    <span class="ranking-amount">128 ud</span>
-                                    <span class="ranking-percent">28.4%</span>
-                                </div>
-                            </div>
-                            <div class="ranking-item">
-                                <div class="ranking-position">3</div>
-                                <span class="ranking-name">Ensalada César</span>
-                                <div class="ranking-stats">
-                                    <span class="ranking-amount">98 ud</span>
-                                    <span class="ranking-percent">21.8%</span>
-                                </div>
-                            </div>
-                            <div class="ranking-item">
-                                <div class="ranking-position">4</div>
-                                <span class="ranking-name">Pasta Alfredo</span>
-                                <div class="ranking-stats">
-                                    <span class="ranking-amount">76 ud</span>
-                                    <span class="ranking-percent">16.9%</span>
-                                </div>
-                            </div>
-                            <div class="ranking-item">
-                                <div class="ranking-position">5</div>
-                                <span class="ranking-name">Sopa del Día</span>
-                                <div class="ranking-stats">
-                                    <span class="ranking-amount">55 ud</span>
-                                    <span class="ranking-percent">12.2%</span>
-                                </div>
-                            </div>
-                            <div class="text-center mt-3">
-                                <a href="#" style="color: #f97316; text-decoration: none;" class="small">
-                                    Ver top 10 completo <i class="fas fa-arrow-right ms-1"></i>
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <span><i class="fas fa-list me-2" style="color: #f97316;"></i>Registro de Ventas</span>
+                            <div>
+                                <span class="badge bg-primary me-3" th:text="${historial.size() + ' órdenes'}"></span>
+                                <a th:href="@{/api/reportes/pdf/ventas(periodo=${periodoSeleccionado})}" class="btn btn-sm btn-outline-secondary">
+                                    <i class="fas fa-file-pdf me-1"></i>Descargar PDF
                                 </a>
                             </div>
                         </div>
-                    </div>
-                </div>
-
-                <!-- Reporte 3: Tipo de Orden -->
-                <div class="col-md-6 col-xl-5">
-                    <div class="card report-card">
-                        <div class="card-header">
-                            <i class="fas fa-truck me-2" style="color: #f97316;"></i>Ventas por Tipo de Orden
-                        </div>
-                        <div class="card-body">
-                            <div class="order-type-card">
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <div>
-                                        <i class="fas fa-utensils me-2" style="color: #f97316;"></i>
-                                        <strong>Comedor</strong>
-                                    </div>
-                                    <span class="badge" style="background: #22c55e;">51.3%</span>
-                                </div>
-                                <div class="d-flex justify-content-between mt-2">
-                                    <small style="color: #64748b;">120 órdenes</small>
-                                    <small style="color: #22c55e;">$189.42 promedio</small>
-                                </div>
-                            </div>
-                            <div class="order-type-card">
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <div>
-                                        <i class="fas fa-motorcycle me-2" style="color: #3b82f6;"></i>
-                                        <strong>Domicilio</strong>
-                                    </div>
-                                    <span class="badge" style="background: #3b82f6;">37.2%</span>
-                                </div>
-                                <div class="d-flex justify-content-between mt-2">
-                                    <small style="color: #64748b;">87 órdenes</small>
-                                    <small style="color: #22c55e;">$156.80 promedio</small>
-                                </div>
-                            </div>
-                            <div class="order-type-card">
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <div>
-                                        <i class="fas fa-clock me-2" style="color: #64748b;"></i>
-                                        <strong>Esperando</strong>
-                                    </div>
-                                    <span class="badge bg-secondary">11.5%</span>
-                                </div>
-                                <div class="d-flex justify-content-between mt-2">
-                                    <small style="color: #64748b;">27 órdenes</small>
-                                    <small style="color: #22c55e;">$142.15 promedio</small>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Fila 2 -->
-            <div class="row g-4 mt-2">
-                <!-- Reporte 4: Ingresos -->
-                <div class="col-md-6">
-                    <div class="card report-card">
-                        <div class="card-header">
-                            <i class="fas fa-dollar-sign me-2" style="color: #f97316;"></i>Métricas de Ingresos
-                        </div>
-                        <div class="card-body">
-                            <div class="row g-3">
-                                <div class="col-6">
-                                    <div class="stat-box">
-                                        <i class="fas fa-chart-line"></i>
-                                        <div class="stat-label">Ingreso Total</div>
-                                        <div class="stat-value">$45,320</div>
-                                    </div>
-                                </div>
-                                <div class="col-6">
-                                    <div class="stat-box">
-                                        <i class="fas fa-calendar-day"></i>
-                                        <div class="stat-label">Promedio/Día</div>
-                                        <div class="stat-value">$5,790</div>
-                                    </div>
-                                </div>
-                                <div class="col-6">
-                                    <div class="stat-box">
-                                        <i class="fas fa-clock"></i>
-                                        <div class="stat-label">Promedio/Hora</div>
-                                        <div class="stat-value">$241</div>
-                                    </div>
-                                </div>
-                                <div class="col-6">
-                                    <div class="stat-box">
-                                        <i class="fas fa-ticket-alt"></i>
-                                        <div class="stat-label">Ticket Promedio</div>
-                                        <div class="stat-value">$193.77</div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="metric-item mt-3">
-                                <span class="metric-label">Ticket Mínimo</span>
-                                <span class="metric-value">$45.00</span>
-                            </div>
-                            <div class="metric-item">
-                                <span class="metric-label">Ticket Máximo</span>
-                                <span class="metric-value">$542.80</span>
+                        <div class="card-body p-0">
+                            <div class="table-responsive">
+                                <table class="table table-hover align-middle mb-0">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>Folio</th>
+                                            <th>Fecha/Hora</th>
+                                            <th>Cliente</th>
+                                            <th>Tipo</th>
+                                            <th class="text-end">Total</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr th:each="venta : ${historial}">
+                                            <td><span class="badge bg-secondary" th:text="${venta.folioVenta}">#V001</span></td>
+                                            <td th:text="${#temporals.format(venta.fechaHora, 'dd/MM/yyyy HH:mm')}">14/05/2026</td>
+                                            <td th:text="${venta.nombreCliente}">Juan Pérez</td>
+                                            <td>
+                                                <span class="badge" th:classappend="${venta.tipoServicio == 'Comedor'} ? 'bg-success' : 'bg-primary'" th:text="${venta.tipoServicio}">Comedor</span>
+                                            </td>
+                                            <td class="text-end fw-bold" th:text="${'$' + #numbers.formatDecimal(venta.total, 1, 'COMMA', 2, 'POINT')}">$450.00</td>
+                                        </tr>
+                                        <tr th:if="${#lists.isEmpty(historial)}">
+                                            <td colspan="5" class="text-center text-muted py-4">No hay ventas registradas en este período.</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Reporte 5: Horas Pico -->
-                <div class="col-md-6">
+                <!-- TAB 3: SUELDOS DE EMPLEADOS -->
+                <div class="tab-pane fade" id="sueldos" role="tabpanel" th:if="${esAdmin}">
                     <div class="card report-card">
-                        <div class="card-header">
-                            <i class="fas fa-hourglass-half me-2" style="color: #f97316;"></i>Horas de Mayor Venta
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <span><i class="fas fa-users me-2" style="color: #f97316;"></i>Nómina y Empleados</span>
+                            <div>
+                                <span class="badge bg-warning text-dark me-3" th:text="${'Total: $' + #numbers.formatDecimal(nominaTotal, 1, 'COMMA', 2, 'POINT')}"></span>
+                                <button type="button" class="btn btn-sm btn-outline-danger me-2" onclick="enviarEmail('empleados')">
+                                    <i class="fas fa-envelope me-1"></i>Enviar por Gmail
+                                </button>
+                                <a th:href="@{/api/reportes/pdf/empleados}" class="btn btn-sm btn-outline-secondary">
+                                    <i class="fas fa-file-pdf me-1"></i>Descargar PDF
+                                </a>
+                            </div>
                         </div>
-                        <div class="card-body">
-                            <div class="ranking-item">
-                                <div class="ranking-position">🥇</div>
-                                <span class="ranking-name">8:00 PM - 9:00 PM</span>
-                                <div class="ranking-stats">
-                                    <span class="ranking-amount">$8,450</span>
-                                    <span class="ranking-percent">18.6%</span>
-                                </div>
-                            </div>
-                            <div class="ranking-item">
-                                <div class="ranking-position">🥈</div>
-                                <span class="ranking-name">1:00 PM - 2:00 PM</span>
-                                <div class="ranking-stats">
-                                    <span class="ranking-amount">$7,230</span>
-                                    <span class="ranking-percent">15.9%</span>
-                                </div>
-                            </div>
-                            <div class="ranking-item">
-                                <div class="ranking-position">🥉</div>
-                                <span class="ranking-name">9:00 PM - 10:00 PM</span>
-                                <div class="ranking-stats">
-                                    <span class="ranking-amount">$5,980</span>
-                                    <span class="ranking-percent">13.2%</span>
-                                </div>
-                            </div>
-                            <div class="chart-wrapper mt-2">
-                                <canvas id="horasChart"></canvas>
+                        <div class="card-body p-0">
+                            <div class="table-responsive">
+                                <table class="table table-hover align-middle mb-0">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Nombre</th>
+                                            <th>Puesto</th>
+                                            <th class="text-center">Días Trab.</th>
+                                            <th class="text-end">Pago/Día</th>
+                                            <th class="text-end">Sueldo Total</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr th:each="emp : ${empleados}">
+                                            <td th:text="${emp.id_empleado}">1</td>
+                                            <td class="fw-semibold" th:text="${emp.nombres}">Juan</td>
+                                            <td th:text="${emp.puesto}">Cajero</td>
+                                            <td class="text-center" th:text="${emp.diasTrabajados}">5</td>
+                                            <td class="text-end" th:text="${'$' + #numbers.formatDecimal(emp.pagoDiario, 1, 'COMMA', 2, 'POINT')}">$100</td>
+                                            <td class="text-end fw-bold text-success" th:text="${'$' + #numbers.formatDecimal(emp.salario_calculado != null ? emp.salario_calculado : 0, 1, 'COMMA', 2, 'POINT')}">$500</td>
+                                        </tr>
+                                        <tr th:if="${#lists.isEmpty(empleados)}">
+                                            <td colspan="6" class="text-center text-muted py-4">No hay empleados registrados.</td>
+                                        </tr>
+                                    </tbody>
+                                    <tfoot class="table-light">
+                                        <tr>
+                                            <td colspan="5" class="text-end fw-bold">Gasto Total Nómina:</td>
+                                            <td class="text-end fw-bold fs-5 text-success" th:text="${'$' + #numbers.formatDecimal(nominaTotal, 1, 'COMMA', 2, 'POINT')}"></td>
+                                        </tr>
+                                    </tfoot>
+                                </table>
                             </div>
                         </div>
                     </div>
                 </div>
+
             </div>
         </div>
 
@@ -363,10 +412,22 @@
         <button class="btn-volver position-fixed" onclick="history.back()">
             <i class="fas fa-arrow-left"></i>
         </button>
+        <!-- Toast para notificaciones -->
+        <div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 1055;">
+            <div id="emailToast" class="toast align-items-center text-bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
+                <div class="d-flex">
+                    <div class="toast-body" id="toastMessage">
+                        El reporte se ha enviado correctamente.
+                    </div>
+                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>
+            </div>
+        </div>
+
     </main>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
+    <script th:inline="javascript">
         // Toggle sidebar móvil
         document.addEventListener('DOMContentLoaded', () => {
             const hamburger = document.querySelector('.hamburger');
@@ -391,59 +452,69 @@
         });
         
         function iniciarGraficos() {
-            // Gráfico de ventas
-            const ctx1 = document.getElementById('ventasChart')?.getContext('2d');
-            if (ctx1) {
-                new Chart(ctx1, {
-                    type: 'line',
-                    data: {
-                        labels: ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'],
-                        datasets: [{
-                            label: 'Ventas',
-                            data: [5200, 4800, 6100, 5900, 7200, 8500, 7800],
-                            borderColor: '#f97316',
-                            backgroundColor: 'rgba(249,115,22,0.1)',
-                            tension: 0.4,
-                            fill: true
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: true,
-                        plugins: { 
-                            legend: { labels: { color: '#1a1a2e' } } 
-                        }
-                    }
-                });
-            }
+            // Datos del backend
+            const horasData = /*[[${reporte.ventasPorHora}]]*/ [];
+            
+            const labels = horasData.map(h => h.hora);
+            const data = horasData.map(h => h.totalIngresos);
             
             // Gráfico de horas pico
             const ctx2 = document.getElementById('horasChart')?.getContext('2d');
-            if (ctx2) {
+            if (ctx2 && labels.length > 0) {
                 new Chart(ctx2, {
                     type: 'bar',
                     data: {
-                        labels: ['12pm', '1pm', '2pm', '7pm', '8pm', '9pm', '10pm'],
+                        labels: labels,
                         datasets: [{
                             label: 'Ventas por hora',
-                            data: [3200, 7230, 5100, 4450, 8450, 5980, 4120],
+                            data: data,
                             backgroundColor: '#f97316',
                             borderRadius: 8
                         }]
                     },
                     options: {
                         responsive: true,
-                        maintainAspectRatio: true,
+                        maintainAspectRatio: false,
                         plugins: { 
-                            legend: { labels: { color: '#1a1a2e' } } 
+                            legend: { display: false } 
                         }
                     }
                 });
             }
         }
-        
-        function actualizarReportes() {
-            console.log('Actualizando reportes...');
+
+        async function enviarEmail(tipo) {
+            const btn = event.currentTarget;
+            const originalHtml = btn.innerHTML;
+            btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Enviando...';
+            btn.disabled = true;
+
+            try {
+                const periodo = document.getElementById('periodo-selector').value;
+                const url = tipo === 'ventas' ? `/api/reportes/enviar/ventas?periodo=${periodo}` : `/api/reportes/enviar/empleados`;
+                
+                const response = await fetch(url, { method: 'POST' });
+                const result = await response.json();
+                
+                mostrarToast(response.ok ? result.mensaje : result.error, response.ok);
+            } catch (error) {
+                mostrarToast('Error de conexión al intentar enviar el reporte.', false);
+            } finally {
+                btn.innerHTML = originalHtml;
+                btn.disabled = false;
+            }
+        }
+
+        function mostrarToast(mensaje, isSuccess) {
+            const toastEl = document.getElementById('emailToast');
+            const toastBody = document.getElementById('toastMessage');
+            
+            toastEl.classList.remove('text-bg-success', 'text-bg-danger');
+            toastEl.classList.add(isSuccess ? 'text-bg-success' : 'text-bg-danger');
+            toastBody.textContent = mensaje;
+            
+            const toast = new bootstrap.Toast(toastEl, { delay: 4000 });
+            toast.show();
         }
     </script>
 </body>

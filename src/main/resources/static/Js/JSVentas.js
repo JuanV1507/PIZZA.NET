@@ -1,5 +1,5 @@
 // Variables globales
-let carrito = [];
+let carrito = JSON.parse(localStorage.getItem('carritoPizzaNet')) || [];
 
 function cambiarCantidad(btn, delta) {
     const id = btn.getAttribute('data-id');
@@ -76,6 +76,9 @@ function actualizarCarrito() {
     const totalSpan = document.getElementById('total-carrito');
     const contador = document.getElementById('contador-items');
     
+    // Persistir en local storage
+    localStorage.setItem('carritoPizzaNet', JSON.stringify(carrito));
+
     if (carrito.length === 0) {
         lista.innerHTML = `
             <li class="text-center text-muted py-3">
@@ -172,39 +175,42 @@ radios.forEach(radio => {
     radio.addEventListener("change", actualizarValidaciones);
 });
 
-document.addEventListener("DOMContentLoaded", actualizarValidaciones);
+document.addEventListener("DOMContentLoaded", () => {
+    actualizarValidaciones();
+    actualizarCarrito(); // Restaurar UI del carrito guardado
+});
 
-function confirmarVenta() {
+async function confirmarVenta() {
     const nombre = document.getElementById('nombre-cliente').value;
     const telefono = document.getElementById('telefono-cliente').value;
     const tipoOrden = document.querySelector('input[name="tipo-orden"]:checked').value;
-    const direccion = document.getElementById('direccion'); 
-    const mesa = document.getElementById('mesa-cliente');
-    const referencias = document.getElementById('referencias');
+    const direccion = document.getElementById('direccion').value; 
+    const mesa = document.getElementById('mesa-cliente').value;
+    const referencias = document.getElementById('referencias').value;
     
-if (!nombre) {
-    Swal.fire("Error", "El nombre es obligatorio", "warning");
-    return;
-}
-
-if (tipoOrden === "domicilio") {
-    if (!telefono) {
-        Swal.fire("Error", "El teléfono es obligatorio para domicilio", "warning");
+    if (!nombre) {
+        Swal.fire("Error", "El nombre es obligatorio", "warning");
         return;
     }
 
-    if (!direccion.value) {
-        Swal.fire("Error", "La dirección es obligatoria", "warning");
-        return;
-    }
-}
+    if (tipoOrden === "domicilio") {
+        if (!telefono) {
+            Swal.fire("Error", "El teléfono es obligatorio para domicilio", "warning");
+            return;
+        }
 
-if (tipoOrden === "comedor") {
-    if (!mesa.value) {
-        Swal.fire("Error", "La mesa es obligatoria", "warning");
-        return;
+        if (!direccion) {
+            Swal.fire("Error", "La dirección es obligatoria", "warning");
+            return;
+        }
     }
-}
+
+    if (tipoOrden === "comedor") {
+        if (!mesa) {
+            Swal.fire("Error", "La mesa es obligatoria", "warning");
+            return;
+        }
+    }
     
     if (carrito.length === 0) {
         if (typeof Swal !== 'undefined') {
@@ -220,47 +226,141 @@ if (tipoOrden === "comedor") {
         return;
     }
 
-       if (tipoOrden === "domicilio") {
-        fetch('/clientes/guardar', {
+    // Fetch Siguiente Folio
+    let folioAsignado = "POR ASIGNAR";
+    try {
+        const response = await fetch('/ventas/siguiente-folio');
+        if (response.ok) {
+            const data = await response.json();
+            folioAsignado = data.folio;
+        }
+    } catch(e) {
+        console.error("Error obteniendo folio", e);
+    }
+
+    // Calcular Total
+    let total = carrito.reduce((sum, item) => sum + (item.precio * item.cantidad), 0);
+
+    // Llenar Modal
+    const ahora = new Date();
+    document.getElementById('ticket-fecha').textContent = ahora.toLocaleDateString();
+    document.getElementById('ticket-hora').textContent = ahora.toLocaleTimeString();
+    document.getElementById('ticket-folio').textContent = folioAsignado; 
+    document.getElementById('ticket-cliente').textContent = nombre;
+    document.getElementById('ticket-tipo').textContent = tipoOrden.toUpperCase();
+
+    if (tipoOrden === 'domicilio') {
+        document.getElementById('ticket-direccion-container').style.display = 'block';
+        document.getElementById('ticket-direccion').textContent = direccion;
+    } else {
+        document.getElementById('ticket-direccion-container').style.display = 'none';
+    }
+
+    if (tipoOrden === 'comedor') {
+        document.getElementById('ticket-mesa-container').style.display = 'block';
+        document.getElementById('ticket-mesa').textContent = mesa;
+    } else {
+        document.getElementById('ticket-mesa-container').style.display = 'none';
+    }
+
+    let listHtml = '';
+    carrito.forEach(item => {
+        listHtml += `<li class="d-flex justify-content-between"><span>${item.cantidad}x ${item.nombre}</span><span>$${(item.precio * item.cantidad).toFixed(2)}</span></li>`;
+    });
+    document.getElementById('ticket-productos').innerHTML = listHtml;
+    
+    document.getElementById('ticket-total').textContent = "$" + total.toFixed(2);
+    document.getElementById('ticket-total').dataset.val = total;
+
+    // Resetear caja de pago
+    document.getElementById('pago-input').value = '';
+    document.getElementById('cambio-display').textContent = '$0.00';
+
+    // Abrir Modal
+    const modal = new bootstrap.Modal(document.getElementById('ticketModal'));
+    modal.show();
+}
+
+function calcularCambio() {
+    const total = parseFloat(document.getElementById('ticket-total').dataset.val);
+    const pago = parseFloat(document.getElementById('pago-input').value);
+    const cambioDisplay = document.getElementById('cambio-display');
+    
+    if (isNaN(pago) || pago < 0) {
+        cambioDisplay.textContent = '$0.00';
+        cambioDisplay.className = 'fs-4 fw-bold text-primary';
+        return;
+    }
+
+    const cambio = pago - total;
+    if (cambio >= 0) {
+        cambioDisplay.textContent = "$" + cambio.toFixed(2);
+        cambioDisplay.className = 'fs-4 fw-bold text-success';
+    } else {
+        cambioDisplay.textContent = "Faltan $" + Math.abs(cambio).toFixed(2);
+        cambioDisplay.className = 'fs-4 fw-bold text-danger';
+    }
+}
+
+async function procesarPagoYGuardar() {
+    const total = parseFloat(document.getElementById('ticket-total').dataset.val);
+    const pago = parseFloat(document.getElementById('pago-input').value);
+
+    if (isNaN(pago) || pago < total) {
+        Swal.fire("Pago Insuficiente", "El cliente debe pagar al menos el total de la cuenta.", "warning");
+        return;
+    }
+
+    const btn = document.getElementById('btn-procesar-pago');
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Procesando...';
+
+    const payload = {
+        nombre: document.getElementById('nombre-cliente').value,
+        telefono: document.getElementById('telefono-cliente').value,
+        direccion: document.getElementById('direccion').value,
+        mesa: document.getElementById('mesa-cliente').value,
+        referencias: document.getElementById('referencias').value,
+        nota: document.getElementById('nota-cliente').value,
+        tipoOrden: document.querySelector('input[name="tipo-orden"]:checked').value,
+        total: total,
+        pago: pago,
+        carrito: carrito
+    };
+
+    try {
+        const response = await fetch('/ventas/guardar', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                telefono: telefono,
-                nombre: nombre,
-                direccion: direccion.value,
-                direccion: direccion.value
-            })
+            body: JSON.stringify(payload)
         });
-    }
-    
-    if (typeof Swal !== 'undefined') {
+
+        if (!response.ok) {
+            let errorMsg = "No se pudo guardar la venta en la base de datos.";
+            try {
+                const errData = await response.json();
+                if(errData.error) errorMsg = errData.error;
+            } catch(e) {}
+            throw new Error(errorMsg);
+        }
+        
+        const data = await response.json();
+        
         Swal.fire({
             icon: 'success',
-            title: '¡Venta confirmada!',
-            text: 'La orden se ha procesado correctamente',
-            confirmButtonColor: '#28a745'
+            title: '¡Venta Registrada!',
+            text: 'El ticket ha sido enviado a la impresora del servidor.',
+            timer: 2000,
+            showConfirmButton: false
         }).then(() => {
-            // Limpiar carrito
-            carrito = [];
-            actualizarCarrito();
-            document.getElementById('nombre-cliente').value = '';
-            document.getElementById('telefono-cliente').value = '';
-            document.getElementById('mesa-cliente').value = '';
-            document.getElementById('nota-cliente').value = '';
-            document.getElementById('direccion').value = '';
-            document.getElementById('referencias').value = '';
+            localStorage.removeItem('carritoPizzaNet'); // Limpiar el carrito solo si la venta fue exitosa
+            window.location.reload();
         });
-    } else {
-        // Fallback sin SweetAlert
-        alert('Venta confirmada');
-        carrito = [];
-        actualizarCarrito();
-        document.getElementById('nombre-cliente').value = '';
-        document.getElementById('telefono-cliente').value = '';
-        document.getElementById('nota-cliente').value = '';
-        document.getElementById('mesa-cliente').value = '';
-        document.getElementById('direccion').value = '';
-        document.getElementById('referencias').value = '';
+
+    } catch (error) {
+        Swal.fire("Error", error.message, "error");
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fas fa-print me-2"></i>Procesar y Emitir Ticket';
     }
 }
 

@@ -1,60 +1,67 @@
-    <!DOCTYPE html>
-    <html lang="es" xmlns:th="http://www.thymeleaf.org">
-    <head>
-        <meta charset="UTF-8">
-        <title>Ventas - Pizza.NET</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        
-        <!-- Bootstrap 5 CSS -->
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-        <!-- Iconos Font Awesome -->
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-        <!-- SweetAlert2 -->
-        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-        <!-- CSS Personalizado -->
-        <link rel="stylesheet" th:href="@{/css/styleVenta.css}">
-        <link rel="stylesheet" th:href="@{/css/layout-global.css}">
-    </head>
-    <body class="bg-light">
-        <!-- BOTÓN HAMBURGUESA -->
-        <button class="hamburger btn btn-dark position-fixed m-3" aria-label="Abrir Menú">
-            <i class="fas fa-bars"></i>
-        </button>
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
 
-        <!-- SIDEBAR -->
-        <aside class="sidebar bg-dark text-white">
-            <div class="header-sidebar p-4 text-center border-bottom border-secondary">
-                <div class="logo fs-4 fw-bold text-warning">🍕 PIZZA.NET</div>
-            </div>
+<head>
+    <meta charset="UTF-8">
+    <title>Ventas - Pizza.NET</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-            <nav class="nav-menu mt-4">
-                <ul class="nav flex-column">
-                    <li class="nav-item">
-                        <a th:href="@{/home}" class="nav-link text-white-50 hover-bg-secondary">
-                            <i class="fas fa-home me-3"></i> Inicio
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a th:href="@{/empleados}" class="nav-link text-white-50 hover-bg-secondary">
-                            <i class="fas fa-users me-3"></i> Empleados
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a th:href="@{/ventas}" class="nav-link text-white bg-primary bg-opacity-25">
-                            <i class="fas fa-shopping-cart me-3"></i> Ventas
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a th:href="@{/reportes}" class="nav-link text-white-50 hover-bg-secondary">
-                            <i class="fas fa-chart-line me-3"></i> Reportes
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a th:href="@{/productos}" class="nav-link text-white-50 hover-bg-secondary">
-                            <i class="fas fa-pizza-slice me-3"></i> Productos
-                        </a>
-                    </li>
-                    <li class="nav-item">
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Iconos Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- CSS Personalizado -->
+    <link rel="stylesheet" th:href="@{/css/styleVenta.css}">
+    <link rel="stylesheet" th:href="@{/css/layout-global.css}">
+</head>
+
+<body class="bg-light">
+    <!-- BOTÓN HAMBURGUESA -->
+    <button class="hamburger btn btn-dark position-fixed m-3" aria-label="Abrir Menú">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar bg-dark text-white">
+        <div class="header-sidebar p-4 text-center border-bottom border-secondary">
+            <div class="logo fs-4 fw-bold text-warning">🍕 PIZZA.NET</div>
+        </div>
+
+        <nav class="nav-menu mt-4">
+            <ul class="nav flex-column">
+                <li class="nav-item">
+                    <a th:href="@{/home}" class="nav-link text-white-50 hover-bg-secondary">
+                        <i class="fas fa-home me-3"></i> Inicio
+                    </a>
+                </li>
+                <li class="nav-item" th:if="${esAdmin}">
+                    <a th:href="@{/empleados}" class="nav-link text-white-50 hover-bg-secondary">
+                        <i class="fas fa-users me-3"></i> Empleados
+                    </a>
+                </li>
+                <li class="nav-item" th:unless="${esAdmin}">
+                    <a href="#" class="nav-link text-white-50 d-flex align-items-center" style="cursor: not-allowed; background-color: rgba(220, 53, 69, 0.05);" onclick="Swal.fire('Acceso Restringido', 'Tu rol de Cajera no tiene permisos para acceder a Empleados.', 'error'); return false;">
+                        <i class="fas fa-users me-3 text-secondary"></i> <span class="text-secondary">Empleados</span> <i class="fas fa-lock ms-auto text-danger"></i>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a th:href="@{/ventas}" class="nav-link text-white bg-primary bg-opacity-25">
+                        <i class="fas fa-shopping-cart me-3"></i> Ventas
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a th:href="@{/reportes}" class="nav-link text-white-50 hover-bg-secondary">
+                        <i class="fas fa-chart-line me-3"></i> Reportes
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a th:href="@{/productos}" class="nav-link text-white-50 hover-bg-secondary">
+                        <i class="fas fa-pizza-slice me-3"></i> Productos
+                    </a>
+                </li>
+                <li class="nav-item">
                     <a th:href="@{/clientes}" class="nav-link text-white-50 hover-bg-secondary">
                         <i class="fas fa-address-book me-3"></i> Clientes
                     </a>
@@ -64,144 +71,147 @@
                         <i class="fas fa-exchange-alt me-3"></i> Devoluciones
                     </a>
                 </li>
-                </ul>
-            </nav>
-                <div class="extra-links position-absolute bottom-0 w-100 p-4 border-top border-secondary">
-                    <a href="#" class="d-block text-white-50 text-decoration-none mb-3">
-                        <i class="fas fa-lock me-2"></i>Cerrar Ventas
-                    </a>
-                    <a href="#" class="d-block text-white-50 text-decoration-none">
-                        <i class="fas fa-sign-out-alt me-2"></i>Cerrar Sesión
-                    </a>
-                </div>
-                </aside>
+            </ul>
+        </nav>
+        <div class="extra-links position-absolute bottom-0 w-100 p-4 border-top border-secondary">
+            <a href="#" class="d-block text-white-50 text-decoration-none mb-3">
+                <i class="fas fa-lock me-2"></i>Cerrar Ventas
+            </a>
+            <a href="#" class="d-block text-white-50 text-decoration-none">
+                <i class="fas fa-sign-out-alt me-2"></i>Cerrar Sesión
+            </a>
+        </div>
+    </aside>
 
-                <!-- Botón REGRESAR (móvil) -->
-                <button type="button" class="btn-volver btn btn-light rounded-circle shadow-sm position-fixed" onclick="history.back()">
-                    <i class="fas fa-arrow-left"></i>
-                </button>
+    <!-- Botón REGRESAR (móvil) -->
+    <button type="button" class="btn-volver btn btn-light rounded-circle shadow-sm position-fixed"
+        onclick="history.back()">
+        <i class="fas fa-arrow-left"></i>
+    </button>
 
-                <main class="main-content-wrapper p-4 main-content">
-                    <div class="container-fluid px-0">
-                        <!-- Título y breadcrumb (igual) -->
-                        <div class="d-flex justify-content-between align-items-center mb-4">
-                            <h1 class="h3 mb-0 text-gray-800">
-                                <i class="fas fa-shopping-cart me-2 text-primary"></i>Punto de Venta
-                            </h1>
-                            <nav aria-label="breadcrumb">
-                                <ol class="breadcrumb mb-0">
-                                    <li class="breadcrumb-item"><a th:href="@{/home}">Inicio</a></li>
-                                    <li class="breadcrumb-item active" aria-current="page">Ventas</li>
-                                </ol>
-                            </nav>
+    <main class="main-content-wrapper p-4 main-content">
+        <div class="container-fluid px-0">
+            <!-- Título y breadcrumb (igual) -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1 class="h3 mb-0 text-gray-800">
+                    <i class="fas fa-shopping-cart me-2 text-primary"></i>Punto de Venta
+                </h1>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb mb-0">
+                        <li class="breadcrumb-item"><a th:href="@{/home}">Inicio</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Ventas</li>
+                    </ol>
+                </nav>
+            </div>
+
+            <!-- Filtros (igual) -->
+            <div class="card shadow-sm border-0 mb-4">
+                <div class="card-body">
+                    <form method="get" action="/ventas" class="row g-3 align-items-end">
+                        <div class="col-md-4">
+                            <label class="form-label fw-semibold">
+                                <i class="fas fa-tag me-2 text-secondary"></i>Categoría
+                            </label>
+                            <select name="categoria" class="form-select" aria-label="Filtrar por categoría">
+                                <option value="">-- Todas las categorías --</option>
+                                <option th:each="cat : ${categorias}" th:value="${cat}"
+                                    th:text="${#strings.capitalize(cat.name().toLowerCase())}">
+                                </option>
+                            </select>
                         </div>
 
-                        <!-- Filtros (igual) -->
-                        <div class="card shadow-sm border-0 mb-4">
-                            <div class="card-body">
-                                <form method="get" action="/ventas" class="row g-3 align-items-end">
-                                    <div class="col-md-4">
-                                        <label class="form-label fw-semibold">
-                                            <i class="fas fa-tag me-2 text-secondary"></i>Categoría
-                                        </label>
-                                        <select name="categoria" class="form-select" aria-label="Filtrar por categoría">
-                                            <option value="">-- Todas las categorías --</option>
-                                            <option th:each="cat : ${categorias}" th:value="${cat}"
-                                                th:text="${#strings.capitalize(cat.name().toLowerCase())}">
-                                            </option>
-                                        </select>
-                                    </div>
+                        <div class="col-md-4">
+                            <label class="form-label fw-semibold">
+                                <i class="fas fa-check-circle me-2 text-secondary"></i>Disponibilidad
+                            </label>
+                            <select name="activo" class="form-select" aria-label="Filtrar por disponibilidad">
+                                <option value="">-- Todos --</option>
+                                <option value="true" th:selected="${activoSeleccionado == true}">Disponible</option>
+                                <option value="false" th:selected="${activoSeleccionado == false}">No disponible
+                                </option>
+                            </select>
+                        </div>
 
-                                    <div class="col-md-4">
-                                        <label class="form-label fw-semibold">
-                                            <i class="fas fa-check-circle me-2 text-secondary"></i>Disponibilidad
-                                        </label>
-                                        <select name="activo" class="form-select" aria-label="Filtrar por disponibilidad">
-                                            <option value="">-- Todos --</option>
-                                            <option value="true" th:selected="${activoSeleccionado == true}">Disponible</option>
-                                            <option value="false" th:selected="${activoSeleccionado == false}">No disponible</option>
-                                        </select>
-                                    </div>
+                        <div class="col-md-4">
+                            <button type="submit" class="btn btn-primary w-100 py-2">
+                                <i class="fa-solid fa-filter me-2"></i>Aplicar Filtros
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
 
-                                    <div class="col-md-4">
-                                        <button type="submit" class="btn btn-primary w-100 py-2">
-                                            <i class="fa-solid fa-filter me-2"></i>Aplicar Filtros
-                                        </button>
-                                    </div>
-                                </form>
+            <!-- Layout principal: Productos y Carrito -->
+            <div class="row g-4">
+                <!-- Productos (izquierda) - CON SCROLL INDEPENDIENTE -->
+                <div class="col-lg-8 productos-container">
+                    <div class="card shadow-sm border-0 h-100">
+                        <div class="card-header bg-white py-3">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h5 class="card-title mb-0">
+                                    <i class="fas fa-pizza-slice me-2 text-primary"></i>Productos Disponibles
+                                </h5>
+                                <span class="badge bg-primary"
+                                    th:text="${#lists.size(productos)} + ' productos'"></span>
                             </div>
                         </div>
-
-                        <!-- Layout principal: Productos y Carrito -->
-                        <div class="row g-4">
-                            <!-- Productos (izquierda) - CON SCROLL INDEPENDIENTE -->
-                            <div class="col-lg-8 productos-container">
-                                <div class="card shadow-sm border-0 h-100">
-                                    <div class="card-header bg-white py-3">
-                                        <div class="d-flex justify-content-between align-items-center">
-                                            <h5 class="card-title mb-0">
-                                                <i class="fas fa-pizza-slice me-2 text-primary"></i>Productos Disponibles
-                                            </h5>
-                                            <span class="badge bg-primary" th:text="${#lists.size(productos)} + ' productos'"></span>
+                        <div class="card-body overflow-auto carrito-scroll">
+                            <div class="row g-3" id="productos-container">
+                                <!-- Reemplaza todo el div con clase "col-md-6 col-lg-4" por esto -->
+                                <!-- Reemplaza el div del producto con esto -->
+                                <div class="col-md-6 col-lg-4 mb-3" th:each="producto : ${productos}">
+                                    <div class="card border-0 shadow-sm producto-card">
+                                        <div class="position-relative">
+                                            <img th:src="@{'/imagenes/' + ${producto.imagen}}"
+                                                class="card-img-top producto-img" th:alt="${producto.nombre}">
+                                            <span class="position-absolute top-0 end-0 m-2 badge bg-success"
+                                                th:if="${producto.activo}">Disponible</span>
+                                            <span class="position-absolute top-0 end-0 m-2 badge bg-danger"
+                                                th:unless="${producto.activo}">No disponible</span>
                                         </div>
-                                    </div>
-                                    <div class="card-body overflow-auto carrito-scroll">
-                                        <div class="row g-3" id="productos-container">
-                                            <!-- Reemplaza todo el div con clase "col-md-6 col-lg-4" por esto -->
-                                            <!-- Reemplaza el div del producto con esto -->
-                                            <div class="col-md-6 col-lg-4 mb-3" th:each="producto : ${productos}">
-                                                <div class="card border-0 shadow-sm producto-card">
-                                                    <div class="position-relative">
-                                                        <img th:src="@{'/imagenes/' + ${producto.imagen}}"
-                                                            class="card-img-top producto-img" th:alt="${producto.nombre}">
-                                                        <span class="position-absolute top-0 end-0 m-2 badge bg-success"
-                                                            th:if="${producto.activo}">Disponible</span>
-                                                        <span class="position-absolute top-0 end-0 m-2 badge bg-danger"
-                                                            th:unless="${producto.activo}">No disponible</span>
-                                                    </div>
-                                                    <div class="card-body">
-                                                        <h6 class="card-title fw-bold text-truncate mb-1"
-                                                            th:text="${producto.nombre}">Producto</h6>
-                                                        <p class="text-primary fw-bold mb-2"
-                                                            style="font-size: 1rem; margin-block-end: 8px !important;"
-                                                            th:text="'$' + ${#numbers.formatDecimal(producto.precio, 1, 'COMMA', 2, 'POINT')}">
-                                                            $0.00</p>
+                                        <div class="card-body">
+                                            <h6 class="card-title fw-bold text-truncate mb-1"
+                                                th:text="${producto.nombre}">Producto</h6>
+                                            <p class="text-primary fw-bold mb-2"
+                                                style="font-size: 1rem; margin-block-end: 8px !important;"
+                                                th:text="'$' + ${#numbers.formatDecimal(producto.precio, 1, 'COMMA', 2, 'POINT')}">
+                                                $0.00</p>
 
-                                                        <!-- Controles de cantidad -->
-                                                        <div class="d-flex justify-content-center align-items-center gap-2"
-                                                            style="margin-block-end: 8px !important;">
-                                                            <button type="button" class="btn-restar"
-                                                                th:attr="data-id=${producto.id_producto}"
-                                                                onclick="cambiarCantidad(this, -1)"
-                                                                style="inline-size: 28px; block-size: 28px; border: none; border-radius: 6px; background: #f97316; color: white; font-weight: bold;">−</button>
-                                                            <input type="number" class="form-control text-center cantidad-input"
-                                                                th:id="'cantidad-' + ${producto.id_producto}" value="1" min="1" max="99"
-                                                                title="Cantidad">
-                                                            <button type="button" class="btn-sumar"
-                                                                th:attr="data-id=${producto.id_producto}"
-                                                                onclick="cambiarCantidad(this, 1)"
-                                                                style="inline-size: 28px; block-size: 28px; border: none; border-radius: 6px; background: #f97316; color: white; font-weight: bold;">+</button>
-                                                        </div>
+                                            <!-- Controles de cantidad -->
+                                            <div class="d-flex justify-content-center align-items-center gap-2"
+                                                style="margin-block-end: 8px !important;">
+                                                <button type="button" class="btn-restar"
+                                                    th:attr="data-id=${producto.id_producto}"
+                                                    onclick="cambiarCantidad(this, -1)"
+                                                    style="inline-size: 28px; block-size: 28px; border: none; border-radius: 6px; background: #f97316; color: white; font-weight: bold;">−</button>
+                                                <input type="number" class="form-control text-center cantidad-input"
+                                                    th:id="'cantidad-' + ${producto.id_producto}" value="1" min="1"
+                                                    max="99" title="Cantidad">
+                                                <button type="button" class="btn-sumar"
+                                                    th:attr="data-id=${producto.id_producto}"
+                                                    onclick="cambiarCantidad(this, 1)"
+                                                    style="inline-size: 28px; block-size: 28px; border: none; border-radius: 6px; background: #f97316; color: white; font-weight: bold;">+</button>
+                                            </div>
 
-                                                        <button type="button" class="btn btn-success btn-sm w-100 rounded-2"
-                                                            th:attr="data-id=${producto.id_producto},
+                                            <button type="button" class="btn btn-success btn-sm w-100 rounded-2"
+                                                th:attr="data-id=${producto.id_producto},
                                             data-nombre=${producto.nombre},
                                             data-precio=${producto.precio}" onclick="agregarAlCarrito(this)">
-                                                            <i class="fas fa-cart-plus me-1"></i>Agregar
-                                                        </button>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <!-- Mensaje si no hay productos -->
-                                        <div class="text-center py-5" th:if="${#lists.isEmpty(productos)}">
-                                            <i class="fas fa-box-open fa-3x text-muted mb-3"></i>
-                                            <p class="text-muted">No hay productos disponibles</p>
+                                                <i class="fas fa-cart-plus me-1"></i>Agregar
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
                             </div>
+
+                            <!-- Mensaje si no hay productos -->
+                            <div class="text-center py-5" th:if="${#lists.isEmpty(productos)}">
+                                <i class="fas fa-box-open fa-3x text-muted mb-3"></i>
+                                <p class="text-muted">No hay productos disponibles</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
                 <!-- Carrito y Cliente (derecha) - FIJO -->
                 <div class="col-lg-4">
@@ -216,9 +226,9 @@
                         <div class="card-body">
                             <div class="folio bg-light p-2 rounded mb-3">
                                 <span class="fw-bold">Folio:</span>
-                                <span id="folio-numero" class="text-primary">VENTA-001</span>
+                                <span id="folio-numero" class="text-primary" th:text="${siguienteFolio}">VENTA-001</span>
                             </div>
-                            
+
                             <!-- Lista de items del carrito CON SCROLL -->
                             <div id="carrito-contenedor" class="carrito-items-scroll">
                                 <ul class="carrito-lista list-unstyled mb-0" id="carrito-lista">
@@ -228,7 +238,7 @@
                                     </li>
                                 </ul>
                             </div>
-                            
+
                             <!-- Total -->
                             <div class="d-flex justify-content-between align-items-center mt-3 pt-3 border-top">
                                 <span class="fw-bold">Total:</span>
@@ -248,37 +258,37 @@
                             <form id="form-venta">
                                 <div class="mb-2">
                                     <label class="form-label small fw-semibold">Nombre</label>
-                                    <input type="text" class="form-control form-control-sm" id="nombre-cliente" 
+                                    <input type="text" class="form-control form-control-sm" id="nombre-cliente"
                                         placeholder="Nombre completo">
                                 </div>
 
                                 <div class="mb-2">
                                     <label class="form-label small fw-semibold">Teléfono</label>
-                                    <input type="tel" class="form-control form-control-sm" id="telefono-cliente" 
+                                    <input type="tel" class="form-control form-control-sm" id="telefono-cliente"
                                         placeholder="Ej. 55-1234-5678">
                                 </div>
 
                                 <div class="mb-2">
                                     <label class="form-label small fw-semibold">Comentario</label>
-                                    <input type="text" class="form-control form-control-sm" id="nota-cliente" 
+                                    <input type="text" class="form-control form-control-sm" id="nota-cliente"
                                         placeholder="Comentario adicional">
                                 </div>
 
                                 <div class="mb-2" id="grupo-direccion" style="display:none;">
                                     <label class="form-label small fw-semibold">Dirección</label>
-                                    <input type="text" class="form-control form-control-sm" id="direccion" 
+                                    <input type="text" class="form-control form-control-sm" id="direccion"
                                         placeholder="Dirección completa">
                                 </div>
 
                                 <div class="mb-2" id="grupo-referencias" style="display:none;">
                                     <label class="form-label small fw-semibold">Referencias</label>
-                                    <input type="text" class="form-control form-control-sm" id="referencias" 
+                                    <input type="text" class="form-control form-control-sm" id="referencias"
                                         placeholder="Ej. casa azul, portón negro">
                                 </div>
 
                                 <div class="mb-2">
                                     <label class="form-label small fw-semibold">Mesa</label>
-                                    <input type="text" class="form-control form-control-sm" id="mesa-cliente" 
+                                    <input type="text" class="form-control form-control-sm" id="mesa-cliente"
                                         placeholder="Número o nombre de mesa">
                                 </div>
 
@@ -286,24 +296,25 @@
                                     <label class="form-label small fw-semibold">Tipo de orden</label>
                                     <div class="d-flex gap-2">
                                         <div class="form-check">
-                                            <input class="form-check-input" type="radio" name="tipo-orden" 
+                                            <input class="form-check-input" type="radio" name="tipo-orden"
                                                 id="tipo-comedor" value="comedor" checked>
                                             <label class="form-check-label small" for="tipo-comedor">Comedor</label>
                                         </div>
                                         <div class="form-check">
-                                            <input class="form-check-input" type="radio" name="tipo-orden" 
+                                            <input class="form-check-input" type="radio" name="tipo-orden"
                                                 id="tipo-esperando" value="esperando">
                                             <label class="form-check-label small" for="tipo-esperando">Esperando</label>
                                         </div>
                                         <div class="form-check">
-                                            <input class="form-check-input" type="radio" name="tipo-orden" 
+                                            <input class="form-check-input" type="radio" name="tipo-orden"
                                                 id="tipo-domicilio" value="domicilio">
                                             <label class="form-check-label small" for="tipo-domicilio">Domicilio</label>
                                         </div>
                                     </div>
                                 </div>
 
-                                <button type="button" class="btn btn-success w-100" id="btn-confirmar" onclick="confirmarVenta()">
+                                <button type="button" class="btn btn-success w-100" id="btn-confirmar"
+                                    onclick="confirmarVenta()">
                                     <i class="fas fa-check-circle me-2"></i>Confirmar Orden
                                 </button>
                             </form>
@@ -312,38 +323,125 @@
                 </div>
             </div>
         </div>
+        <!-- Modal Ticket de Compra -->
+        <div class="modal fade" id="ticketModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-sm" style="max-width: 350px;">
+                <div class="modal-content border-0 shadow-lg">
+                    <!-- CABECERA DEL MODAL -->
+                    <div class="modal-header border-0 pb-0 justify-content-center">
+                        <h4 class="modal-title fw-bold text-secondary mb-0"><i
+                                class="fas fa-receipt text-primary me-2"></i>Ticket de Venta</h4>
+                    </div>
+
+                    <!-- CONTENIDO A IMPRIMIR -->
+                    <div id="imprimible-ticket" class="p-4 pt-3 pb-2"
+                        style="background: white; color: black; font-family: 'Courier New', Courier, monospace; font-size: 0.9rem;">
+                        <div class="text-center mb-3">
+                            <!-- Logo de la Pizzería -->
+                            <img src="/img/LogoU.jpg" alt="Logo Pizzería" style="width: 70px; margin-bottom: 8px;">
+
+                            <h5 class="fw-bold mb-1" style="letter-spacing: 1px;">PIZZERIA UNICORNIO</h5>
+                            <small style="font-size: 0.75rem; color: #555;">
+                                ¡Cada pedido es especial! Gracias por elegirnos.<br>
+                                Tel: 988-912-6258<br>
+                                C.19 x 20 y 22, Col.Centro, Acanceh, Yucatan
+                            </small>
+                        </div>
+
+                        <div class="border-top border-bottom border-secondary border-opacity-25 py-2 mb-2"
+                            style="border-style: dotted !important;">
+                            <div><strong>Folio:</strong> <span id="ticket-folio"></span></div>
+                            <div><strong>Fecha:</strong> <span id="ticket-fecha"></span>, <span id="ticket-hora"></span>
+                            </div>
+                            <div><strong>Tipo:</strong> <span id="ticket-tipo"></span></div>
+                            <div><strong>Cliente:</strong> <span id="ticket-cliente"></span></div>
+                            <div id="ticket-mesa-container" style="display:none;"><strong>Mesa:</strong> <span
+                                    id="ticket-mesa"></span></div>
+                            <div id="ticket-direccion-container" style="display:none;"><strong>Dir:</strong> <span
+                                    id="ticket-direccion"></span></div>
+                        </div>
+
+                        <div class="mb-2">
+                            <ul class="list-unstyled mb-0" id="ticket-productos">
+                                <!-- Llenado por JS -->
+                            </ul>
+                        </div>
+
+                        <div class="border-top border-secondary border-opacity-25 pt-2 mb-3"
+                            style="border-style: dotted !important; border-bottom: 0;">
+                            <div class="d-flex justify-content-between fw-bold">
+                                <span>TOTAL:</span>
+                                <span id="ticket-total">$0.00</span>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- FIN CONTENIDO A IMPRIMIR -->
+
+                    <div class="modal-body bg-white pt-0">
+                        <label class="form-label small fw-bold text-secondary mb-1">
+                            <i class="fas fa-money-bill-wave text-success me-1"></i>Cantidad con la que paga:
+                        </label>
+                        <div class="input-group mb-2">
+                            <input type="number" class="form-control text-end fw-bold" id="pago-input"
+                                placeholder="$0.00" onkeyup="calcularCambio()" onchange="calcularCambio()">
+                        </div>
+
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <span class="small fw-bold text-secondary">Cambio:</span>
+                            <span class="fw-bold text-primary" id="cambio-display">$0.00</span>
+                        </div>
+
+                        <div class="row g-2">
+                            <div class="col-6">
+                                <button type="button" class="btn btn-success w-100 fw-bold" id="btn-procesar-pago"
+                                    onclick="procesarPagoYGuardar()">
+                                    <i class="fas fa-print me-1"></i> Imprimir
+                                </button>
+                            </div>
+                            <div class="col-6">
+                                <button type="button" class="btn btn-danger w-100 fw-bold" data-bs-dismiss="modal">
+                                    <i class="fas fa-times me-1"></i> Cancelar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </main>
 
-        <!-- Bootstrap JS -->
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-        <script th:src="@{/Js/JSVentas.js}"></script>
-        
-        <script>
-            // Toggle sidebar en móvil
-            document.addEventListener('DOMContentLoaded', () => {
-                const hamburger = document.querySelector('.hamburger');
-                const sidebar = document.querySelector('.sidebar');
-                
-                hamburger.addEventListener('click', () => {
-                    sidebar.classList.toggle('active');
-                });
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script th:src="@{/Js/JSVentas.js}"></script>
 
-                // Cerrar sidebar al hacer click fuera en móvil
-                document.addEventListener('click', (e) => {
-                    if (window.innerWidth <= 768) {
-                        if (!sidebar.contains(e.target) && !hamburger.contains(e.target)) {
-                            sidebar.classList.remove('active');
-                        }
-                    }
-                });
+    <script>
+        // Toggle sidebar en móvil
+        document.addEventListener('DOMContentLoaded', () => {
+            const hamburger = document.querySelector('.hamburger');
+            const sidebar = document.querySelector('.sidebar');
 
-                // Inicializar carrito desde localStorage si existe
-                cargarCarrito();
-                actualizarContador();
+            hamburger.addEventListener('click', () => {
+                sidebar.classList.toggle('active');
             });
 
-        </script>
+            // Cerrar sidebar al hacer click fuera en móvil
+            document.addEventListener('click', (e) => {
+                if (window.innerWidth <= 768) {
+                    if (!sidebar.contains(e.target) && !hamburger.contains(e.target)) {
+                        sidebar.classList.remove('active');
+                    }
+                }
+            });
 
-            
-    </body>
-    </html>
+            // Inicializar carrito desde localStorage si existe
+            cargarCarrito();
+            actualizarContador();
+        });
+
+    </script>
+
+
+</body>
+
+</html>

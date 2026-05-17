@@ -36,9 +36,14 @@
                         <i class="fas fa-home me-3"></i> Inicio
                     </a>
                 </li>
-                <li class="nav-item">
+                <li class="nav-item" th:if="${esAdmin}">
                     <a th:href="@{/empleados}" class="nav-link text-white bg-primary bg-opacity-25">
                         <i class="fas fa-users me-3"></i> Empleados
+                    </a>
+                </li>
+                <li class="nav-item" th:unless="${esAdmin}">
+                    <a href="#" class="nav-link text-white-50 d-flex align-items-center" style="cursor: not-allowed; background-color: rgba(220, 53, 69, 0.05);" onclick="Swal.fire('Acceso Restringido', 'Tu rol de Cajera no tiene permisos para acceder a Empleados.', 'error'); return false;">
+                        <i class="fas fa-users me-3 text-secondary"></i> <span class="text-secondary">Empleados</span> <i class="fas fa-lock ms-auto text-danger"></i>
                     </a>
                 </li>
                 <li class="nav-item">
@@ -150,8 +155,9 @@
                                             </label>
                                             <div class="input-group">
                                                 <span class="input-group-text">$</span>
-                                                <input class="form-control" type="number" step="0.01"
-                                                    th:field="*{pagoDiario}" placeholder="0.00" required>
+                                                <input class="form-control" type="number" step="0.01" min="0"
+                                                    th:field="*{pagoDiario}" placeholder="0.00" required
+                                                    oninput="if(this.value < 0) this.value = 0;">
                                             </div>
                                             <div class="invalid-feedback">Campo requerido</div>
                                         </div>
@@ -162,7 +168,8 @@
                                                 <i class="fas fa-calendar-alt me-2 text-secondary"></i>Días
                                             </label>
                                             <input class="form-control" type="number" min="0"
-                                                th:field="*{diasTrabajados}" placeholder="0" required>
+                                                th:field="*{diasTrabajados}" placeholder="0" required
+                                                oninput="if(this.value < 0) this.value = 0;">
                                             <div class="invalid-feedback">Campo requerido</div>
                                         </div>
                                     </div>
@@ -295,23 +302,33 @@
             });
         })();
 
-        // Toggle sidebar en móvil
+        // Toggle sidebar en móvil y configuraciones iniciales
         document.addEventListener('DOMContentLoaded', () => {
             const hamburger = document.querySelector('.hamburger');
             const sidebar = document.querySelector('.sidebar');
 
-            hamburger.addEventListener('click', () => {
-                sidebar.classList.toggle('active');
-            });
+            if (hamburger && sidebar) {
+                hamburger.addEventListener('click', () => {
+                    sidebar.classList.toggle('active');
+                });
+            }
 
             // Cerrar sidebar al hacer click fuera en móvil
             document.addEventListener('click', (e) => {
-                if (window.innerWidth <= 768) {
+                if (window.innerWidth <= 768 && sidebar && hamburger) {
                     if (!sidebar.contains(e.target) && !hamburger.contains(e.target)) {
                         sidebar.classList.remove('active');
                     }
                 }
             });
+
+            // Evitar fechas futuras en Fecha Registro
+            const fechaInput = document.getElementById('fechaRegistro');
+            if (fechaInput) {
+                const now = new Date();
+                now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+                fechaInput.max = now.toISOString().slice(0, 16);
+            }
         });
 
         // Alertas con SweetAlert2

@@ -131,8 +131,26 @@ document.addEventListener("DOMContentLoaded", () => {
                                 return false; // DETIENE el submit
                             }
 
-                            // enviar form
-                            document.getElementById("formUsuario").submit();
+                            // enviar form via fetch
+                            const formElement = document.getElementById("formUsuario");
+                            const formData = new FormData(formElement);
+
+                            return fetch('/usuarios/guardar-ajax', {
+                                method: 'POST',
+                                body: formData
+                            })
+                            .then(response => {
+                                if (!response.ok) {
+                                    return response.json().then(errData => {
+                                        Swal.showValidationMessage(errData.error || "Error al procesar la solicitud");
+                                        return false;
+                                    }).catch(e => {
+                                        Swal.showValidationMessage("Error al conectar con el servidor");
+                                        return false;
+                                    });
+                                }
+                                return response.json();
+                            });
                         },
 
                         didOpen: () => {
@@ -146,6 +164,16 @@ document.addEventListener("DOMContentLoaded", () => {
                                     select.appendChild(option);
                                 });
                             }
+                        }
+                    }).then((resultUser) => {
+                        if (resultUser.isConfirmed && resultUser.value) {
+                            Swal.fire({
+                                title: "Usuario creado",
+                                text: resultUser.value.mensaje,
+                                icon: "success"
+                            }).then(() => {
+                                window.location.href = "/empleados";
+                            });
                         }
                     });
                 }
