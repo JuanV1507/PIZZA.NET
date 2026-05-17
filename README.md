@@ -10,7 +10,7 @@ Sistema integral de gestión y Punto de Venta (POS) desarrollado para la **Pizze
 
 ## 🧾 Ticket Térmico ESC/POS
 
-<img width="250" height="2902" alt="ticket" src="https://github.com/user-attachments/assets/f4cd7b9e-a9bc-4e89-b1dc-3892d5c59592" />
+<img width="850" height="2902" alt="ticket" src="https://github.com/user-attachments/assets/f4cd7b9e-a9bc-4e89-b1dc-3892d5c59592" />
 
 ## 📊 Reportes Automáticos PDF
 
