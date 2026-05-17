@@ -10,18 +10,18 @@ Sistema integral de gestión y Punto de Venta (POS) desarrollado para la **Pizze
 
 ## 🧾 Ticket Térmico ESC/POS
 
-<img width="1288" height="2902" alt="ticket" src="https://github.com/user-attachments/assets/f4cd7b9e-a9bc-4e89-b1dc-3892d5c59592" />
+<img width="250" height="2902" alt="ticket" src="https://github.com/user-attachments/assets/f4cd7b9e-a9bc-4e89-b1dc-3892d5c59592" />
 
 ## 📊 Reportes Automáticos PDF
 
-<img width="989" height="624" alt="image" src="https://github.com/user-attachments/assets/ca9575dd-5b3f-4af5-b20b-6b29f8f165c2" />
-<img width="989" height="646" alt="image" src="https://github.com/user-attachments/assets/feabc295-d1e1-462e-847f-c384ce609b2e" />
-<img width="993" height="514" alt="image" src="https://github.com/user-attachments/assets/3c7d1266-d8f9-4a90-8fd4-63844ecb97bd" />
+<img width="600" height="624" alt="image" src="https://github.com/user-attachments/assets/ca9575dd-5b3f-4af5-b20b-6b29f8f165c2" />
+<img width="600" height="646" alt="image" src="https://github.com/user-attachments/assets/feabc295-d1e1-462e-847f-c384ce609b2e" />
+<img width="600" height="514" alt="image" src="https://github.com/user-attachments/assets/3c7d1266-d8f9-4a90-8fd4-63844ecb97bd" />
 
 ## 📧 Envío Automático de Reportes
 
- <img width="1504" height="700" alt="image" src="https://github.com/user-attachments/assets/2e26701b-849f-4b28-a4f8-205168698f02" />
- <img width="1507" height="700" alt="image" src="https://github.com/user-attachments/assets/6410e5ae-b6b7-4261-ab5c-029951dddc12" />
+ <img width="800" height="700" alt="image" src="https://github.com/user-attachments/assets/2e26701b-849f-4b28-a4f8-205168698f02" />
+ <img width="800" height="700" alt="image" src="https://github.com/user-attachments/assets/6410e5ae-b6b7-4261-ab5c-029951dddc12" />
 
 
 ## 🚀 Características Principales
