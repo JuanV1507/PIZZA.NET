@@ -94,6 +94,10 @@ Sistema integral de gestión y Punto de Venta (POS) desarrollado para la **Pizze
     ```bash
     ./mvnw spring-boot:run
     ```
+# 🗄️ Diagrama Entidad-Relación (DER)
+
+    <img width="1694" height="968" alt="image" src="https://github.com/user-attachments/assets/8ef1dc62-0cdc-4d9a-b05f-37626dc884ac" />
+
 
 ## 📝 Estructura de Módulos Destacados
 
