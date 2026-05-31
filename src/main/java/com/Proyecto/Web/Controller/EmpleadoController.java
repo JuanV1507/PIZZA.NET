@@ -46,26 +46,35 @@ public class EmpleadoController {
     }
 
  @PostMapping
-public String guardar(
-        @Valid @ModelAttribute Empleado empleado,
-        BindingResult result,
-        RedirectAttributes redirectAttributes,
-        Model model) {
+ public String guardar(
+         @Valid @ModelAttribute Empleado empleado,
+         BindingResult result,
+         RedirectAttributes redirectAttributes,
+         Model model) {
 
-    // VALIDACIÓN DE FORMATO (nombre, etc)
-    if (result.hasErrors()) {
-        model.addAttribute("No se permite números ni caracteres especiales en el nombre");
-        model.addAttribute("empleados", empleadoService.listarTodos());
-        return "empleados";
-    }
+     // VALIDACIÓN DE FORMATO (nombre, etc)
+     if (result.hasErrors()) {
+         model.addAttribute("error", "No se permiten números ni caracteres especiales en el nombre");
+         model.addAttribute("empleados", empleadoService.listarTodos());
+         model.addAttribute("empleado", empleado);
+         return "empleados";
+     }
 
-    // VALIDACIÓN DE TELÉFONO
-    if (empleadoService.telefonoDuplicado(empleado)) {
-        model.addAttribute("error", "El teléfono ya está registrado");
-        model.addAttribute("empleados", empleadoService.listarTodos());
-        model.addAttribute("empleado", empleado);
-        return "empleados";
-    }
+     // VALIDACIÓN DE NOMBRE DUPLICADO
+     if (empleadoService.nombresDuplicado(empleado)) {
+         model.addAttribute("error", "El nombre de este empleado ya está registrado");
+         model.addAttribute("empleados", empleadoService.listarTodos());
+         model.addAttribute("empleado", empleado);
+         return "empleados";
+     }
+
+     // VALIDACIÓN DE TELÉFONO
+     if (empleadoService.telefonoDuplicado(empleado)) {
+         model.addAttribute("error", "El teléfono ya está registrado");
+         model.addAttribute("empleados", empleadoService.listarTodos());
+         model.addAttribute("empleado", empleado);
+         return "empleados";
+     }
     // GUARDAR
     Empleado empleadoGuardado = empleadoService.guardar(empleado);
 

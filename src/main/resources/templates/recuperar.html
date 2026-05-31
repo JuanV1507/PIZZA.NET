@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Restablecer Contraseña | PIZZA.NET</title>
+    <link rel="stylesheet" th:href="@{/css/styleLogin.css}">
+    <style>
+        /* Estilos adicionales para alertas glassmórficas */
+        .message {
+            margin-top: 20px;
+            padding: 12px 15px;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 0.9rem;
+            display: none;
+            backdrop-filter: blur(5px);
+            animation: fadeIn 0.4s ease;
+        }
+        
+        .success {
+            background: rgba(46, 204, 113, 0.2);
+            color: #2ecc71;
+            border: 1px solid rgba(46, 204, 113, 0.4);
+        }
+        
+        .error {
+            background: rgba(231, 76, 60, 0.2);
+            color: #e74c3c;
+            border: 1px solid rgba(231, 76, 60, 0.4);
+        }
+
+        .subtitle {
+            text-align: center;
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 25px;
+            line-height: 1.4;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="login-box">
+            <h1>Nueva Contraseña</h1>
+            <p class="subtitle">Ingresa y confirma tu nueva contraseña de acceso.</p>
+            
+            <form th:action="@{/api/restablecer-contrasena}" method="post" id="resetForm">
+                <!-- Token oculto -->
+                <input type="hidden" name="token" th:value="${token}">
+                
+                <div class="input-group">
+                    <label for="contrasena">Nueva Contraseña</label>
+                    <input type="password" id="contrasena" name="contrasena" required placeholder="Mínimo 4 caracteres" minlength="4">
+                </div>
+                
+                <div class="input-group">
+                    <label for="confirmarContrasena">Confirmar Contraseña</label>
+                    <input type="password" id="confirmarContrasena" name="confirmarContrasena" required placeholder="Repite tu contraseña" minlength="4">
+                </div>
+                
+                <button type="submit" class="btn">Restablecer Contraseña</button>
+            </form>
+            
+            <!-- Mostrar errores del servidor si existen -->
+            <div th:if="${error}" class="message error" style="display: block;" th:text="${error}"></div>
+            
+            <!-- Mensaje de validación local -->
+            <div class="message error" id="localMessage"></div>
+        </div>
+    </div>
+    
+    <script>
+        document.getElementById('resetForm').addEventListener('submit', function(e) {
+            const password = document.getElementById('contrasena').value;
+            const confirmPassword = document.getElementById('confirmarContrasena').value;
+            const localMessage = document.getElementById('localMessage');
+            
+            if (password !== confirmPassword) {
+                e.preventDefault();
+                localMessage.textContent = 'Las contraseñas no coinciden.';
+                localMessage.style.display = 'block';
+                return false;
+            }
+            
+            localMessage.style.display = 'none';
+            return true;
+        });
+    </script>
+</body>
+</html>

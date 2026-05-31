@@ -66,8 +66,8 @@
                         <i class="fas fa-address-book me-3"></i> Clientes
                     </a>
                 </li>
-                <li class="nav-item">
-                    <a th:href="@{/Devoluciones}" class="nav-link text-white-50 hover-bg-secondary">
+                <li class="nav-item" th:if="${esAdmin}">
+                    <a th:href="@{/devoluciones}" class="nav-link text-white-50 hover-bg-secondary">
                         <i class="fas fa-exchange-alt me-3"></i> Devoluciones
                     </a>
                 </li>
@@ -257,13 +257,14 @@
                         <div class="card-body">
                             <form id="form-venta">
                                 <div class="mb-2">
-                                    <label class="form-label small fw-semibold">Nombre</label>
+                                    <label class="form-label small fw-semibold" >Nombre <span style="color: red;">*</span> </label>
                                     <input type="text" class="form-control form-control-sm" id="nombre-cliente"
                                         placeholder="Nombre completo">
                                 </div>
 
                                 <div class="mb-2">
                                     <label class="form-label small fw-semibold">Teléfono</label>
+                                    <small class="text-danger d-block mb-1">INGRESA PARA BUSCAR CLIENTE</small>
                                     <input type="tel" class="form-control form-control-sm" id="telefono-cliente"
                                         placeholder="Ej. 55-1234-5678">
                                 </div>
@@ -287,7 +288,7 @@
                                 </div>
 
                                 <div class="mb-2">
-                                    <label class="form-label small fw-semibold">Mesa</label>
+                                    <label class="form-label small fw-semibold">Mesa <span style="color: red;">*</span></label>
                                     <input type="text" class="form-control form-control-sm" id="mesa-cliente"
                                         placeholder="Número o nombre de mesa">
                                 </div>

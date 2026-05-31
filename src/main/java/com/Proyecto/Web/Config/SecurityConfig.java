@@ -4,7 +4,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
@@ -26,9 +25,11 @@ public class SecurityConfig {
         http
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/login", "/css/**", "/js/**", "/uploads/**", "/images/**", "/imagenes/**").permitAll()
+                .requestMatchers("/login", "/acceso", "/recuperar", "/api/recuperar-contrasena", "/api/restablecer-contrasena", "/css/**", "/js/**", "/uploads/**", "/images/**", "/imagenes/**").permitAll()
+                //.authenticated() para permitir a la cajera acceder a las rutas de productos y devoluciones
                 .requestMatchers("/empleados/**", "/usuarios/**").hasRole("ADMIN")
                 .requestMatchers("/productos/guardar", "/productos/editar/**", "/productos/eliminar/**").hasRole("ADMIN")
+                .requestMatchers("/devoluciones/**").hasRole("ADMIN")
                 .anyRequest().authenticated()
             )
             .exceptionHandling(ex -> ex.accessDeniedPage("/acceso-denegado"))

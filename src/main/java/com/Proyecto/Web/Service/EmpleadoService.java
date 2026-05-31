@@ -40,4 +40,12 @@ public class EmpleadoService {
             empleado.getId_empleado() == null ? 0 : empleado.getId_empleado()
         );
     }
+
+    public boolean nombresDuplicado(Empleado empleado) {
+        return empleadoRepository
+            .existsByNombresAndIdEmpleadoNot(
+                empleado.getNombres(), 
+                empleado.getId_empleado() == null ? 0 : empleado.getId_empleado()
+            );
+    }
 }

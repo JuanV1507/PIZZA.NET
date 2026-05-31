@@ -37,7 +37,7 @@
                     <a th:href="@{/empleados}" class="nav-link text-white-50 hover-bg-secondary">
                         <i class="fas fa-users me-3"></i> Empleados
                     </a>
-                </li>
+                </li> <!-- th:href="@{/empleados}" PARA QUE DEJE ACCEDER A LA CAJERA -->
                 <li class="nav-item" th:unless="${esAdmin}">
                     <a href="#" class="nav-link text-white-50 d-flex align-items-center" style="cursor: not-allowed; background-color: rgba(220, 53, 69, 0.05);" onclick="Swal.fire('Acceso Restringido', 'Tu rol de Cajera no tiene permisos para acceder a Empleados.', 'error'); return false;">
                         <i class="fas fa-users me-3 text-secondary"></i> <span class="text-secondary">Empleados</span> <i class="fas fa-lock ms-auto text-danger"></i>
@@ -64,8 +64,8 @@
                         <i class="fas fa-address-book me-3"></i> Clientes
                     </a>
                 </li>
-                <li class="nav-item">
-                    <a th:href="@{/Devoluciones}" class="nav-link text-white-50 hover-bg-secondary">
+                <li class="nav-item" th:if="${esAdmin}">
+                    <a th:href="@{/devoluciones}" class="nav-link text-white-50 hover-bg-secondary">
                         <i class="fas fa-exchange-alt me-3"></i> Devoluciones
                     </a>
                 </li>

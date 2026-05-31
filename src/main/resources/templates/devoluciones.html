@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Devoluciones - Pizza.NET</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="stylesheet" th:href="@{/css/layout-global.css}">
+    <style>
+        /* ── Pasos ── */
+        .step-badge {
+            width: 30px; height: 30px; border-radius: 50%;
+            display: inline-flex; align-items: center; justify-content: center;
+            font-weight: 700; font-size: 0.8rem; flex-shrink: 0;
+        }
+        .step-card { transition: opacity .25s ease; }
+        .step-card.disabled-step { opacity: .4; pointer-events: none; }
+
+        /* ── Caja info venta ── */
+        .venta-info-box {
+            background: linear-gradient(135deg, #f0f4ff 0%, #e7ecf8 100%);
+            border-left: 4px solid #0d6efd;
+            border-radius: 8px; padding: 1rem;
+        }
+
+        /* ── Cards de tipo ── */
+        .tipo-card {
+            cursor: pointer; border: 2px solid #dee2e6;
+            border-radius: 12px; padding: 1rem;
+            transition: all .2s ease; text-align: center;
+            display: block; width: 100%;
+        }
+        .tipo-card:hover { border-color: #0d6efd; background: #f0f4ff; }
+        .tipo-card.selected { border-color: #0d6efd; background: #e7f0ff; }
+        .tipo-card input[type=radio] { display: none; }
+
+        /* ── Historial ── */
+        .historial-scroll { max-height: 520px; overflow-y: auto; }
+        .historial-item { border-bottom: 1px solid #f0f0f0; padding: .75rem 1rem; }
+        .historial-item:last-child { border-bottom: none; }
+
+        /* ── Contador caracteres ── */
+        .char-ok   { color: #198754; font-size: .75rem; }
+        .char-warn { color: #dc3545; font-size: .75rem; }
+
+        /* ── Responsive ajustes ── */
+        @media (max-width: 767.98px) {
+            .tipo-card { padding: .75rem .5rem; }
+            .tipo-card i { font-size: 1.4rem !important; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- BOTÓN HAMBURGUESA (solo móvil, lo muestra el CSS) -->
+    <button class="hamburger" id="btn-hamburger" aria-label="Abrir Menú">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar bg-dark text-white" id="sidebar">
+        <div class="p-4 text-center border-bottom border-secondary">
+            <div class="fs-4 fw-bold text-warning">🍕 PIZZA.NET</div>
+        </div>
+        <nav class="nav-menu mt-3">
+            <ul class="nav flex-column">
+                <li class="nav-item">
+                    <a th:href="@{/home}" class="nav-link text-white-50">
+                        <i class="fas fa-home me-2"></i> Inicio
+                    </a>
+                </li>
+                <li class="nav-item" th:if="${esAdmin}">
+                    <a th:href="@{/empleados}" class="nav-link text-white-50">
+                        <i class="fas fa-users me-2"></i> Empleados
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a th:href="@{/ventas}" class="nav-link text-white-50">
+                        <i class="fas fa-shopping-cart me-2"></i> Ventas
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a th:href="@{/reportes}" class="nav-link text-white-50">
+                        <i class="fas fa-chart-line me-2"></i> Reportes
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a th:href="@{/productos}" class="nav-link text-white-50">
+                        <i class="fas fa-pizza-slice me-2"></i> Productos
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a th:href="@{/clientes}" class="nav-link text-white-50">
+                        <i class="fas fa-address-book me-2"></i> Clientes
+                    </a>
+                </li>
+                <li class="nav-item" th:if="${esAdmin}">
+                    <a th:href="@{/devoluciones}" class="nav-link text-white bg-danger bg-opacity-25">
+                        <i class="fas fa-exchange-alt me-2"></i> Devoluciones
+                    </a>
+                </li>
+            </ul>
+        </nav>
+        <div class="position-absolute bottom-0 w-100 p-3 border-top border-secondary">
+            <form th:action="@{/logout}" method="post">
+                <button type="submit" class="btn btn-sm text-white-50 border-0 bg-transparent w-100 text-start">
+                    <i class="fas fa-sign-out-alt me-2"></i>Cerrar Sesión
+                </button>
+            </form>
+        </div>
+    </aside>
+
+    <!-- BOTÓN VOLVER MÓVIL -->
+    <button class="btn-volver" onclick="history.back()" aria-label="Volver">
+        <i class="fas fa-arrow-left"></i>
+    </button>
+
+    <!-- ╔══════════════════════════════════════════════╗ -->
+    <!-- ║          CONTENIDO PRINCIPAL                ║ -->
+    <!-- ╚══════════════════════════════════════════════╝ -->
+    <main class="main-content">
+        <div class="container-fluid px-0">
+
+            <!-- Cabecera -->
+            <div class="d-flex flex-wrap justify-content-between align-items-center mb-3 gap-2">
+                <h1 class="h4 mb-0 fw-bold">
+                    <i class="fas fa-exchange-alt me-2 text-danger"></i>Devoluciones
+                </h1>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb mb-0 small">
+                        <li class="breadcrumb-item"><a th:href="@{/home}">Inicio</a></li>
+                        <li class="breadcrumb-item active">Devoluciones</li>
+                    </ol>
+                </nav>
+            </div>
+
+            <!-- Alerta ADMIN -->
+            <div class="alert alert-warning d-flex align-items-start gap-2 py-2 mb-3" role="alert">
+                <i class="fas fa-shield-alt mt-1 text-warning"></i>
+                <span class="small"><strong>Módulo exclusivo de Administrador.</strong>
+                    Las devoluciones cancelan la venta original y la excluyen de los reportes de ingresos.</span>
+            </div>
+
+            <!-- Flash messages -->
+            <div th:if="${mensaje}"
+                 th:classappend="${tipoMensaje == 'success'} ? 'alert-success' : (${tipoMensaje == 'warning'} ? 'alert-warning' : 'alert-danger')"
+                 class="alert d-flex align-items-center gap-2 mb-3" role="alert">
+                <i class="fas"
+                   th:classappend="${tipoMensaje == 'success'} ? 'fa-check-circle' : 'fa-exclamation-triangle'"></i>
+                <span th:text="${mensaje}"></span>
+            </div>
+
+            <!-- ── GRID PRINCIPAL ── -->
+            <div class="row g-4">
+
+                <!-- ── COLUMNA FORMULARIO ── -->
+                <div class="col-12 col-lg-7">
+
+                    <!-- PASO 1 -->
+                    <div class="card border-0 shadow-sm mb-3 step-card" id="step1-card">
+                        <div class="card-header bg-white py-2 d-flex align-items-center gap-2">
+                            <span class="step-badge bg-primary text-white">1</span>
+                            <h6 class="mb-0 fw-bold">Buscar venta por folio</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-hashtag text-primary"></i></span>
+                                <input type="text" id="input-folio"
+                                       class="form-control form-control-lg fw-bold text-uppercase"
+                                       placeholder="Ej. A0005"
+                                       maxlength="10"
+                                       oninput="this.value=this.value.toUpperCase()">
+                                <button class="btn btn-primary" type="button" id="btn-buscar" onclick="buscarFolio()">
+                                    <i class="fas fa-search me-1"></i><span class="d-none d-sm-inline">Buscar</span>
+                                </button>
+                            </div>
+                            <small class="text-muted mt-1 d-block">Ingresa el folio exacto de la venta</small>
+
+                            <!-- Panel resultado -->
+                            <div id="resultado-busqueda" class="mt-3" style="display:none;">
+                                <!-- Venta encontrada -->
+                                <div class="venta-info-box" id="venta-info-box" style="display:none;">
+                                    <div class="d-flex justify-content-between align-items-start flex-wrap gap-1 mb-2">
+                                        <div>
+                                            <div class="text-muted small">Folio de venta</div>
+                                            <div class="fw-bold fs-5 text-primary" id="info-folio">—</div>
+                                        </div>
+                                        <span class="badge bg-success" id="info-estado">ACTIVA</span>
+                                    </div>
+                                    <div class="row row-cols-3 g-2 mt-0">
+                                        <div class="col">
+                                            <div class="text-muted small">Fecha</div>
+                                            <div class="fw-semibold small" id="info-fecha">—</div>
+                                        </div>
+                                        <div class="col">
+                                            <div class="text-muted small">Tipo servicio</div>
+                                            <div class="fw-semibold small" id="info-tipo">—</div>
+                                        </div>
+                                        <div class="col">
+                                            <div class="text-muted small">Total original</div>
+                                            <div class="fw-bold text-danger" id="info-total">$0.00</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Error -->
+                                <div class="alert alert-danger py-2 mb-0" id="venta-error-box" style="display:none;">
+                                    <i class="fas fa-exclamation-triangle me-2"></i>
+                                    <span id="venta-error-msg"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- PASO 2 -->
+                    <div class="card border-0 shadow-sm mb-3 step-card disabled-step" id="step2-card">
+                        <div class="card-header bg-white py-2 d-flex align-items-center gap-2">
+                            <span class="step-badge bg-secondary text-white" id="step2-badge">2</span>
+                            <h6 class="mb-0 fw-bold">Tipo de devolución</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="row g-3">
+                                <div class="col-6">
+                                    <label class="tipo-card" id="card-total" onclick="seleccionarTipo('total')">
+                                        <input type="radio" name="tipoDevolucion" value="total">
+                                        <i class="fas fa-undo-alt fa-2x text-danger mb-2 d-block"></i>
+                                        <div class="fw-bold">Total</div>
+                                        <small class="text-muted">Monto completo</small>
+                                    </label>
+                                </div>
+                                <div class="col-6">
+                                    <label class="tipo-card" id="card-parcial" onclick="seleccionarTipo('parcial')">
+                                        <input type="radio" name="tipoDevolucion" value="parcial">
+                                        <i class="fas fa-exchange-alt fa-2x text-warning mb-2 d-block"></i>
+                                        <div class="fw-bold">Parcial</div>
+                                        <small class="text-muted">Solo una parte</small>
+                                    </label>
+                                </div>
+                            </div>
+                            <!-- Monto parcial -->
+                            <div id="grupo-monto-parcial" class="mt-3" style="display:none;">
+                                <label class="form-label fw-semibold small">Monto a devolver</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">$</span>
+                                    <input type="number" id="monto-parcial" class="form-control"
+                                           min="0.01" step="0.01" placeholder="0.00">
+                                    <span class="input-group-text text-muted small" id="limite-monto">máx. $0.00</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- PASO 3 -->
+                    <div class="card border-0 shadow-sm mb-3 step-card disabled-step" id="step3-card">
+                        <div class="card-header bg-white py-2 d-flex align-items-center gap-2">
+                            <span class="step-badge bg-secondary text-white" id="step3-badge">3</span>
+                            <h6 class="mb-0 fw-bold">Motivo de la devolución</h6>
+                        </div>
+                        <div class="card-body">
+                            <form id="form-devolucion" method="post" th:action="@{/devoluciones/guardar}">
+                                <input type="hidden" name="folioVenta"    id="hidden-folio">
+                                <input type="hidden" name="tipoDevolucion" id="hidden-tipo">
+                                <input type="hidden" name="montoParcial"  id="hidden-monto">
+
+                                <textarea class="form-control" id="motivo-textarea" name="motivo"
+                                          rows="4" maxlength="500"
+                                          placeholder="Describe el motivo de la devolución (mínimo 10 caracteres)..."
+                                          oninput="actualizarContador()"></textarea>
+                                <div class="d-flex justify-content-between mt-1">
+                                    <span id="char-counter" class="char-warn">0 / 500 — mínimo 10 caracteres</span>
+                                </div>
+
+                                <div class="d-grid mt-3">
+                                    <button type="button" class="btn btn-danger btn-lg fw-bold"
+                                            id="btn-registrar" onclick="confirmarDevolucion()">
+                                        <i class="fas fa-exchange-alt me-2"></i>Registrar Devolución
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                </div><!-- /col formulario -->
+
+                <!-- ── COLUMNA HISTORIAL ── -->
+                <div class="col-12 col-lg-5">
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-header bg-white py-2 d-flex align-items-center justify-content-between">
+                            <h6 class="mb-0 fw-bold">
+                                <i class="fas fa-history me-2 text-secondary"></i>Historial
+                            </h6>
+                            <span class="badge bg-secondary rounded-pill"
+                                  th:text="${#lists.size(devoluciones)} + ' registros'">0 registros</span>
+                        </div>
+                        <div class="historial-scroll">
+                            <!-- Sin registros -->
+                            <div class="text-center py-5 text-muted" th:if="${#lists.isEmpty(devoluciones)}">
+                                <i class="fas fa-inbox fa-2x mb-2 d-block"></i>
+                                <small>Sin devoluciones registradas</small>
+                            </div>
+                            <!-- Lista -->
+                            <div th:each="dev : ${devoluciones}" class="historial-item">
+                                <div class="d-flex justify-content-between align-items-start flex-wrap gap-1">
+                                    <div>
+                                        <span class="badge bg-danger me-1"
+                                              th:text="'#' + ${dev.idDevolucion}">#1</span>
+                                        <span class="fw-semibold small"
+                                              th:text="'Folio: ' + (${dev.folioVentaReferencia} ?: '—')">Folio: —</span>
+                                    </div>
+                                    <small class="text-muted"
+                                           th:text="${dev.fecha ?: '—'}">Fecha</small>
+                                </div>
+                                <div class="mt-1">
+                                    <span class="badge bg-secondary small"
+                                          th:text="${dev.tipoServicio ?: '—'}">COMEDOR</span>
+                                </div>
+                                <p class="mb-0 mt-1 small text-muted text-truncate"
+                                   style="max-width:100%;"
+                                   th:text="${dev.motivo}">Motivo...</p>
+                            </div>
+                        </div>
+                    </div>
+                </div><!-- /col historial -->
+
+            </div><!-- /row -->
+        </div>
+    </main><!-- /main -->
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // ── Sidebar toggle ──
+        const btnHamburger = document.getElementById('btn-hamburger');
+        const sidebar      = document.getElementById('sidebar');
+
+        btnHamburger.addEventListener('click', () => sidebar.classList.toggle('menu-open'));
+
+        document.addEventListener('click', e => {
+            if (window.innerWidth <= 992
+                && !sidebar.contains(e.target)
+                && !btnHamburger.contains(e.target)) {
+                sidebar.classList.remove('menu-open');
+            }
+        });
+
+        // ── Estado global ──
+        let ventaCargada     = null;
+        let tipoSeleccionado = null;
+
+        // Buscar por Enter
+        document.getElementById('input-folio').addEventListener('keydown', e => {
+            if (e.key === 'Enter') { e.preventDefault(); buscarFolio(); }
+        });
+
+        // ── PASO 1: Buscar folio ──
+        async function buscarFolio() {
+            const folio = document.getElementById('input-folio').value.trim().toUpperCase();
+            if (!folio) {
+                Swal.fire('Atención', 'Ingresa un folio de venta.', 'warning'); return;
+            }
+            const btn = document.getElementById('btn-buscar');
+            btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span>';
+            btn.disabled = true;
+
+            try {
+                const res  = await fetch(`/devoluciones/buscar?folio=${encodeURIComponent(folio)}`);
+                const data = await res.json();
+                document.getElementById('resultado-busqueda').style.display = 'block';
+
+                if (data.encontrado) {
+                    ventaCargada = data;
+                    document.getElementById('venta-info-box').style.display  = 'block';
+                    document.getElementById('venta-error-box').style.display = 'none';
+                    document.getElementById('info-folio').textContent  = data.folio;
+                    document.getElementById('info-fecha').textContent  = data.fecha  || '—';
+                    document.getElementById('info-tipo').textContent   = data.tipoServicio || '—';
+                    document.getElementById('info-total').textContent  = '$' + parseFloat(data.total).toFixed(2);
+                    document.getElementById('info-estado').textContent = data.estado;
+                    document.getElementById('limite-monto').textContent = 'máx. $' + parseFloat(data.total).toFixed(2);
+                    document.getElementById('monto-parcial').max       = data.total;
+                    habilitarPaso(2);
+                } else {
+                    ventaCargada = null;
+                    document.getElementById('venta-info-box').style.display  = 'none';
+                    document.getElementById('venta-error-box').style.display = 'block';
+                    document.getElementById('venta-error-msg').textContent   = data.mensaje;
+                    deshabilitarPasos();
+                }
+            } catch (err) {
+                Swal.fire('Error', 'No se pudo conectar con el servidor.', 'error');
+            } finally {
+                btn.innerHTML = '<i class="fas fa-search me-1"></i><span class="d-none d-sm-inline">Buscar</span>';
+                btn.disabled  = false;
+            }
+        }
+
+        // ── PASO 2: Tipo ──
+        function seleccionarTipo(tipo) {
+            tipoSeleccionado = tipo;
+            document.getElementById('card-total').classList.toggle('selected',  tipo === 'total');
+            document.getElementById('card-parcial').classList.toggle('selected', tipo === 'parcial');
+            document.getElementById('grupo-monto-parcial').style.display = tipo === 'parcial' ? 'block' : 'none';
+            habilitarPaso(3);
+        }
+
+        // ── PASO 3: Contador ──
+        function actualizarContador() {
+            const len     = document.getElementById('motivo-textarea').value.length;
+            const counter = document.getElementById('char-counter');
+            if (len >= 10) {
+                counter.textContent = len + ' / 500 ✓';
+                counter.className   = 'char-ok';
+            } else {
+                counter.textContent = len + ' / 500 — mínimo 10 caracteres';
+                counter.className   = 'char-warn';
+            }
+        }
+
+        // ── Confirmar ──
+        async function confirmarDevolucion() {
+            if (!ventaCargada) {
+                Swal.fire('Error', 'Busca un folio de venta válido primero.', 'error'); return;
+            }
+            if (!tipoSeleccionado) {
+                Swal.fire('Error', 'Selecciona el tipo de devolución.', 'error'); return;
+            }
+            const motivo = document.getElementById('motivo-textarea').value.trim();
+            if (motivo.length < 10) {
+                Swal.fire('Error', 'El motivo debe tener al menos 10 caracteres.', 'error'); return;
+            }
+            if (tipoSeleccionado === 'parcial') {
+                const monto = parseFloat(document.getElementById('monto-parcial').value);
+                if (!monto || monto <= 0 || monto > parseFloat(ventaCargada.total)) {
+                    Swal.fire('Error', 'Ingresa un monto parcial válido (mayor a $0 y sin superar el total).', 'error'); return;
+                }
+                document.getElementById('hidden-monto').value = monto;
+            }
+
+            const result = await Swal.fire({
+                title: '¿Confirmar devolución?',
+                html: `<p class="mb-1">Folio: <strong>${ventaCargada.folio}</strong></p>
+                       <p class="mb-1">Tipo: <strong>${tipoSeleccionado.toUpperCase()}</strong></p>
+                       <p class="text-danger mb-0"><i class="fas fa-exclamation-triangle me-1"></i>
+                       La venta quedará <strong>CANCELADA</strong> y no contará en reportes.</p>`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#dc3545',
+                cancelButtonColor:  '#6c757d',
+                confirmButtonText:  'Sí, registrar',
+                cancelButtonText:   'No, cancelar'
+            });
+
+            if (result.isConfirmed) {
+                document.getElementById('hidden-folio').value = ventaCargada.folio;
+                document.getElementById('hidden-tipo').value  = tipoSeleccionado;
+                document.getElementById('form-devolucion').submit();
+            }
+        }
+
+        // ── Utilidades ──
+        function habilitarPaso(num) {
+            if (num >= 2) {
+                document.getElementById('step2-card').classList.remove('disabled-step');
+                document.getElementById('step2-badge').className = 'step-badge bg-primary text-white';
+            }
+            if (num >= 3) {
+                document.getElementById('step3-card').classList.remove('disabled-step');
+                document.getElementById('step3-badge').className = 'step-badge bg-primary text-white';
+            }
+        }
+        function deshabilitarPasos() {
+            ['step2-card','step3-card'].forEach(id => document.getElementById(id).classList.add('disabled-step'));
+            document.getElementById('step2-badge').className = 'step-badge bg-secondary text-white';
+            document.getElementById('step3-badge').className = 'step-badge bg-secondary text-white';
+            tipoSeleccionado = null;
+        }
+    </script>
+</body>
+</html>

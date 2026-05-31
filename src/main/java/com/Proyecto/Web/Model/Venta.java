@@ -1,6 +1,6 @@
 package com.Proyecto.Web.Model;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -51,8 +51,8 @@ public class Venta {
     private estado estado;
 
     @Column(name = "fecha", updatable = false)
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private LocalDate fecha;
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime fecha;
 
     private double total;
 
@@ -104,11 +104,11 @@ public class Venta {
         this.estado = estado;
     }
 
-    public LocalDate getFecha() {
+    public LocalDateTime getFecha() {
         return fecha;
     }
 
-    public void setFecha(LocalDate fecha) {
+    public void setFecha(LocalDateTime fecha) {
         this.fecha = fecha;
     }
 

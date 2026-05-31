@@ -4,6 +4,10 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import com.Proyecto.Web.Model.Productos;
+import com.Proyecto.Web.Repository.ProductoRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -29,6 +33,9 @@ public class VentaService {
 
     @Autowired
     private DetalleVentaRepository detalleVentaRepository;
+
+    @Autowired
+    private ProductoRepository productoRepository;
 
     @Autowired
     private com.Proyecto.Web.Repository.UsuarioRepository usuarioRepository;
@@ -75,14 +82,17 @@ public class VentaService {
         
         for (Venta v : vents) {
             if (v.getFecha() == null) continue;
+            // Excluir ventas canceladas por devolución del historial
+            if (v.getEstado() == Venta.estado.CANCELADA) continue;
             boolean match = false;
+            LocalDate fechaVenta = v.getFecha().toLocalDate();
             switch(periodo != null ? periodo : "") {
-                case "hoy": match = v.getFecha().isEqual(hoy); break;
-                case "ayer": match = v.getFecha().isEqual(hoy.minusDays(1)); break;
-                case "semana": match = !v.getFecha().isBefore(hoy.minusDays(6)); break;
-                case "mes": match = v.getFecha().getMonthValue() == hoy.getMonthValue() && v.getFecha().getYear() == hoy.getYear(); break;
-                case "año": match = v.getFecha().getYear() == hoy.getYear(); break;
-                default: match = !v.getFecha().isBefore(hoy.minusDays(6)); break; // default to semana
+                case "hoy": match = fechaVenta.isEqual(hoy); break;
+                case "ayer": match = fechaVenta.isEqual(hoy.minusDays(1)); break;
+                case "semana": match = !fechaVenta.isBefore(hoy.minusDays(6)); break;
+                case "mes": match = fechaVenta.getMonthValue() == hoy.getMonthValue() && fechaVenta.getYear() == hoy.getYear(); break;
+                case "año": match = fechaVenta.getYear() == hoy.getYear(); break;
+                default: match = !fechaVenta.isBefore(hoy.minusDays(6)); break; // default to semana
             }
             if (!match) continue;
 
@@ -91,7 +101,7 @@ public class VentaService {
                 Clientes c = clienteRepository.findById((long)v.getId_cliente()).orElse(null);
                 if (c != null) nombreCliente = c.getNombre();
             }
-            LocalDateTime fh = v.getFecha().atStartOfDay();
+            LocalDateTime fh = v.getFecha();
             String tipo = v.getTipo_servicio() != null ? v.getTipo_servicio().name() : "COMEDOR";
             result.add(new HistorialVentaDTO(v.getFolioVenta(), fh, tipo, v.getTotal(), nombreCliente));
         }
@@ -106,14 +116,17 @@ public class VentaService {
         
         for (Venta v : vents) {
             if (v.getFecha() == null) continue;
+            // Excluir ventas canceladas por devolución del cálculo de ingresos
+            if (v.getEstado() == Venta.estado.CANCELADA) continue;
             boolean match = false;
+            LocalDate fechaVenta = v.getFecha().toLocalDate();
             switch(periodo != null ? periodo : "") {
-                case "hoy": match = v.getFecha().isEqual(hoy); dias = 1; break;
-                case "ayer": match = v.getFecha().isEqual(hoy.minusDays(1)); dias = 1; break;
-                case "semana": match = !v.getFecha().isBefore(hoy.minusDays(6)); dias = 7; break;
-                case "mes": match = v.getFecha().getMonthValue() == hoy.getMonthValue() && v.getFecha().getYear() == hoy.getYear(); dias = hoy.lengthOfMonth(); break;
-                case "año": match = v.getFecha().getYear() == hoy.getYear(); dias = hoy.lengthOfYear(); break;
-                default: match = !v.getFecha().isBefore(hoy.minusDays(6)); dias = 7; break;
+                case "hoy": match = fechaVenta.isEqual(hoy); dias = 1; break;
+                case "ayer": match = fechaVenta.isEqual(hoy.minusDays(1)); dias = 1; break;
+                case "semana": match = !fechaVenta.isBefore(hoy.minusDays(6)); dias = 7; break;
+                case "mes": match = fechaVenta.getMonthValue() == hoy.getMonthValue() && fechaVenta.getYear() == hoy.getYear(); dias = hoy.lengthOfMonth(); break;
+                case "año": match = fechaVenta.getYear() == hoy.getYear(); dias = hoy.lengthOfYear(); break;
+                default: match = !fechaVenta.isBefore(hoy.minusDays(6)); dias = 7; break;
             }
             if (match) filtradas.add(v);
         }
@@ -128,9 +141,75 @@ public class VentaService {
         dto.setTicketMaximo(filtradas.stream().mapToDouble(Venta::getTotal).max().orElse(0));
         dto.setPromedioPorDia(totalIngresos / dias);
         
-        dto.setTopProductos(new ArrayList<>());
-        dto.setVentasPorTipo(new ArrayList<>());
-        dto.setVentasPorHora(new ArrayList<>());
+        // 1. Calcular Top Productos
+        List<ReporteDTO.ProductoReporte> topProductos = new ArrayList<>();
+        if (!filtradas.isEmpty()) {
+            List<DetalleVenta> detalles = detalleVentaRepository.findByVentas(filtradas);
+            Map<Long, Long> unidadesPorProducto = detalles.stream()
+                .filter(d -> d.getId_producto() != null)
+                .collect(Collectors.groupingBy(DetalleVenta::getId_producto, Collectors.summingLong(DetalleVenta::getCantidad)));
+            
+            long totalUnidades = unidadesPorProducto.values().stream().mapToLong(Long::longValue).sum();
+            
+            for (Map.Entry<Long, Long> entry : unidadesPorProducto.entrySet()) {
+                Long idProd = entry.getKey();
+                Long unidades = entry.getValue();
+                String prodNombre = "Producto Desconocido";
+                Productos p = productoRepository.findById(idProd).orElse(null);
+                if (p != null) {
+                    prodNombre = p.getNombre();
+                }
+                double porcentaje = totalUnidades == 0 ? 0.0 : (double) unidades * 100.0 / totalUnidades;
+                topProductos.add(new ReporteDTO.ProductoReporte(prodNombre, unidades, porcentaje));
+            }
+            // Ordenar por unidades descendiente
+            topProductos.sort((a, b) -> Long.compare(b.getUnidades(), a.getUnidades()));
+        }
+        dto.setTopProductos(topProductos);
+        
+        // 2. Calcular Ventas por Tipo de Orden
+        List<ReporteDTO.TipoServicioReporte> ventasPorTipo = new ArrayList<>();
+        if (!filtradas.isEmpty()) {
+            Map<Venta.tipo_servicio, List<Venta>> porTipo = filtradas.stream()
+                .collect(Collectors.groupingBy(v -> v.getTipo_servicio() != null ? v.getTipo_servicio() : Venta.tipo_servicio.COMEDOR));
+            
+            for (Venta.tipo_servicio ts : Venta.tipo_servicio.values()) {
+                List<Venta> ventasTipo = porTipo.getOrDefault(ts, new ArrayList<>());
+                long ordenes = ventasTipo.size();
+                double ingresosTipo = ventasTipo.stream().mapToDouble(Venta::getTotal).sum();
+                double promedio = ordenes == 0 ? 0.0 : ingresosTipo / ordenes;
+                double porcentaje = totalIngresos == 0 ? 0.0 : ingresosTipo * 100.0 / totalIngresos;
+                
+                // Formatear tipo de servicio con mayúscula inicial
+                String tipoNombre = ts.name().charAt(0) + ts.name().substring(1).toLowerCase();
+                
+                ventasPorTipo.add(new ReporteDTO.TipoServicioReporte(tipoNombre, ordenes, ingresosTipo, promedio, porcentaje));
+            }
+        }
+        dto.setVentasPorTipo(ventasPorTipo);
+        
+        // 3. Calcular Horas de Mayor Venta
+        List<ReporteDTO.HoraReporte> ventasPorHora = new ArrayList<>();
+        if (!filtradas.isEmpty()) {
+            Map<Integer, Double> ingresosPorHora = filtradas.stream()
+                .collect(Collectors.groupingBy(v -> v.getFecha().getHour(), Collectors.summingDouble(Venta::getTotal)));
+            
+            for (Map.Entry<Integer, Double> entry : ingresosPorHora.entrySet()) {
+                int h = entry.getKey();
+                double totalHora = entry.getValue();
+                double porcentaje = totalIngresos == 0 ? 0.0 : totalHora * 100.0 / totalIngresos;
+                
+                String ampm = h >= 12 ? "PM" : "AM";
+                int hour12 = h % 12;
+                if (hour12 == 0) hour12 = 12;
+                String horaFormateada = String.format("%02d:00 %s", hour12, ampm);
+                
+                ventasPorHora.add(new ReporteDTO.HoraReporte(horaFormateada, totalHora, porcentaje));
+            }
+            // Ordenar por ingresos descendiente
+            ventasPorHora.sort((a, b) -> Double.compare(b.getTotalIngresos(), a.getTotalIngresos()));
+        }
+        dto.setVentasPorHora(ventasPorHora);
         
         return dto;
     }
@@ -182,7 +261,7 @@ public class VentaService {
         }
         
         venta.setId_usuario(idUsuario); 
-        venta.setFecha(LocalDate.now());
+        venta.setFecha(LocalDateTime.now());
         venta.setTotal(request.getTotal());
         venta.setEstado(Venta.estado.ACTIVA);
 

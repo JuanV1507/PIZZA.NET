@@ -108,4 +108,24 @@ public class Usuario {
         this.correo = correo;
     }
 
+    private String resetToken;
+
+    private LocalDateTime resetTokenExpiration;
+
+    public String getResetToken() {
+        return resetToken;
+    }
+
+    public void setResetToken(String resetToken) {
+        this.resetToken = resetToken;
+    }
+
+    public LocalDateTime getResetTokenExpiration() {
+        return resetTokenExpiration;
+    }
+
+    public void setResetTokenExpiration(LocalDateTime resetTokenExpiration) {
+        this.resetTokenExpiration = resetTokenExpiration;
+    }
+
 }
